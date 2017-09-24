@@ -366,3 +366,7 @@ __pycache__/
 
 # OpenCover UI analysis results
 OpenCover/
+
+/Tools/BlueToothDesktop/BlueToothDesktop/bin
+/Tools/BlueToothDesktop/BlueToothDesktop/obj
+/Tools/BlueToothDesktop/.vs
