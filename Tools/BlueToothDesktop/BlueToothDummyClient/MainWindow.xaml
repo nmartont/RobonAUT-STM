@@ -5,16 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlueToothDummyClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="395.975"
-        ResizeMode="NoResize">
+        Title="Happy Happy Feelings" Height="350" Width="400"
+        MinHeight="350"
+        MinWidth="400"
+        >
     <Grid>
-        <ComboBox x:Name="dropdownPorts" HorizontalAlignment="Left" Margin="13,10,0,0" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="refreshPortsBtn" Content="Refresh" HorizontalAlignment="Left" Margin="138,10,0,0" VerticalAlignment="Top" Width="75" Click="refreshPortsBtn_Click"/>
-        <Button x:Name="buttonConnect" Content="Connect" HorizontalAlignment="Left" Margin="218,10,0,0" VerticalAlignment="Top" Width="75" Click="buttonConnect_Click"/>
-        <Button x:Name="buttondisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="298,10,0,0" VerticalAlignment="Top" Width="75" Click="buttondisconnect_Click"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="275" Margin="10,37,0,0" VerticalAlignment="Top" Width="363"
+        <ComboBox x:Name="dropdownPorts" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="refreshPortsBtn" Content="Refresh" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="75" Click="refreshPortsBtn_Click"/>
+        <Button x:Name="buttonConnect" Content="Connect" HorizontalAlignment="Left" Margin="215,10,0,0" VerticalAlignment="Top" Width="75" Click="buttonConnect_Click"/>
+        <Button x:Name="buttondisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="295,10,0,0" VerticalAlignment="Top" Width="75" Click="buttondisconnect_Click"/>
+        <TextBox x:Name="textBox" Margin="10,64,10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                  IsReadOnly="True"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        <Button x:Name="varTypesBtn" Content="Send var types" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="120" Click="varTypesBtn_Click"/>
+        <Button x:Name="sendVarsBtn" Content="Send Vars" HorizontalAlignment="Left" Margin="135,37,0,0" VerticalAlignment="Top" Width="75" Click="sendVarsBtn_Click"/>
+        <Button x:Name="sendVarStreamBtn" Content="Send variable stream" HorizontalAlignment="Left" Margin="215,37,0,0" VerticalAlignment="Top" Width="155" Click="sendVarStreamBtn_Click"/>
 
     </Grid>
 </Window>

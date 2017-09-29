@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -27,13 +28,15 @@ namespace BlueToothDummyClient
         public MainWindow()
         {
             InitializeComponent();
-            RefreshPortButtons();
+            RefreshPortDropDown();
             dropdownPorts.SelectedIndex = PortNames.Length - 2;
+
+            AppendLog("LST BlueTooth Dummy Client ready...");
         }
 
         private void refreshPortsBtn_Click(object sender, RoutedEventArgs e)
         {
-            RefreshPortButtons();
+            RefreshPortDropDown();
         }
 
         private void buttonConnect_Click(object sender, RoutedEventArgs e)
@@ -41,29 +44,74 @@ namespace BlueToothDummyClient
             connectToPort(dropdownPorts.Text);
         }
 
-        private void connectToPort(string text)
+        private void connectToPort(string portName)
         {
-            port = new SerialPort(text,
+            port = new SerialPort(portName,
             9600, Parity.None, 8, StopBits.One);
 
-            SerialPortProgram();
+            try
+            {
+                SerialPortProgram();
+                AppendLog("Successfully connected to port " + portName);
+            }
+            catch (Exception ex)
+            {
+                AppendLog("Error while connecting to port " + portName + ":\n" + ex.Message);
+            }
         }
 
         private void buttondisconnect_Click(object sender, RoutedEventArgs e)
         {
-            port.Close();
+            disconnectFromPort();
         }
 
         private void disconnectFromPort()
         {
-            throw new NotImplementedException();
+            try
+            {
+                port.Close();
+                AppendLog("Successfully disconnected from port " + port.PortName);
+            }
+            catch (Exception ex)
+            {
+                AppendLog("Error while disconnecting from port:\n" + ex.Message);
+            }
+        }
+
+        private void varTypesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                sendVarTypes();
+                AppendLog("Sent var types");
+            }
+            catch (Exception ex)
+            {
+                AppendLog("Error while sending var types:\n" + ex.Message);
+            }
+        }
+
+        private void sendVarTypes()
+        {
+            byte b = 5;
+            byte[] bytes = new byte[1];
+            bytes[0] = b;
+            port.Write(bytes, 0, bytes.Length);
+        }
+
+        private void sendVarsBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void sendVarStreamBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         // COM port handling
         private void SerialPortProgram()
         {
-            Console.WriteLine("Incoming Data:");
-
             // Attach a method to be called when there
             // is data waiting in the port's buffer
             port.DataReceived += new
@@ -71,22 +119,35 @@ namespace BlueToothDummyClient
 
             // Begin communications
             port.Open();
+            // Empty buffer so stuck data is discarded
+            port.DiscardInBuffer();
         }
 
-        private void port_DataReceived(object sender,
-          SerialDataReceivedEventArgs e)
+        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            // Show all the incoming data in the port's buffer
-            Console.WriteLine(port.ReadExisting());
+            int bytes = port.BytesToRead;
+            byte[] buffer = new byte[bytes];
+            port.Read(buffer, 0, bytes);
         }
 
         // helpers
-        private void RefreshPortButtons()
+        private void RefreshPortDropDown()
         {
             // get COM ports, set it to the dropdown
             PortNames = System.IO.Ports.SerialPort.GetPortNames();
             dropdownPorts.ItemsSource = PortNames;
         }
 
+        private void AppendLog(string toAppend, bool newLine=true, bool timeStamp=true, bool scrollToEnd=true)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(() => {
+                string textNewLine = "";
+                string textTimeStamp = "";
+                if (newLine) textNewLine = "\n";
+                if (timeStamp) textTimeStamp = DateTime.Now.ToString("HH:mm:ss.f", CultureInfo.InvariantCulture) + ": ";
+                textBox.AppendText(textTimeStamp + toAppend + textNewLine);
+                if (scrollToEnd) textBox.ScrollToEnd();
+            }));
+        }
     }
 }
