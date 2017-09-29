@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BlueToothDesktop
+namespace BlueToothDummyClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -28,18 +28,35 @@ namespace BlueToothDesktop
         {
             InitializeComponent();
             RefreshPortButtons();
-            dropdownPorts.SelectedIndex = PortNames.Length - 1;
-
-            // TEMP
-            port = new SerialPort("COM5",
-            9600, Parity.None, 8, StopBits.One);
-
-            SerialPortProgram();
+            dropdownPorts.SelectedIndex = PortNames.Length - 2;
         }
 
         private void refreshPortsBtn_Click(object sender, RoutedEventArgs e)
         {
             RefreshPortButtons();
+        }
+
+        private void buttonConnect_Click(object sender, RoutedEventArgs e)
+        {
+            connectToPort(dropdownPorts.Text);
+        }
+
+        private void connectToPort(string text)
+        {
+            port = new SerialPort(text,
+            9600, Parity.None, 8, StopBits.One);
+
+            SerialPortProgram();
+        }
+
+        private void buttondisconnect_Click(object sender, RoutedEventArgs e)
+        {
+            port.Close();
+        }
+
+        private void disconnectFromPort()
+        {
+            throw new NotImplementedException();
         }
 
         // COM port handling
@@ -70,5 +87,6 @@ namespace BlueToothDesktop
             PortNames = System.IO.Ports.SerialPort.GetPortNames();
             dropdownPorts.ItemsSource = PortNames;
         }
+
     }
 }

@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlueToothDesktop"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="Bluetooth LST" Height="715.333" Width="1043.667"
+        ResizeMode="NoResize"
+        Icon="icon.ico">
+    <Grid Margin="0,0,4,0">
+        <ComboBox x:Name="dropdownPorts" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="refreshPortsBtn" Content="Refresh" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="75" Click="refreshPortsBtn_Click"/>
+        <Image x:Name="image" HorizontalAlignment="Left" Margin="852,10,0,0" VerticalAlignment="Top" Source="Resources/LST_logo.png" Height="93" Width="172"/>
     </Grid>
 </Window>
