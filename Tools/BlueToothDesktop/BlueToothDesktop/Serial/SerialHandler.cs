@@ -1,4 +1,6 @@
-﻿using BlueToothDesktop.Models;
+﻿using BlueToothDesktop.Enums;
+using BlueToothDesktop.Models;
+using BlueToothDesktop.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace BlueToothDesktop.Serial
 {
-    public class SerialHandler : INotifyPropertyChanged
+    public abstract class SerialHandler : INotifyPropertyChanged
     {
         public WindowCallback Callback;
         private SerialPort port;
-        private bool desiredLittleEndian = true;
-        private bool converterLittleEndian = BitConverter.IsLittleEndian;
+        private static bool desiredLittleEndian = true;
+        private static bool converterLittleEndian = BitConverter.IsLittleEndian;
 
         public SerialHandler(WindowCallback cb)
         {
@@ -56,7 +58,7 @@ namespace BlueToothDesktop.Serial
         }
 
         // property for endian swap
-        public bool SwapEndian
+        public static bool SwapEndian
         {
             get { return desiredLittleEndian != converterLittleEndian; }
         }
@@ -114,37 +116,61 @@ namespace BlueToothDesktop.Serial
             int bytes = port.BytesToRead;
             byte[] buffer = new byte[bytes];
             port.Read(buffer, 0, bytes);
-        }
-        
-        // helpers
-        public void SendBytes(List<byte[]> Bytes)
-        {
-            // construct byte array
-            byte[] bytes = ConstructByteArray(Bytes);
 
-            // send bytes to port
-            port.Write(bytes, 0, bytes.Length);
+            // handle the bytes
+            HandleReceivedBytes(buffer);
         }
 
-        public byte[] ConstructByteArray(List<byte[]> Bytes)
+        public void HandleReceivedBytes(byte[] buffer)
         {
-            // get how many byes we need
-            var byteNo = Bytes.Select(t => t.Length).Sum();
-            
-            // create byte array
-            byte[] bytes = new byte[byteNo];
+            // check message type first
+            MessageTypeEnum MsgType = MessageTypeEnum.Error;
 
-            int offset = 0;
-            
-            foreach (byte[] Byte in Bytes)
+            try
             {
-                // swap endian
-                if (SwapEndian) Array.Reverse(Byte);
-                Buffer.BlockCopy(Byte, 0, bytes, offset, Byte.Length);
-                offset += Byte.Length;
+                MsgType = (MessageTypeEnum)buffer[0];
+            }
+            catch (Exception ex)
+            {
+                Callback.AppendLog("Error while parsing message type:\n" + ex.Message);
+                return;
             }
 
-            return bytes;
+            // decode message into c# model
+            byte[] msgBytes = new byte[buffer.Length - 1];
+            Buffer.BlockCopy(buffer, 1, msgBytes, 0, buffer.Length - 1);
+            dynamic MessageModel = ModelDecoder.DecodeMessage(MsgType, msgBytes);
+
+            // handle message in implementation
+            HandleIncomingMessageModel(MsgType, MessageModel);
+        }
+
+        public abstract void HandleIncomingMessageModel(MessageTypeEnum msgType, dynamic messageModel);
+        
+        public bool SendBytes(byte[] bytes)
+        {
+            try
+            {
+                // send bytes to port
+                port.Write(bytes, 0, bytes.Length);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Callback.AppendLog("Error while sending bytes:\n" + ex.Message);
+                return false;
+            }
+        }
+
+        public bool SendBytes(MessageTypeEnum msgType, byte[] bytes)
+        {
+            // concat bytes
+            byte[] b = new byte[bytes.Length + 1];
+            b[0] = (byte)msgType;
+            Buffer.BlockCopy(bytes, 0, b, 1, bytes.Length);
+
+            // send message
+            return SendBytes(b);
         }
     }
 }

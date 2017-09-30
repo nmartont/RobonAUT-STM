@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BlueToothDesktop.Serial;
 using BlueToothDesktop;
 using BlueToothDesktop.Models;
+using BlueToothDesktop.Enums;
 
 namespace BlueToothDummyClient.Serial
 {
@@ -13,25 +14,26 @@ namespace BlueToothDummyClient.Serial
     {
         public DummySerialHandler(WindowCallback cb) : base(cb) { }
 
+        public override void HandleIncomingMessageModel(MessageTypeEnum msgType, dynamic messageModel)
+        {
+            throw new NotImplementedException();
+        }
+
         // productive functions
         public void SendVarTypes()
         {
             // message type
-            byte msgType = (byte)MessageTypeEnum.VarList;
+            var msgType = MessageTypeEnum.VarList;
             // get var types
             var VarTypes = VarTypeGenerator.GetVarTypes();
-            // get byte list
-            List<byte[]> Bytes = new List<byte[]>();
-            Bytes.Add(new byte[] { msgType });
-            foreach (VarTypeModel Var in VarTypes)
-            {
-                Bytes = Bytes.Concat(Var.ByteList).ToList();
-            }
+            // get bytes
+            var bytes = VarTypes.GetByteArray();
 
             // send bytes
-            SendBytes(Bytes);
+            var succ = SendBytes(msgType, bytes);
 
-            Callback.AppendLog("Sent var types");
+            if (succ) Callback.AppendLog("Sent var types");
+            else Callback.AppendLog("Failed to send var types");
         }
     }
 }

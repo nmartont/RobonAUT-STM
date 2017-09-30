@@ -34,7 +34,7 @@ namespace BlueToothDummyClient
             InitializeComponent();
             RefreshPortDropDown();
             dropdownPorts.SelectedIndex = PortNames.Length - 2;
-
+            
             AppendLog("LST BlueTooth Dummy Client ready...");
 
             // create SerialHandler

@@ -1,4 +1,5 @@
-﻿using BlueToothDesktop.Models;
+﻿using BlueToothDesktop.Enums;
+using BlueToothDesktop.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +10,23 @@ namespace BlueToothDummyClient
 {
     public class VarTypeGenerator
     {
-        public static List<VarTypeModel> GetVarTypes()
+        public static VarTypeListModel GetVarTypes()
         {
-            List<VarTypeModel> VarTypes = new List<VarTypeModel>();
+            VarTypeListModel VarTypesList = new VarTypeListModel();
 
-            VarTypes.Add(new VarTypeModel
+            VarTypesList.VarTypes.Add(new VarTypeModel
             {
                 Name = "DummyVar",
                 VarType = VarTypeEnum.uint16
             });
 
-            VarTypes.Add(new VarTypeModel
+            VarTypesList.VarTypes.Add(new VarTypeModel
             {
                 Name = "AnotherVar",
                 VarType = VarTypeEnum.uint8
             });
 
-            return VarTypes;
+            return VarTypesList;
         }
     }
 }

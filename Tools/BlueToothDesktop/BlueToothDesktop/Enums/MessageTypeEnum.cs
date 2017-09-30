@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlueToothDesktop.Models
+namespace BlueToothDesktop.Enums
 {
     public enum MessageTypeEnum : byte
     {

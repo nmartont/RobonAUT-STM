@@ -59,6 +59,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Serial\SerialHandler.cs" />
+    <Compile Include="Utils\ByteArrayHandler.cs" />
+    <Compile Include="Utils\ModelDecoder.cs" />
     <Compile Include="WindowInterface.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -74,8 +76,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\MessageTypeEnum.cs" />
-    <Compile Include="Models\VarTypeEnum.cs" />
+    <Compile Include="Enums\MessageTypeEnum.cs" />
+    <Compile Include="Enums\VarTypeEnum.cs" />
     <Compile Include="Models\VarTypeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
