@@ -26,6 +26,258 @@ namespace BlueToothDummyClient
                 VarType = VarTypeEnum.uint8
             });
 
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "DummyVar",
+                VarType = VarTypeEnum.uint16
+            });
+
+            VarTypesList.VarTypes.Add(new VarTypeModel
+            {
+                Name = "AnotherVar",
+                VarType = VarTypeEnum.uint8
+            });
+
             return VarTypesList;
         }
     }

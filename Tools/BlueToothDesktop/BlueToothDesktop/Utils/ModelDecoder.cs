@@ -16,9 +16,15 @@ namespace BlueToothDesktop.Utils
             {
                 case MessageTypeEnum.VarList:
                     return VarTypeListModel.DecodeByteArray(msgBytes);
+                case MessageTypeEnum.Error:
+                    return ErrorStatusModel.DecodeByteArray(msgBytes);
+                case MessageTypeEnum.Ok:
+                    return OkStatusModel.DecodeByteArray(msgBytes);
+                case MessageTypeEnum.NotOk:
+                    return NotOkStatusModel.DecodeByteArray(msgBytes);
+                default:
+                    return null;
             }
-
-            return null;
         }
     }
 }

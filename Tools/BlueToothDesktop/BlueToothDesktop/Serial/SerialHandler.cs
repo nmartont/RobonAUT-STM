@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BlueToothDesktop.Serial
@@ -17,6 +18,7 @@ namespace BlueToothDesktop.Serial
         private SerialPort port;
         private static bool desiredLittleEndian = true;
         private static bool converterLittleEndian = BitConverter.IsLittleEndian;
+        private char newLine = '\n';
 
         public SerialHandler(WindowCallback cb)
         {
@@ -117,6 +119,9 @@ namespace BlueToothDesktop.Serial
             byte[] buffer = new byte[bytes];
             port.Read(buffer, 0, bytes);
 
+            // check if there are multiple messages in the same buffer
+
+
             // handle the bytes
             HandleReceivedBytes(buffer);
         }
@@ -141,6 +146,12 @@ namespace BlueToothDesktop.Serial
             Buffer.BlockCopy(buffer, 1, msgBytes, 0, buffer.Length - 1);
             dynamic MessageModel = ModelDecoder.DecodeMessage(MsgType, msgBytes);
 
+            if (MessageModel == null)
+            {
+                Callback.AppendLog("Unknown message type, cannot decode.");
+                return;
+            }
+
             // handle message in implementation
             HandleIncomingMessageModel(MsgType, MessageModel);
         }
@@ -149,6 +160,11 @@ namespace BlueToothDesktop.Serial
         
         public bool SendBytes(byte[] bytes)
         {
+            // add new line character
+            //byte[] b = new byte[bytes.Length + 1];
+            //b[b.Length - 1] = Convert.ToByte(newLine);
+            //Buffer.BlockCopy(bytes, 0, b, 0, bytes.Length);
+
             try
             {
                 // send bytes to port

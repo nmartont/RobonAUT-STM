@@ -58,6 +58,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\ErrorStatusModel.cs" />
+    <Compile Include="Models\NotOkStatusModel.cs" />
+    <Compile Include="Models\OkStatusModel.cs" />
+    <Compile Include="Models\StatusRequestModel.cs" />
     <Compile Include="Serial\SerialHandler.cs" />
     <Compile Include="Utils\ByteArrayHandler.cs" />
     <Compile Include="Utils\ModelDecoder.cs" />
