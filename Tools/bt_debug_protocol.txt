@@ -3,11 +3,11 @@ Message structure:
 	 uint8  - n bytes
 	 
 MSGTYPES:					Payload
-	000: Error				text length (uint16) - UTF8 text
+	000: Error				text length (uint16) - ASCII text
 	001: OK status          -
-	002: NOT OK status		text length (uint16) - UTF8 text
+	002: NOT OK status		text length (uint16) - ASCII text
 	003: Status request     -
-	004: Variable list req  [name length (uint8) - UTF8 name - variable type (uint8)]*m		(IN ORDER OF APPEARING IN MESSAGES LATER)
+	004: Variable list     [name length (uint8) - ASCII name - variable type (uint8)]*m		(IN ORDER OF APPEARING IN MESSAGES LATER)
 	005: Variable values	[value (n bytes)]*m												(SAME ORDER)
 	006: Set speed value    (?)
 	007: Set steering value (?)

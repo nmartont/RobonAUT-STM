@@ -13,7 +13,7 @@
         <ComboBox x:Name="dropdownPorts" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="refreshPortsBtn" Content="Refresh" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="75" Click="refreshPortsBtn_Click"/>
         <Button x:Name="buttonConnect" Content="Connect" HorizontalAlignment="Left" Margin="215,10,0,0" VerticalAlignment="Top" Width="75" Click="buttonConnect_Click"/>
-        <Button x:Name="buttondisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="295,10,0,0" VerticalAlignment="Top" Width="75" Click="buttondisconnect_Click"/>
+        <Button x:Name="buttonDisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="295,10,0,0" VerticalAlignment="Top" Width="75" Click="buttondisconnect_Click"/>
         <TextBox x:Name="textBox" Margin="10,64,10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                  IsReadOnly="True"
                  TextWrapping="Wrap"

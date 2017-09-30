@@ -1,4 +1,8 @@
-﻿using System;
+﻿using BlueToothDesktop;
+using BlueToothDesktop.Models;
+using BlueToothDummyClient;
+using BlueToothDummyClient.Serial;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Ports;
@@ -20,10 +24,10 @@ namespace BlueToothDummyClient
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, WindowCallback
     {
         private string[] PortNames;
-        private SerialPort port;
+        private DummySerialHandler SerHandler;
 
         public MainWindow()
         {
@@ -32,6 +36,34 @@ namespace BlueToothDummyClient
             dropdownPorts.SelectedIndex = PortNames.Length - 2;
 
             AppendLog("LST BlueTooth Dummy Client ready...");
+
+            // create SerialHandler
+            SerHandler = new DummySerialHandler(this);
+            SetBindings();
+        }
+
+        private void SetBindings()
+        {
+            // set bindings to UI elements
+            Binding NotConnectedBinding = new Binding();
+            NotConnectedBinding.Source = SerHandler;
+            NotConnectedBinding.Path = new PropertyPath("NotConnected");
+            NotConnectedBinding.Mode = BindingMode.OneWay;
+            NotConnectedBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+
+            Binding ConnectedBinding = new Binding();
+            ConnectedBinding.Source = SerHandler;
+            ConnectedBinding.Path = new PropertyPath("IsConnected");
+            ConnectedBinding.Mode = BindingMode.OneWay;
+            ConnectedBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+
+            dropdownPorts.SetBinding(IsEnabledProperty, NotConnectedBinding);
+            refreshPortsBtn.SetBinding(IsEnabledProperty, NotConnectedBinding);
+            buttonConnect.SetBinding(IsEnabledProperty, NotConnectedBinding);
+            buttonDisconnect.SetBinding(IsEnabledProperty, ConnectedBinding);
+            sendVarsBtn.SetBinding(IsEnabledProperty, ConnectedBinding);
+            sendVarStreamBtn.SetBinding(IsEnabledProperty, ConnectedBinding);
+            varTypesBtn.SetBinding(IsEnabledProperty, ConnectedBinding);
         }
 
         private void refreshPortsBtn_Click(object sender, RoutedEventArgs e)
@@ -46,18 +78,7 @@ namespace BlueToothDummyClient
 
         private void connectToPort(string portName)
         {
-            port = new SerialPort(portName,
-            9600, Parity.None, 8, StopBits.One);
-
-            try
-            {
-                SerialPortProgram();
-                AppendLog("Successfully connected to port " + portName);
-            }
-            catch (Exception ex)
-            {
-                AppendLog("Error while connecting to port " + portName + ":\n" + ex.Message);
-            }
+            SerHandler.Connect(portName);
         }
 
         private void buttondisconnect_Click(object sender, RoutedEventArgs e)
@@ -67,38 +88,14 @@ namespace BlueToothDummyClient
 
         private void disconnectFromPort()
         {
-            try
-            {
-                port.Close();
-                AppendLog("Successfully disconnected from port " + port.PortName);
-            }
-            catch (Exception ex)
-            {
-                AppendLog("Error while disconnecting from port:\n" + ex.Message);
-            }
+            SerHandler.Disconnect();
         }
 
         private void varTypesBtn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                sendVarTypes();
-                AppendLog("Sent var types");
-            }
-            catch (Exception ex)
-            {
-                AppendLog("Error while sending var types:\n" + ex.Message);
-            }
+            SerHandler.SendVarTypes();
         }
-
-        private void sendVarTypes()
-        {
-            byte b = 5;
-            byte[] bytes = new byte[1];
-            bytes[0] = b;
-            port.Write(bytes, 0, bytes.Length);
-        }
-
+        
         private void sendVarsBtn_Click(object sender, RoutedEventArgs e)
         {
 
@@ -108,28 +105,7 @@ namespace BlueToothDummyClient
         {
 
         }
-
-        // COM port handling
-        private void SerialPortProgram()
-        {
-            // Attach a method to be called when there
-            // is data waiting in the port's buffer
-            port.DataReceived += new
-              SerialDataReceivedEventHandler(port_DataReceived);
-
-            // Begin communications
-            port.Open();
-            // Empty buffer so stuck data is discarded
-            port.DiscardInBuffer();
-        }
-
-        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            int bytes = port.BytesToRead;
-            byte[] buffer = new byte[bytes];
-            port.Read(buffer, 0, bytes);
-        }
-
+        
         // helpers
         private void RefreshPortDropDown()
         {
@@ -137,8 +113,9 @@ namespace BlueToothDummyClient
             PortNames = System.IO.Ports.SerialPort.GetPortNames();
             dropdownPorts.ItemsSource = PortNames;
         }
-
-        private void AppendLog(string toAppend, bool newLine=true, bool timeStamp=true, bool scrollToEnd=true)
+        
+        // interface functions
+        public void AppendLog(string toAppend, bool newLine = true, bool timeStamp = true, bool scrollToEnd = true)
         {
             Application.Current.Dispatcher.Invoke(new Action(() => {
                 string textNewLine = "";
@@ -150,4 +127,5 @@ namespace BlueToothDummyClient
             }));
         }
     }
+
 }
