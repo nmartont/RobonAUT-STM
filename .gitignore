@@ -370,3 +370,6 @@ OpenCover/
 /Tools/BlueToothDesktop/BlueToothDesktop/bin
 /Tools/BlueToothDesktop/BlueToothDesktop/obj
 /Tools/BlueToothDesktop/.vs
+/STM/nucleo-f446re_hal_lib
+/STM/RemoteSystemsTempFiles
+/STM/.metadata
