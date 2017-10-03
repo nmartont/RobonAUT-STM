@@ -16,6 +16,8 @@
 #endif
 #include "stm32f4xx_it.h"
 
+#include "bsp.h";
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -40,3 +42,19 @@ void SysTick_Handler(void)
 	osSystickHandler();
 #endif
 }
+
+// Added to handle Button interrupt
+void EXTI0_IRQHandler(void) {
+
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13); //PIN_0
+
+}
+
+
+// Added to handle Timer interrupt
+void TIM4_IRQHandler(void) {
+
+	HAL_TIM_IRQHandler(&Tim4Handle);
+
+}
+
