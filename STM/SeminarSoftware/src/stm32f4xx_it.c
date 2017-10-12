@@ -50,7 +50,6 @@ void EXTI0_IRQHandler(void) {
 
 }
 
-
 // Added to handle Timer interrupt
 void TIM4_IRQHandler(void) {
 
