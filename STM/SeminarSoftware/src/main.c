@@ -42,6 +42,7 @@ int main(void) {
 	   - Set NVIC Group Priority to 4
 	   - Low Level Initialization
 	 */
+
 	HAL_Init();
 
 	/* Configure the system clock to 180 MHz */
@@ -49,7 +50,6 @@ int main(void) {
 
 	/* Initialize BSP Led for LED2 */
 
-	// ############## TODO check this ################
 	BSP_LED_Init(LED2);
 
 	/*##-1- Configure the UART peripheral ######################################*/
@@ -75,15 +75,19 @@ int main(void) {
 		Error_Handler();
 	}
 
-	/* Output a message on Hyperterminal using printf function */
-	printf("\n\r UART Printf Example: retarget the C library printf function to the UART\n\r");
-	printf("** Test finished successfully. ** \n\r");
-
 	/* Infinite loop */
 	while (1)
 	{
-		HAL_Delay(500);
-		printf("LOL\n\r");
+		// HAL_Delay(50);
+
+		// uint8_t buffer[8] = {65, 66, 67, 68, 69, 70, 71, 72};
+		uint8_t buffer[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+		// HAL_UART_Transmit(&UartHandle, (uint8_t *)&buffer, 8, 0xFFFF);
+
+		HAL_UART_Receive(&UartHandle, (uint8_t *)&buffer, 8, 0xFFFF);
+
+		BSP_LED_Toggle(LED2);
 	}
 }
 
@@ -124,7 +128,6 @@ PUTCHAR_PROTOTYPE
   */
 static void SystemClock_Config(void)
 {
-  // ############## TODO check this ################
 
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_OscInitTypeDef RCC_OscInitStruct;
