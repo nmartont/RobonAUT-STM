@@ -212,15 +212,15 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="MainController.fr.ac6.managedbuild.target.gnu.cross.exe.1356403987" name="Executable" projectType="fr.ac6.managedbuild.target.gnu.cross.exe"/>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="fr.ac6.managedbuild.config.gnu.cross.exe.debug.1537783998;fr.ac6.managedbuild.config.gnu.cross.exe.debug.1537783998.;fr.ac6.managedbuild.tool.gnu.cross.c.compiler.529398352;fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c.512603750">
+		<scannerConfigBuildInfo instanceId="fr.ac6.managedbuild.config.gnu.cross.exe.release.12792843;fr.ac6.managedbuild.config.gnu.cross.exe.release.12792843.;fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1790850287;fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c.209798883">
 			<autodiscovery enabled="false" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="fr.ac6.managedbuild.config.gnu.cross.exe.release.1130431148;fr.ac6.managedbuild.config.gnu.cross.exe.release.1130431148.;fr.ac6.managedbuild.tool.gnu.cross.c.compiler.2070607757;fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c.1754357405">
+		<scannerConfigBuildInfo instanceId="fr.ac6.managedbuild.config.gnu.cross.exe.debug.1666530960;fr.ac6.managedbuild.config.gnu.cross.exe.debug.1666530960.;fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1559957634;fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c.767328781">
 			<autodiscovery enabled="false" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>

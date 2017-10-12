@@ -78,13 +78,19 @@ int main(void) {
 	/* Infinite loop */
 	while (1)
 	{
-		// HAL_Delay(50);
+		HAL_Delay(1000);
 
-		// uint8_t buffer[8] = {65, 66, 67, 68, 69, 70, 71, 72};
-		uint8_t buffer[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+		uint8_t buffer[8] = {65, 66, 67, 68, 69, 70, 71, 72};
+		HAL_UART_Transmit(&UartHandle, (uint8_t *)&buffer, 8, 0xFFFF);
 
-		// HAL_UART_Transmit(&UartHandle, (uint8_t *)&buffer, 8, 0xFFFF);
-
+		buffer[0] = 0x00;
+		buffer[1] = 0x00;
+		buffer[2] = 0x00;
+		buffer[3] = 0x00;
+		buffer[4] = 0x00;
+		buffer[5] = 0x00;
+		buffer[6] = 0x00;
+		buffer[7] = 0x00;
 		HAL_UART_Receive(&UartHandle, (uint8_t *)&buffer, 8, 0xFFFF);
 
 		BSP_LED_Toggle(LED2);
