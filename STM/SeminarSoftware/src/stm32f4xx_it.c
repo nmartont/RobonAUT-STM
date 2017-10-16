@@ -16,7 +16,7 @@
 #endif
 #include "stm32f4xx_it.h"
 
-#include "bsp.h";
+#include "bsp.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -24,6 +24,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
+
+extern UART_HandleTypeDef UartHandle;
 
 /******************************************************************************/
 /*            	  	    Processor Exceptions Handlers                         */
@@ -55,5 +57,16 @@ void TIM4_IRQHandler(void) {
 
 	HAL_TIM_IRQHandler(&Tim4Handle);
 
+}
+
+void UART4_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART2_IRQn 0 */
+
+  /* USER CODE END USART2_IRQn 0 */
+  HAL_UART_IRQHandler(&UartHandle);
+  /* USER CODE BEGIN USART2_IRQn 1 */
+
+  /* USER CODE END USART2_IRQn 1 */
 }
 

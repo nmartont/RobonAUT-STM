@@ -46,6 +46,10 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
   GPIO_InitStruct.Pin = USARTx_RX_PIN;
   GPIO_InitStruct.Alternate = USARTx_RX_AF;
   HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
+
+  /* UART4 interrupt Init */
+  HAL_NVIC_SetPriority(UART4_IRQn, 1, 1);
+  HAL_NVIC_EnableIRQ(UART4_IRQn);
 }
 
 /**

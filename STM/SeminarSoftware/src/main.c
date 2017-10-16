@@ -31,6 +31,9 @@ UART_HandleTypeDef UartHandle;
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 
+uint8_t buffer0[8] = {65, 66, 67, 68, 69, 70, 71, 72};
+uint8_t buffer1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
 int main(void) {
 	/* STM32F4xx HAL library initialization:
 	   - Configure the Flash prefetch
@@ -75,23 +78,25 @@ int main(void) {
 		Error_Handler();
 	}
 
+	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_RXNE);
+ 	// __HAL_UART_ENABLE_IT(&UartHandle, UART_IT_TC);
+
 	/* Infinite loop */
 	while (1)
 	{
-		HAL_Delay(1000);
+		HAL_UART_Receive_IT(&UartHandle, (uint8_t *)&buffer1, 8);
+		HAL_UART_Transmit(&UartHandle, (uint8_t *)&buffer0, 8, 0xFFFF);
+		HAL_Delay(500);
+		HAL_Delay(500);
 
-		uint8_t buffer[8] = {65, 66, 67, 68, 69, 70, 71, 72};
-		HAL_UART_Transmit(&UartHandle, (uint8_t *)&buffer, 8, 0xFFFF);
-
-		buffer[0] = 0x00;
-		buffer[1] = 0x00;
-		buffer[2] = 0x00;
-		buffer[3] = 0x00;
-		buffer[4] = 0x00;
-		buffer[5] = 0x00;
-		buffer[6] = 0x00;
-		buffer[7] = 0x00;
-		HAL_UART_Receive(&UartHandle, (uint8_t *)&buffer, 8, 0xFFFF);
+//		buffer1[0] = 0x00;
+//		buffer1[1] = 0x00;
+//		buffer1[2] = 0x00;
+//		buffer1[3] = 0x00;
+//		buffer1[4] = 0x00;
+//		buffer1[5] = 0x00;
+//		buffer1[6] = 0x00;
+//		buffer1[7] = 0x00;
 
 		BSP_LED_Toggle(LED2);
 	}
