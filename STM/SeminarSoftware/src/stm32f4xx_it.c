@@ -75,8 +75,14 @@ void UART4_IRQHandler(void)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	HAL_UART_Receive_IT(&huart4, (uint8_t *)&buffer1, 1);
-	cntr++;
+	if(cntr == 7){
+		cntr = 0;
+	}
+	else{
+		cntr++;
+	}
+
+	HAL_UART_Receive_IT(&huart4, (uint8_t *)&buffer1[cntr], 1);
 }
 
 /**
