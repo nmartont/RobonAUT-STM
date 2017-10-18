@@ -11,6 +11,7 @@
 // Variables
 static uint8_t LedEnable;
 TIM_HandleTypeDef Tim4Handle;
+extern DMA_HandleTypeDef hdma_uart4_tx;
 
 /**
   * @brief UART MSP Initialization
@@ -47,8 +48,27 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
   GPIO_InitStruct.Alternate = USARTx_RX_AF;
   HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
 
+  /* UART4 DMA Init */
+  /* UART4_TX Init */
+  hdma_uart4_tx.Instance = DMA1_Stream4;
+  hdma_uart4_tx.Init.Channel = DMA_CHANNEL_4;
+  hdma_uart4_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
+  hdma_uart4_tx.Init.PeriphInc = DMA_PINC_DISABLE;
+  hdma_uart4_tx.Init.MemInc = DMA_MINC_ENABLE;
+  hdma_uart4_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+  hdma_uart4_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+  hdma_uart4_tx.Init.Mode = DMA_NORMAL;
+  hdma_uart4_tx.Init.Priority = DMA_PRIORITY_LOW;
+  hdma_uart4_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+  if (HAL_DMA_Init(&hdma_uart4_tx) != HAL_OK)
+  {
+	//_Error_Handler(__FILE__, __LINE__);
+  }
+
+  __HAL_LINKDMA(huart,hdmatx,hdma_uart4_tx);
+
   /* UART4 interrupt Init */
-  HAL_NVIC_SetPriority(UART4_IRQn, 1, 1);
+  HAL_NVIC_SetPriority(UART4_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(UART4_IRQn);
 }
 
@@ -71,6 +91,12 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
   HAL_GPIO_DeInit(USARTx_TX_GPIO_PORT, USARTx_TX_PIN);
   /* Configure UART Rx as alternate function  */
   HAL_GPIO_DeInit(USARTx_RX_GPIO_PORT, USARTx_RX_PIN);
+
+  /* UART4 DMA DeInit */
+  HAL_DMA_DeInit(huart->hdmatx);
+
+  /* UART4 interrupt DeInit */
+  HAL_NVIC_DisableIRQ(UART4_IRQn);
 }
 
 void HAL_MSP_INIT() {

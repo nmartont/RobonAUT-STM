@@ -18,21 +18,17 @@
 // #include "task.h"
 
 /* UART handler declaration */
-UART_HandleTypeDef UartHandle;
+UART_HandleTypeDef huart4;
+DMA_HandleTypeDef hdma_uart4_tx;
 
 /* Private function prototypes -----------------------------------------------*/
-#ifdef __GNUC__
-/* With GCC, small printf (option LD Linker->Libraries->Small printf
-   set to 'Yes') calls __io_putchar() */
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 
 uint8_t buffer0[8] = {65, 66, 67, 68, 69, 70, 71, 72};
 uint8_t buffer1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+static void MX_DMA_Init(void);
 
 int main(void) {
 	/* STM32F4xx HAL library initialization:
@@ -55,6 +51,8 @@ int main(void) {
 
 	BSP_LED_Init(LED2);
 
+	MX_DMA_Init();
+
 	/*##-1- Configure the UART peripheral ######################################*/
 	/* Put the USART peripheral in the Asynchronous mode (UART Mode) */
 	/* UART configured as follows:
@@ -64,56 +62,58 @@ int main(void) {
 	  - Parity      = ODD parity
 	  - BaudRate    = 9600 baud
 	  - Hardware flow control disabled (RTS and CTS signals) */
-	UartHandle.Instance        = USARTx;
-	UartHandle.Init.BaudRate   = 9600;
-	UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
-	UartHandle.Init.StopBits   = UART_STOPBITS_1;
-	UartHandle.Init.Parity     = UART_PARITY_ODD;
-	UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
-	UartHandle.Init.Mode       = UART_MODE_TX_RX;
-	UartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
-	if (HAL_UART_Init(&UartHandle) != HAL_OK)
+	huart4.Instance        = USARTx;
+	huart4.Init.BaudRate   = 9600;
+	huart4.Init.WordLength = UART_WORDLENGTH_8B;
+	huart4.Init.StopBits   = UART_STOPBITS_1;
+	huart4.Init.Parity     = UART_PARITY_ODD;
+	huart4.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+	huart4.Init.Mode       = UART_MODE_TX_RX;
+	huart4.Init.OverSampling = UART_OVERSAMPLING_16;
+	if (HAL_UART_Init(&huart4) != HAL_OK)
 	{
 		/* Initialization Error */
 		Error_Handler();
 	}
 
-	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_RXNE);
- 	// __HAL_UART_ENABLE_IT(&UartHandle, UART_IT_TC);
+	__HAL_UART_ENABLE_IT(&huart4, UART_IT_RXNE);
+ 	// __HAL_UART_ENABLE_IT(&huart4, UART_IT_TC);
+
+	HAL_UART_Receive_IT(&huart4, (uint8_t *)&buffer1, 1);
 
 	/* Infinite loop */
 	while (1)
 	{
-		HAL_UART_Receive_IT(&UartHandle, (uint8_t *)&buffer1, 8);
-		HAL_UART_Transmit(&UartHandle, (uint8_t *)&buffer0, 8, 0xFFFF);
-		HAL_Delay(500);
-		HAL_Delay(500);
+		HAL_UART_Transmit_DMA(&huart4, (uint8_t *)&buffer0, 8);
+		HAL_Delay(100);
+		HAL_Delay(100);
 
-//		buffer1[0] = 0x00;
-//		buffer1[1] = 0x00;
-//		buffer1[2] = 0x00;
-//		buffer1[3] = 0x00;
-//		buffer1[4] = 0x00;
-//		buffer1[5] = 0x00;
-//		buffer1[6] = 0x00;
-//		buffer1[7] = 0x00;
+		buffer0[0] += 1;
+		buffer0[1] += 1;
+		buffer0[2] += 1;
+		buffer0[3] += 1;
+		buffer0[4] += 1;
+		buffer0[5] += 1;
+		buffer0[6] += 1;
+		buffer0[7] += 1;
 
 		BSP_LED_Toggle(LED2);
 	}
 }
 
 /**
-  * @brief  Retargets the C library printf function to the USART.
-  * @param  None
-  * @retval None
+  * Enable DMA controller clock
   */
-PUTCHAR_PROTOTYPE
+static void MX_DMA_Init(void)
 {
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART3 and Loop until the end of transmission */
-  HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 0xFFFF);
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
 
-  return ch;
+  /* DMA interrupt init */
+  /* DMA1_Stream4_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream4_IRQn);
+
 }
 
 /**

@@ -25,7 +25,10 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
-extern UART_HandleTypeDef UartHandle;
+extern UART_HandleTypeDef huart4;
+extern uint8_t buffer1[8];
+extern DMA_HandleTypeDef hdma_uart4_tx;;
+uint8_t cntr = 0;
 
 /******************************************************************************/
 /*            	  	    Processor Exceptions Handlers                         */
@@ -64,9 +67,28 @@ void UART4_IRQHandler(void)
   /* USER CODE BEGIN USART2_IRQn 0 */
 
   /* USER CODE END USART2_IRQn 0 */
-  HAL_UART_IRQHandler(&UartHandle);
+  HAL_UART_IRQHandler(&huart4);
   /* USER CODE BEGIN USART2_IRQn 1 */
 
   /* USER CODE END USART2_IRQn 1 */
 }
 
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	HAL_UART_Receive_IT(&huart4, (uint8_t *)&buffer1, 1);
+	cntr++;
+}
+
+/**
+* @brief This function handles DMA1 stream4 global interrupt.
+*/
+void DMA1_Stream4_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Stream4_IRQn 0 */
+
+  /* USER CODE END DMA1_Stream4_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_uart4_tx);
+  /* USER CODE BEGIN DMA1_Stream4_IRQn 1 */
+
+  /* USER CODE END DMA1_Stream4_IRQn 1 */
+}
