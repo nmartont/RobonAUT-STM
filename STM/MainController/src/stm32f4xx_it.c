@@ -35,6 +35,7 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_it.h"
 #include "cmsis_os.h"
+#include "main.h"
 
 /* USER CODE BEGIN 0 */
 uint8_t cntr = 0;
@@ -42,8 +43,6 @@ extern uint8_t buffer1[8];
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern DMA_HandleTypeDef hdma_uart4_tx;
-extern UART_HandleTypeDef huart4;
 
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
@@ -71,34 +70,6 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
 
-/**
-* @brief This function handles DMA1 stream4 global interrupt.
-*/
-void DMA1_Stream4_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Stream4_IRQn 0 */
-
-  /* USER CODE END DMA1_Stream4_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_uart4_tx);
-  /* USER CODE BEGIN DMA1_Stream4_IRQn 1 */
-
-  /* USER CODE END DMA1_Stream4_IRQn 1 */
-}
-
-/**
-* @brief This function handles UART4 global interrupt.
-*/
-void UART4_IRQHandler(void)
-{
-  /* USER CODE BEGIN UART4_IRQn 0 */
-
-  /* USER CODE END UART4_IRQn 0 */
-  HAL_UART_IRQHandler(&huart4);
-  /* USER CODE BEGIN UART4_IRQn 1 */
-
-  /* USER CODE END UART4_IRQn 1 */
-}
-
 /* USER CODE BEGIN 1 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -109,7 +80,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		cntr++;
 	}
 
-	HAL_UART_Receive_IT(&huart4, (uint8_t *)&buffer1[cntr], 1);
+	HAL_UART_Receive_IT(&huart2, (uint8_t *)&buffer1[cntr], 1);
 }
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
