@@ -381,3 +381,5 @@ OpenCover/
 /STM/SeminarSoftware/.settings
 /STM/MainController/.settings
 /Tools
+/STM/MainController/NUCLEO-F446RE.xml
+/STM/MainController/.mxproject
