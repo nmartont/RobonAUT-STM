@@ -383,3 +383,5 @@ OpenCover/
 /Tools
 /STM/MainController/.mxproject
 /STM/MainController/NUCLEO-F446RE.xml
+/STM/LineController/.settings
+/STM/LineController/.mxproject
