@@ -72,14 +72,17 @@ TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart1_tx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 osThreadId defaultTaskHandle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-uint8_t buffer0[8] = {65, 66, 67, 68, 69, 70, 71, 72};
+uint8_t buffer_tx1[8] = {90, 89, 88, 87, 86, 85, 84, 83};
+uint8_t buffer_tx2[8] = {65, 66, 67, 68, 69, 70, 71, 72};
 uint8_t buffer1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t buffer2[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -154,8 +157,7 @@ int main(void)
   MX_TIM2_Init();
 
   /* USER CODE BEGIN 2 */
-  __HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
-  HAL_UART_Receive_IT(&huart2, (uint8_t *)&buffer1, 1);
+
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -665,11 +667,15 @@ static void MX_DMA_Init(void)
 {
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
   /* DMA1_Stream6_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+  /* DMA2_Stream7_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
 
 }
 
@@ -749,21 +755,35 @@ void StartDefaultTask(void const * argument)
 {
 
   /* USER CODE BEGIN 5 */
+
+  HAL_UART_Receive_IT(&huart1, (uint8_t *)&buffer1, 1);
+  HAL_UART_Receive_IT(&huart2, (uint8_t *)&buffer2, 1);
+
   /* Infinite loop */
   for(;;)
   {
-	HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer0, 8);
+	HAL_UART_Transmit_DMA(&huart1, (uint8_t *)&buffer_tx1, 8);
+	HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer_tx2, 8);
 	osDelay(100);
 	osDelay(100);
 
-	buffer0[0] += 1;
-	buffer0[1] += 1;
-	buffer0[2] += 1;
-	buffer0[3] += 1;
-	buffer0[4] += 1;
-	buffer0[5] += 1;
-	buffer0[6] += 1;
-	buffer0[7] += 1;
+	buffer_tx1[0] -= 1;
+	buffer_tx1[1] -= 1;
+	buffer_tx1[2] -= 1;
+	buffer_tx1[3] -= 1;
+	buffer_tx1[4] -= 1;
+	buffer_tx1[5] -= 1;
+	buffer_tx1[6] -= 1;
+	buffer_tx1[7] -= 1;
+
+	buffer_tx2[0] += 1;
+	buffer_tx2[1] += 1;
+	buffer_tx2[2] += 1;
+	buffer_tx2[3] += 1;
+	buffer_tx2[4] += 1;
+	buffer_tx2[5] += 1;
+	buffer_tx2[6] += 1;
+	buffer_tx2[7] += 1;
   }
   /* USER CODE END 5 */ 
 }
