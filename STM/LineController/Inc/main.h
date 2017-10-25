@@ -46,6 +46,25 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define LED_FEEDBACK_SCLK_Pin GPIO_PIN_13
+#define LED_FEEDBACK_SCLK_GPIO_Port GPIOC
+#define LED_FEEDBACK_SIN_Pin GPIO_PIN_14
+#define LED_FEEDBACK_SIN_GPIO_Port GPIOC
+#define LED_FEEDBACK_SOUT_Pin GPIO_PIN_15
+#define LED_FEEDBACK_SOUT_GPIO_Port GPIOC
+#define LED_FEEDBACK_LATCH_Pin GPIO_PIN_0
+#define LED_FEEDBACK_LATCH_GPIO_Port GPIOA
+#define SPI1_DRDY_Pin GPIO_PIN_3
+#define SPI1_DRDY_GPIO_Port GPIOA
+#define SPI2_LATCH_Pin GPIO_PIN_8
+#define SPI2_LATCH_GPIO_Port GPIOA
+#define ADDR2_Pin GPIO_PIN_9
+#define ADDR2_GPIO_Port GPIOA
+#define ADDR1_Pin GPIO_PIN_10
+#define ADDR1_GPIO_Port GPIOA
+#define ADDR0_Pin GPIO_PIN_11
+#define ADDR0_GPIO_Port GPIOA
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
