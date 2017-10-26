@@ -72,17 +72,13 @@ TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
-DMA_HandleTypeDef hdma_usart1_tx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 osThreadId defaultTaskHandle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-uint8_t buffer_tx1[8] = {90, 89, 88, 87, 86, 85, 84, 83};
-uint8_t buffer_tx2[8] = {65, 66, 67, 68, 69, 70, 71, 72};
-uint8_t buffer1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-uint8_t buffer2[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+osThreadId lstDefaultTaskHandle;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -109,7 +105,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-
+extern void LST_Task_Start(void const * argument);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -431,7 +427,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -455,7 +451,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -667,15 +663,11 @@ static void MX_DMA_Init(void)
 {
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
-  __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
   /* DMA1_Stream6_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
-  /* DMA2_Stream7_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
 
 }
 
@@ -756,35 +748,13 @@ void StartDefaultTask(void const * argument)
 
   /* USER CODE BEGIN 5 */
 
-  HAL_UART_Receive_IT(&huart1, (uint8_t *)&buffer1, 1);
-  HAL_UART_Receive_IT(&huart2, (uint8_t *)&buffer2, 1);
+  /* Start LST starter task */
+  osThreadDef(LST_Task_Start, LST_Task_Start, osPriorityNormal, 0, 128);
+  lstDefaultTaskHandle = osThreadCreate(osThread(LST_Task_Start), NULL);
 
-  /* Infinite loop */
-  for(;;)
-  {
-	HAL_UART_Transmit_DMA(&huart1, (uint8_t *)&buffer_tx1, 8);
-	HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer_tx2, 8);
-	osDelay(100);
-	osDelay(100);
+  /* Terminate default task */
+  osThreadTerminate(defaultTaskHandle);
 
-	buffer_tx1[0] -= 1;
-	buffer_tx1[1] -= 1;
-	buffer_tx1[2] -= 1;
-	buffer_tx1[3] -= 1;
-	buffer_tx1[4] -= 1;
-	buffer_tx1[5] -= 1;
-	buffer_tx1[6] -= 1;
-	buffer_tx1[7] -= 1;
-
-	buffer_tx2[0] += 1;
-	buffer_tx2[1] += 1;
-	buffer_tx2[2] += 1;
-	buffer_tx2[3] += 1;
-	buffer_tx2[4] += 1;
-	buffer_tx2[5] += 1;
-	buffer_tx2[6] += 1;
-	buffer_tx2[7] += 1;
-  }
   /* USER CODE END 5 */ 
 }
 

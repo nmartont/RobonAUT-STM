@@ -37,14 +37,12 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN 0 */
-uint8_t cntr1 = 0;
-uint8_t cntr2 = 0;
-extern uint8_t buffer1[8];
-extern uint8_t buffer2[8];
+
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern DMA_HandleTypeDef hdma_usart1_tx;
+extern SPI_HandleTypeDef hspi1;
+extern SPI_HandleTypeDef hspi3;
 extern DMA_HandleTypeDef hdma_usart2_tx;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
@@ -90,6 +88,20 @@ void DMA1_Stream6_IRQHandler(void)
 }
 
 /**
+* @brief This function handles SPI1 global interrupt.
+*/
+void SPI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI1_IRQn 0 */
+
+  /* USER CODE END SPI1_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi1);
+  /* USER CODE BEGIN SPI1_IRQn 1 */
+
+  /* USER CODE END SPI1_IRQn 1 */
+}
+
+/**
 * @brief This function handles USART1 global interrupt.
 */
 void USART1_IRQHandler(void)
@@ -118,41 +130,20 @@ void USART2_IRQHandler(void)
 }
 
 /**
-* @brief This function handles DMA2 stream7 global interrupt.
+* @brief This function handles SPI3 global interrupt.
 */
-void DMA2_Stream7_IRQHandler(void)
+void SPI3_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA2_Stream7_IRQn 0 */
+  /* USER CODE BEGIN SPI3_IRQn 0 */
 
-  /* USER CODE END DMA2_Stream7_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart1_tx);
-  /* USER CODE BEGIN DMA2_Stream7_IRQn 1 */
+  /* USER CODE END SPI3_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi3);
+  /* USER CODE BEGIN SPI3_IRQn 1 */
 
-  /* USER CODE END DMA2_Stream7_IRQn 1 */
+  /* USER CODE END SPI3_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	if (huart->Instance == USART2){
-		if(cntr2 == 7){
-			cntr2 = 0;
-		}
-		else{
-			cntr2++;
-		}
-		HAL_UART_Receive_IT(&huart2, (uint8_t *)&buffer2[cntr2], 1);
-	}
 
-	if (huart->Instance == USART1){
-		if(cntr1 == 7){
-			cntr1 = 0;
-		}
-		else{
-			cntr1++;
-		}
-		HAL_UART_Receive_IT(&huart1, (uint8_t *)&buffer1[cntr1], 1);
-	}
-}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

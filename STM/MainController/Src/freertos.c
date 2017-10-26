@@ -51,25 +51,38 @@
 #include "task.h"
 
 /* USER CODE BEGIN Includes */     
-
+#include "stm32f4xx_hal.h"
+#include "cmsis_os.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
 
 /* USER CODE BEGIN Variables */
-
+extern osThreadId lstDefaultTaskHandle;
+extern void LST_Task_UART_Test(void const * argument);
+osThreadId lstTaskUartTestHandle;
 /* USER CODE END Variables */
 
 /* Function prototypes -------------------------------------------------------*/
 
 /* USER CODE BEGIN FunctionPrototypes */
-
+void LST_Task_Start(void const * argument);
 /* USER CODE END FunctionPrototypes */
 
 /* Hook prototypes */
 
 /* USER CODE BEGIN Application */
-     
+void LST_Task_Start(void const * argument)
+{
+  /* Setup of controller */
+
+	/* Start tasks */
+	osThreadDef(LST_Task_UART_Test, LST_Task_UART_Test, osPriorityNormal, 0, 128);
+	lstTaskUartTestHandle = osThreadCreate(osThread(LST_Task_UART_Test), NULL);
+
+	/* Terminate LST Start task */
+	osThreadTerminate(lstDefaultTaskHandle);
+}
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
