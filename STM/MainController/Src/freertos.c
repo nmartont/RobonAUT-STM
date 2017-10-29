@@ -59,7 +59,7 @@
 
 /* USER CODE BEGIN Variables */
 extern osThreadId lstDefaultTaskHandle;
-extern void LST_Task_UART_Test(void const * argument);
+extern void LST_Task_SPI_Test(void const * argument);
 osThreadId lstTaskUartTestHandle;
 /* USER CODE END Variables */
 
@@ -77,8 +77,8 @@ void LST_Task_Start(void const * argument)
   /* Setup of controller */
 
 	/* Start tasks */
-	osThreadDef(LST_Task_UART_Test, LST_Task_UART_Test, osPriorityNormal, 0, 128);
-	lstTaskUartTestHandle = osThreadCreate(osThread(LST_Task_UART_Test), NULL);
+	osThreadDef(LST_Task_SPI_Test, LST_Task_SPI_Test, osPriorityNormal, 0, 128);
+	lstTaskUartTestHandle = osThreadCreate(osThread(LST_Task_SPI_Test), NULL);
 
 	/* Terminate LST Start task */
 	osThreadTerminate(lstDefaultTaskHandle);
