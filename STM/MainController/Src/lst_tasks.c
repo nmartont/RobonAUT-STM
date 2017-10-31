@@ -19,6 +19,10 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t buffer_tx[8] = {65, 66, 67, 68, 69, 70, 71, 72};
 uint8_t pAddrcmd[8] = {0x00};
+volatile uint32_t tim_val = 0;
+
+/* Timer One Pulse Configuration Structure declaration */
+TIM_OnePulse_InitTypeDef sConfig;
 
 /* External variables --------------------------------------------------------*/
 extern UART_HandleTypeDef huart2;
@@ -31,6 +35,12 @@ extern uint8_t spi_master_tx[8];
 extern uint8_t spi_master_rx[8];
 extern uint8_t spi_slave_tx[8];
 extern uint8_t spi_slave_rx[8];
+
+extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim5;
+extern TIM_HandleTypeDef htim6;
+extern TIM_HandleTypeDef htim8;
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Task_UART_Test(void const * argument);
@@ -91,4 +101,20 @@ void LST_Task_SPI_Test(void const * argument)
 		spi_master_tx[6] += 1;
 		spi_master_tx[7] += 1;
   }
+}
+
+/**
+* @brief This task tests the Timer.
+*/
+void LST_Task_TIM_Test(void const * argument)
+{
+	HAL_TIM_Base_Start_IT(&htim8);
+	// HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
+
+	/* Infinite loop */
+	while(1)
+	{
+		// tim_val = __HAL_TIM_GET_COUNTER(&htim6);
+		// osDelay(1);
+	}
 }
