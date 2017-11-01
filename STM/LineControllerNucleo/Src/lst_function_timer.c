@@ -7,42 +7,79 @@
 
 #include "lst_function_timer.h"
 
-#define ticks_per_micro (F_CPU / 1000000)
-#define repetition_milli 999
-#define repetition_default 0
-
-void timer1_delay_timClk(uint16_t clk)
+void lst_timer1_delay_timClk(uint16_t clk)
 {
 
-	timer1_init_timing(clk, repetition_default);
+	// Cannot overflow with 16-bit input
 
-	timer1_start();
+	lst_timer1_init_timing(clk, LST_REPETITION_DEFAULT);
+
+	lst_timer1_start();
 
 }
 
-// TODO input has to be less than 1000
-void timer1_delay_microSeconds(uint16_t micro)
+void lst_timer1_delay_microSeconds(uint16_t micro)
 {
 
-	timer1_init_timing(ticks_per_micro * micro, repetition_default);
+	// Handle overflow
+	if (micro > 1000)
+	{
 
-	timer1_start();
+		for (int i=0; i<(micro / 1000); i++)
+		{
+
+			lst_timer1_init_timing(LST_TICKS_PER_MICRO * 1000, LST_REPETITION_DEFAULT);
+
+			lst_timer1_start();
+
+		}
+
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * (micro % 1000), LST_REPETITION_DEFAULT);
+
+	}
+	else
+	{
+
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * micro, LST_REPETITION_DEFAULT);
+
+	}
+
+	lst_timer1_start();
 
 }
 
-// TODO input has to be less than 1000
-void timer1_delay_milliSeconds(uint16_t milli)
+void lst_timer1_delay_milliSeconds(uint16_t milli)
 {
 
-	timer1_init_timing(ticks_per_micro * milli, repetition_milli);
+	// Handle overflow
+	if (milli > 1000)
+	{
 
-	timer1_start();
+		for (int i=0; i<(milli / 1000); i++)
+		{
+
+			lst_timer1_init_timing(LST_TICKS_PER_MICRO * 1000, LST_REPETITION_MILLI);
+
+			lst_timer1_start();
+
+		}
+
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * (milli % 1000), LST_REPETITION_MILLI);
+
+	}
+	else
+	{
+
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * milli, LST_REPETITION_MILLI);
+
+	}
+
+	lst_timer1_start();
 
 }
 
-void timer1_init_timing(uint16_t period, uint16_t repetition)
+void lst_timer1_init_timing(uint16_t period, uint16_t repetition)
 {
-	// TODO 65535 MAX !!
 
 	htim1.Init.RepetitionCounter = repetition;
 	htim1.Init.Period = period;
@@ -51,17 +88,22 @@ void timer1_init_timing(uint16_t period, uint16_t repetition)
 
 }
 
-void timer1_start(void)
+void lst_timer1_start(void)
 {
 
-	timer1_flag = 0;
+	lst_timer1_flag = 0;
 
-	// Toggle PC00
-	HAL_GPIO_TogglePin(TIM1_OUTPUT_GPIO_Port, TIM1_OUTPUT_Pin);
+	if (LST_NUCLEO_TEST)
+	{
+
+		HAL_GPIO_TogglePin(LST_NUCLEO_TEST_PORT, LST_NUCLEO_TEST_PIN);
+
+	}
+
 
 	HAL_TIM_Base_Start_IT(&htim1);
 
-	while (timer1_flag != 1)
+	while (lst_timer1_flag != 1)
 	{
 
 		// Wait
@@ -70,12 +112,11 @@ void timer1_start(void)
 
 }
 
-void HAL_TIM_DelayElapsedCallback(TIM_HandleTypeDef *htim)
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 
-	HAL_TIM_Base_Stop_IT(&htim1);
-
-	timer1_flag = 1;
+	lst_timer1_flag = 1;
 
 }
+
 

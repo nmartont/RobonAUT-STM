@@ -24,6 +24,6 @@ void testTimer(void)
 
 	//timer1_delay_timClk(400);
 
-	timer1_delay_microSeconds(200);
+	lst_timer1_delay_microSeconds(200);
 
 }
