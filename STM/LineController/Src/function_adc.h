@@ -23,6 +23,6 @@ uint8_t adc_resultCount;
 uint8_t adc_resultReadyFlag;
 uint8_t adc_result[4];
 
-void adc_start_conversions(void);
+void lst_adc_start_conversions(void);
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* adcHandle);
 uint8_t * adc_get_results(void);

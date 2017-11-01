@@ -15,5 +15,5 @@
 extern SPI_HandleTypeDef hspi1; // inter-STM
 extern SPI_HandleTypeDef hspi2; // TCRT LED driver
 
-uint8_t spi_interSTM_writeCompleteFlag;
-uint8_t spi_ledDriver_writeCompleteFlag;
+uint8_t lst_spi_interStm_writeCompleteFlag;
+uint8_t lst_spi_ledDriver_writeCompleteFlag;

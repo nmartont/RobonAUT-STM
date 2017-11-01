@@ -24,10 +24,10 @@ void read_segment(uint8_t segment_id)
 {
 
 	// Write LED drivers
-	spi_write_ledSegment(segment_id);
+	lst_spi_write_ledSegment(segment_id);
 
 	// Wait for SPI transaction complete flag
-	while (!spi_ledDriver_writeCompleteFlag)
+	while (!lst_spi_ledDriver_writeCompleteFlag)
 	{
 
 		// Wait
@@ -37,13 +37,13 @@ void read_segment(uint8_t segment_id)
 	spi_reset_ledDriver_writeCompleteFlag();
 
 	// Latch LED drivers
-	gpio_latch_ledSegment();
+	lst_gpio_latch_ledSegment();
 
 	// SET MUXes
 	// TODO
 
 	// ADCs: start conversion
-	adc_start_conversions();
+	lst_adc_start_conversions();
 
 	// ADCs: wait for conversion
 	while (!adc_resultReadyFlag)

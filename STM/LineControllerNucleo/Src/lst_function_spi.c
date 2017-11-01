@@ -5,7 +5,7 @@
  *      Author: Balazs
  */
 
-#include "function_spi.h"
+#include "lst_function_spi.h"
 
 void lst_spi_write_ledSegment(uint8_t segment_id)
 {
@@ -23,12 +23,7 @@ void lst_spi_ledDriver_callback(void)
 
 }
 
-void spi_reset_ledDriver_writeCompleteFlag(void)
-{
-
-	lst_spi_ledDriver_writeCompleteFlag = 0;
-
-}
+// TODO inter-STM send/receive functions
 
 void spi_interStm_callback(void)
 {
@@ -40,7 +35,11 @@ void spi_interStm_callback(void)
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
 
+#ifdef LST_NUCLEO_TEST
+	if (hspi->Instance == SPI3)
+#else
 	if (hspi->Instance == SPI1)
+#endif
 	{
 
 		spi_interStm_callback();

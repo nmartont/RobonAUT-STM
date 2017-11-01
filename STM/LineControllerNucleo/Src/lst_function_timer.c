@@ -93,13 +93,9 @@ void lst_timer1_start(void)
 
 	lst_timer1_flag = 0;
 
-	if (LST_NUCLEO_TEST)
-	{
-
-		HAL_GPIO_TogglePin(LST_NUCLEO_TEST_PORT, LST_NUCLEO_TEST_PIN);
-
-	}
-
+#ifdef LST_NUCLEO_TEST
+	HAL_GPIO_TogglePin(LST_NUCLEO_TEST_PORT, LST_NUCLEO_TEST_PIN);
+#endif
 
 	HAL_TIM_Base_Start_IT(&htim1);
 

@@ -7,7 +7,7 @@
 
 #include "function_adc.h"
 
-void adc_start_conversions(void)
+void lst_adc_start_conversions(void)
 {
 
 	adc_resultCount = 0;

@@ -8,7 +8,7 @@
 #include "function_gpio.h"
 #include "lst_constants.c"
 
-void gpio_latch_ledSegment(void)
+void lst_gpio_latch_ledSegment(void)
 {
 
 	HAL_GPIO_WritePin(SPI2_LATCH_GPIO_Port, SPI2_LATCH_Pin, 1);
