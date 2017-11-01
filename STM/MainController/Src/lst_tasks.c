@@ -6,45 +6,13 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "FreeRTOS.h"
-#include "task.h"
-#include "stm32f4xx_hal.h"
-#include "cmsis_os.h"
-#include "main.h"
+#include "lst_tasks.h"
 
 /* Private define ------------------------------------------------------------*/
-#define SPI_SLAVE_SYNBYTE     0x53
-#define SPI_MASTER_SYNBYTE    0xAC
 
 /* Private variables ---------------------------------------------------------*/
-uint8_t buffer_tx[8] = {65, 66, 67, 68, 69, 70, 71, 72};
-uint8_t pAddrcmd[8] = {0x00};
-volatile uint32_t tim_val = 0;
-
-/* Timer One Pulse Configuration Structure declaration */
-TIM_OnePulse_InitTypeDef sConfig;
 
 /* External variables --------------------------------------------------------*/
-extern UART_HandleTypeDef huart2;
-extern uint8_t buffer_uart2[8];
-
-extern SPI_HandleTypeDef hspi1;
-extern SPI_HandleTypeDef hspi3;
-
-extern uint8_t spi_master_tx[8];
-extern uint8_t spi_master_rx[8];
-extern uint8_t spi_slave_tx[8];
-extern uint8_t spi_slave_rx[8];
-
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim5;
-extern TIM_HandleTypeDef htim6;
-extern TIM_HandleTypeDef htim8;
-
-/* Function prototypes -------------------------------------------------------*/
-void LST_Task_UART_Test(void const * argument);
-void LST_Task_SPI_Test(void const * argument);
 
 /******************************************************************************/
 /*                  FreeRTOS tasks for RobonAUT 2018 Team LST                 */

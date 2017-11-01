@@ -5,16 +5,10 @@
  *      Author: nmartont
  */
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx.h"
-#include "stm32f4xx_it.h"
-#include "cmsis_os.h"
+#include "lst_timer.h"
 
 /* Private variables ---------------------------------------------------------*/
 uint8_t cntr = 0;
-
-/* External variables --------------------------------------------------------*/
-extern TIM_HandleTypeDef htim6;
 
 /******************************************************************************/
 /*                   Timer handling for RobonAUT 2018 Team LST                */

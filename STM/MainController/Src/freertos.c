@@ -50,17 +50,14 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* USER CODE BEGIN Includes */     
-#include "stm32f4xx_hal.h"
-#include "cmsis_os.h"
+/* USER CODE BEGIN Includes */
+#include "lst_tasks.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
 
 /* USER CODE BEGIN Variables */
-extern osThreadId lstDefaultTaskHandle;
-extern void LST_Task_TIM_Test(void const * argument);
-osThreadId lstTaskUartTestHandle;
+
 /* USER CODE END Variables */
 
 /* Function prototypes -------------------------------------------------------*/

@@ -5,10 +5,7 @@
  *      Author: nmartont
  */
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx.h"
-#include "stm32f4xx_it.h"
-#include "cmsis_os.h"
+#include "lst_spi.h"
 
 /* Private variables ---------------------------------------------------------*/
 uint8_t cntr_spi1 = 0;
@@ -19,8 +16,6 @@ uint8_t spi_slave_tx[8] = {10, 20, 30, 40, 50, 60, 70, 80};
 uint8_t spi_slave_rx[8] = {0x00};
 
 /* External variables --------------------------------------------------------*/
-extern SPI_HandleTypeDef hspi1;
-extern SPI_HandleTypeDef hspi3;
 
 /******************************************************************************/
 /*             SPI Communication handling for RobonAUT 2018 Team LST          */

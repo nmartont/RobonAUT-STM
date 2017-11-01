@@ -51,7 +51,7 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "lst_tasks.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -79,7 +79,7 @@ osThreadId defaultTaskHandle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-osThreadId lstDefaultTaskHandle;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

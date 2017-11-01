@@ -5,20 +5,16 @@
  *      Author: nmartont
  */
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx.h"
-#include "stm32f4xx_it.h"
-#include "cmsis_os.h"
+#include "lst_uart.h"
 
 /* Private variables ---------------------------------------------------------*/
 uint8_t cntr_uart1 = 0;
 uint8_t cntr_uart2 = 0;
 uint8_t buffer_uart1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 uint8_t buffer_uart2[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t buffer_tx[8] = {65, 66, 67, 68, 69, 70, 71, 72};
 
 /* External variables --------------------------------------------------------*/
-extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart2;
 
 /******************************************************************************/
 /*            UART Communication handling for RobonAUT 2018 Team LST          */
