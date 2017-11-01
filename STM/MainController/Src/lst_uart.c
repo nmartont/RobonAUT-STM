@@ -10,9 +10,9 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t cntr_uart1 = 0;
 uint8_t cntr_uart2 = 0;
-uint8_t buffer_uart1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-uint8_t buffer_uart2[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-uint8_t buffer_tx[8] = {65, 66, 67, 68, 69, 70, 71, 72};
+uint8_t lst_uart_buffer_uart1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t lst_uart_buffer_uart2[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t lst_uart_buffer_tx[8] = {65, 66, 67, 68, 69, 70, 71, 72};
 
 /* External variables --------------------------------------------------------*/
 
@@ -32,7 +32,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		else{
 			cntr_uart2++;
 		}
-		HAL_UART_Receive_IT(&huart2, (uint8_t *)&buffer_uart2[cntr_uart2], 1);
+		HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2[cntr_uart2], 1);
 	}
 
 	if (huart->Instance == USART1){
@@ -42,6 +42,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		else{
 			cntr_uart1++;
 		}
-		HAL_UART_Receive_IT(&huart1, (uint8_t *)&buffer_uart1[cntr_uart1], 1);
+		HAL_UART_Receive_IT(&huart1, (uint8_t *)&lst_uart_buffer_uart1[cntr_uart1], 1);
 	}
 }

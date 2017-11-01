@@ -74,11 +74,11 @@ void LST_Task_Start(void const * argument)
   /* Setup of controller */
 
 	/* Start tasks */
-	osThreadDef(LST_Task_TIM_Test, LST_Task_TIM_Test, osPriorityNormal, 0, 128);
-	lstTaskUartTestHandle = osThreadCreate(osThread(LST_Task_TIM_Test), NULL);
+	osThreadDef(LST_Tasks_TIM_Test, LST_Tasks_TIM_Test, osPriorityNormal, 0, 128);
+	lst_tasks_TimerTestHandle = osThreadCreate(osThread(LST_Tasks_TIM_Test), NULL);
 
 	/* Terminate LST Start task */
-	osThreadTerminate(lstDefaultTaskHandle);
+	osThreadTerminate(lst_tasks_StartTaskHandle);
 }
 /* USER CODE END Application */
 

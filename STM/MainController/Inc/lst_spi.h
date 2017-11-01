@@ -25,9 +25,9 @@
 extern SPI_HandleTypeDef hspi1;
 extern SPI_HandleTypeDef hspi3;
 
-extern uint8_t spi_master_tx[8];
-extern uint8_t spi_master_rx[8];
-extern uint8_t spi_slave_tx[8];
-extern uint8_t spi_slave_rx[8];
+extern uint8_t lst_spi_master_tx[8];
+extern uint8_t lst_spi_master_rx[8];
+extern uint8_t lst_spi_slave_tx[8];
+extern uint8_t lst_spi_slave_rx[8];
 
 #endif /* LST_SPI_H_ */

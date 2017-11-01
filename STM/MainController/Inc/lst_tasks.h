@@ -21,12 +21,14 @@
 /* Defines -------------------------------------------------------------------*/
 
 /* Function prototypes -------------------------------------------------------*/
-void LST_Task_UART_Test(void const * argument);
-void LST_Task_SPI_Test(void const * argument);
-void LST_Task_TIM_Test(void const * argument);
+void LST_Tasks_UART_Test(void const * argument);
+void LST_Tasks_SPI_Test(void const * argument);
+void LST_Tasks_TIM_Test(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/
-osThreadId lstDefaultTaskHandle;
-osThreadId lstTaskUartTestHandle;
+osThreadId lst_tasks_StartTaskHandle;
+osThreadId lst_tasks_UartTestHandle;
+osThreadId lst_tasks_TimerTestHandle;
+osThreadId lst_tasks_SpiTestHandle;
 
 #endif /* LST_TASKS_H_ */

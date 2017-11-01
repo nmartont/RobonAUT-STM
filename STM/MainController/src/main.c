@@ -781,7 +781,7 @@ void StartDefaultTask(void const * argument)
 
   /* Start LST starter task */
   osThreadDef(LST_Task_Start, LST_Task_Start, osPriorityNormal, 0, 128);
-  lstDefaultTaskHandle = osThreadCreate(osThread(LST_Task_Start), NULL);
+  lst_tasks_StartTaskHandle = osThreadCreate(osThread(LST_Task_Start), NULL);
 
   /* Terminate default task */
   osThreadTerminate(defaultTaskHandle);
