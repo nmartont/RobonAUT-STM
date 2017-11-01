@@ -50,8 +50,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* USER CODE BEGIN Includes */     
-
+/* USER CODE BEGIN Includes */
+#include "lst_tasks.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -63,13 +63,23 @@
 /* Function prototypes -------------------------------------------------------*/
 
 /* USER CODE BEGIN FunctionPrototypes */
-
+void LST_Task_Start(void const * argument);
 /* USER CODE END FunctionPrototypes */
 
 /* Hook prototypes */
 
 /* USER CODE BEGIN Application */
-     
+void LST_Task_Start(void const * argument)
+{
+  /* Setup of controller */
+
+	/* Start tasks */
+	osThreadDef(LST_Tasks_TIM_Test, LST_Tasks_TIM_Test, osPriorityNormal, 0, 128);
+	lst_tasks_TimerTestHandle = osThreadCreate(osThread(LST_Tasks_TIM_Test), NULL);
+
+	/* Terminate LST Start task */
+	osThreadTerminate(lst_tasks_StartTaskHandle);
+}
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
