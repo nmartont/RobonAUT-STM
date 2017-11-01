@@ -11,7 +11,14 @@
 void initialize_controller(void)
 {
 
+	main_controller_login();
 
+	while (1)
+	{
+
+		main_task();
+
+	}
 
 }
 
@@ -20,5 +27,16 @@ void main_controller_login()
 {
 
 
+
+}
+
+void main_task(void)
+{
+
+	read_line();
+
+	evaluate_line();
+
+	send_data();
 
 }

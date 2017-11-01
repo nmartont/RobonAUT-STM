@@ -7,7 +7,7 @@
 
 #include "task_readLine.h"
 
-uint8_t * read_line(void)
+void read_line(void)
 {
 
 	for (uint8_t i=0; i<8; i++)
@@ -18,15 +18,26 @@ uint8_t * read_line(void)
 
 	}
 
-	return values;
-
 }
 
 void read_segment(uint8_t segment_id)
 {
 
-	// Set LED drivers
-	// TODO
+	// Write LED drivers
+	spi_write_ledSegment(segment_id);
+
+	// Wait for SPI transaction complete flag
+	while (!spi_ledDriver_writeCompleteFlag)
+	{
+
+		// Wait
+
+	}
+
+	spi_reset_ledDriver_writeCompleteFlag();
+
+	// Latch LED drivers
+	gpio_latch_ledSegment();
 
 	// SET MUXes
 	// TODO
@@ -41,6 +52,8 @@ void read_segment(uint8_t segment_id)
 		// Wait
 
 	}
+
+	adc_reset_resultReadyFlag();
 
 	// ADCs: read results
 	for (uint8_t i=0; i<4; i++)

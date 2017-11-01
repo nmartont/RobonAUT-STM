@@ -20,6 +20,13 @@ void adc_start_conversions(void)
 
 }
 
+void adc_reset_resultReadyFlag(void)
+{
+
+	adc_resultReadyFlag = 0;
+
+}
+
 // ADC Conversion complete callback function
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* adcHandle)
 {
@@ -34,6 +41,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* adcHandle)
 	}
 
 }
+
 
 /* UNUSED
 uint8_t * adc_get_results(void)

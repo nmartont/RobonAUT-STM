@@ -44,6 +44,7 @@ extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern ADC_HandleTypeDef hadc3;
 extern ADC_HandleTypeDef hadc4;
+extern TIM_HandleTypeDef htim1;
 
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
@@ -200,6 +201,20 @@ void ADC1_2_IRQHandler(void)
   /* USER CODE BEGIN ADC1_2_IRQn 1 */
 
   /* USER CODE END ADC1_2_IRQn 1 */
+}
+
+/**
+* @brief This function handles TIM1 trigger, commutation and TIM17 interrupts.
+*/
+void TIM1_TRG_COM_TIM17_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM1_TRG_COM_TIM17_IRQn 0 */
+
+  /* USER CODE END TIM1_TRG_COM_TIM17_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim1);
+  /* USER CODE BEGIN TIM1_TRG_COM_TIM17_IRQn 1 */
+
+  /* USER CODE END TIM1_TRG_COM_TIM17_IRQn 1 */
 }
 
 /**

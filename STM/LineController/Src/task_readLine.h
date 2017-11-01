@@ -6,8 +6,10 @@
  */
 
 #include "function_adc.h"
+#include "function_gpio.h"
+#include "function_spi.h"
 
 uint8_t values[32];
 
-uint8_t * read_line(void);
+void read_line(void);
 void read_segment(uint8_t segment_id);
