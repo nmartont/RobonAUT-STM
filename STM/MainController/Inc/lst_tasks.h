@@ -24,11 +24,13 @@
 void LST_Tasks_UART_Test(void const * argument);
 void LST_Tasks_SPI_Test(void const * argument);
 void LST_Tasks_TIM_Test(void const * argument);
+void LST_Tasks_BT_Test(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/
 osThreadId lst_tasks_StartTaskHandle;
 osThreadId lst_tasks_UartTestHandle;
 osThreadId lst_tasks_TimerTestHandle;
 osThreadId lst_tasks_SpiTestHandle;
+osThreadId lst_tasks_BT_TestHandle;
 
 #endif /* LST_TASKS_H_ */

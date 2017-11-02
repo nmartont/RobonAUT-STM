@@ -83,6 +83,26 @@ void LST_Tasks_TIM_Test(void const * argument)
 	while(1)
 	{
 		// tim_val = __HAL_TIM_GET_COUNTER(&htim6);
-		// osDelay(1);
+		osDelay(1);
+	}
+}
+
+/**
+* @brief This task tests the Bluetooth.
+*/
+void LST_Tasks_BT_Test(void const * argument)
+{
+	/* Turn on Bluetooth power */
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+
+	/* Receive a byte on UART2 */
+  HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2, 1);
+
+	/* Infinite loop */
+	while(1)
+	{
+		/* Transmit data to PC */
+		HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&lst_uart_buffer_tx, 3);
+		osDelay(100);
 	}
 }

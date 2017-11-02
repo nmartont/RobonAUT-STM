@@ -10,9 +10,9 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t cntr_uart1 = 0;
 uint8_t cntr_uart2 = 0;
-uint8_t lst_uart_buffer_uart1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-uint8_t lst_uart_buffer_uart2[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-uint8_t lst_uart_buffer_tx[8] = {65, 66, 67, 68, 69, 70, 71, 72};
+uint8_t lst_uart_buffer_uart1[8] = {0x00};
+uint8_t lst_uart_buffer_uart2[256] = {0x00};
+uint8_t lst_uart_buffer_tx[8] = {0x03, 0x00, 0x01, 0, 0, 0, 0, 0};
 
 /* External variables --------------------------------------------------------*/
 
@@ -26,7 +26,7 @@ uint8_t lst_uart_buffer_tx[8] = {65, 66, 67, 68, 69, 70, 71, 72};
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART2){
-		if(cntr_uart2 == 7){
+		if(cntr_uart2 == 255){
 			cntr_uart2 = 0;
 		}
 		else{

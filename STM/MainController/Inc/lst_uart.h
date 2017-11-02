@@ -26,7 +26,7 @@ extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 
 extern uint8_t lst_uart_buffer_uart1[8];
-extern uint8_t lst_uart_buffer_uart2[8];
+extern uint8_t lst_uart_buffer_uart2[256];
 extern uint8_t lst_uart_buffer_tx[8];
 
 #endif /* LST_UART_H_ */
