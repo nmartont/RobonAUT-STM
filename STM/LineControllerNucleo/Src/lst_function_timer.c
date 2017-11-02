@@ -7,19 +7,32 @@
 
 #include "lst_function_timer.h"
 
-void lst_timer1_delay_timClk(uint16_t clk)
+void lst_timer1_delay_nanoseconds(uint16_t nano)
 {
 
-	// Cannot overflow with 16-bit input
+	for (volatile int i=0; i<(nano / LST_NANOS_PER_TICK); i++)
+	{
 
-	lst_timer1_init_timing(clk, LST_REPETITION_DEFAULT);
-
-	lst_timer1_start();
+	}
 
 }
 
 void lst_timer1_delay_microSeconds(uint16_t micro)
 {
+
+	// Handle overhead
+	if (micro < LST_TIMER1_OVERHEAD_MICRO + 1)
+	{
+
+		micro = 1;
+
+	}
+	else
+	{
+
+		micro = micro - LST_TIMER1_OVERHEAD_MICRO;
+
+	}
 
 	// Handle overflow
 	if (micro > 1000)
@@ -52,10 +65,10 @@ void lst_timer1_delay_milliSeconds(uint16_t milli)
 {
 
 	// Handle overflow
-	if (milli > 1000)
+	if (milli > 100)
 	{
 
-		for (int i=0; i<(milli / 1000); i++)
+		for (int i=0; i<(milli / 100); i++)
 		{
 
 			lst_timer1_init_timing(LST_TICKS_PER_MICRO * 1000, LST_REPETITION_MILLI);
@@ -64,13 +77,13 @@ void lst_timer1_delay_milliSeconds(uint16_t milli)
 
 		}
 
-		lst_timer1_init_timing(LST_TICKS_PER_MICRO * (milli % 1000), LST_REPETITION_MILLI);
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * (milli % 100) * 10, LST_REPETITION_MILLI);
 
 	}
 	else
 	{
 
-		lst_timer1_init_timing(LST_TICKS_PER_MICRO * milli, LST_REPETITION_MILLI);
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * milli * 10, LST_REPETITION_MILLI);
 
 	}
 
@@ -92,10 +105,6 @@ void lst_timer1_start(void)
 {
 
 	lst_timer1_flag = 0;
-
-#ifdef LST_NUCLEO_TEST
-	HAL_GPIO_TogglePin(LST_NUCLEO_TEST_PORT, LST_NUCLEO_TEST_PIN);
-#endif
 
 	HAL_TIM_Base_Start_IT(&htim1);
 

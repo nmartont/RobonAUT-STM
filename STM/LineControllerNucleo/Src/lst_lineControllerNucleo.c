@@ -22,8 +22,12 @@ void entryPoint(void)
 void testTimer(void)
 {
 
-	//timer1_delay_timClk(400);
+	lst_timer1_delay_milliSeconds(1);
 
-	lst_timer1_delay_microSeconds(200);
+#ifdef LST_NUCLEO_TEST
+	HAL_GPIO_TogglePin(LST_NUCLEO_TEST_PORT, LST_NUCLEO_TEST_PIN);
+#endif
+
+	//HAL_Delay(1);
 
 }

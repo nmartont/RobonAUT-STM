@@ -20,9 +20,11 @@
 extern TIM_HandleTypeDef htim1;
 
 // Constants
+#define LST_NANOS_PER_TICK (1000000000UL / LST_F_TIM1)
 #define LST_TICKS_PER_MICRO (LST_F_TIM1 / 1000000)
-#define LST_REPETITION_MILLI 999
+#define LST_REPETITION_MILLI 99
 #define LST_REPETITION_DEFAULT 0
+#define LST_TIMER1_OVERHEAD_MICRO 9
 #ifdef LST_NUCLEO_TEST
 	#define LST_NUCLEO_TEST_PIN TIM1_OUTPUT_Pin
 	#define LST_NUCLEO_TEST_PORT TIM1_OUTPUT_GPIO_Port
@@ -33,22 +35,20 @@ uint8_t lst_timer1_flag;
 
 // Function declarations
 
-void lst_timer1_delay_timClk(uint16_t clk);
+void lst_timer1_delay_nanoSeconds(uint16_t nano);
 /*
  * @Description
- * 	Blocking function which causes the CPU to idle for at least the
- * 	specified CPU clock cycle count.
- *
- * @Details
- * 	TIM1 clock source: 64MHz
- * 	TIM1 clock period (clk): 1/64M = 15.625 nanoseconds
+ * 	Blocking function which causes the CPU to idle for at least
+ * 	the specified time in nanoseconds. Based on dummy calculations
+ * 	rather than a timer.
  */
 
 void lst_timer1_delay_microSeconds(uint16_t micro);
 /*
  * @Description
  * 	Blocking function which causes the CPU to idle for at least
- * 	the specified time in microseconds.
+ * 	the specified time in microseconds. Minimal waiting time is
+ * 	around 10us, below that, the function waits for 10us.
  */
 
 void lst_timer1_delay_milliSeconds(uint16_t milli);
@@ -80,3 +80,5 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
  */
 
 #endif /* LST_FUNCTION_TIMER_H_ */
+
+

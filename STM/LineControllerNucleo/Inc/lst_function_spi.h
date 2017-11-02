@@ -41,25 +41,25 @@ uint8_t lst_spi_ledDriver_writeCompleteFlag;
 void lst_spi_write_ledSegment(uint8_t segment_id);
 /*
  * @Description
- *
+ *	TODO
  */
 
 void lst_spi_ledDriver_callback(void);
 /*
  * @Description
- *
+ *	TODO
  */
 
 void spi_interStm_callback(void);
 /*
  * @Description
- *
+ *	TODO
  */
 
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
 /*
  * @Description
- *
+ *	TODO
  */
 
 #endif /* FUNCTION_SPI_H_ */
