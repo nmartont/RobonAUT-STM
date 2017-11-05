@@ -7,11 +7,26 @@
 
 #include "lst_function_adc.h"
 
+void lst_adc_convert(void)
+{
+
+	lst_adc_resultReadyFlag = 0;
+
+	lst_adc_start_conversions();
+
+	while (!lst_adc_resultReadyFlag)
+	{
+
+		// Wait
+
+	}
+
+}
+
 void lst_adc_start_conversions(void)
 {
 
 	lst_adc_resultCount = 0;
-	lst_adc_resultReadyFlag = 0;
 
 	HAL_ADC_Start_IT(&hadc1);
 	HAL_ADC_Start_IT(&hadc2);

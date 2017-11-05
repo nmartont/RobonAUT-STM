@@ -33,16 +33,25 @@ uint8_t lst_adc_result[4];
 
 // Function declarations
 
+void lst_adc_convert(void);
+/*
+ * @Description:
+ *	Starts all four (Nucleo: 3) ADC conversions, returns
+ *	when the conversions are completed.
+ */
+
 void lst_adc_start_conversions(void);
 /*
  * @Description
- * 	Starts all four (Nucleo: 3) ADC conversions
+ * 	Handles the starting of the ADC conversions. Called by
+ * 	lst_adc_convert().
  */
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* adcHandle);
 /*
  * @Description
- * 	HAL callback function, when a conversion completes
+ * 	HAL callback function, signals lst_adc_convert() when
+ * 	a conversion completes.
  */
 
 #endif /* FUNCTION_ADC_H_ */

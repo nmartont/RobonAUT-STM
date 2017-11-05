@@ -14,6 +14,14 @@ void lst_spi_write_ledSegment(uint8_t segment_id)
 
 	// TODO
 
+	// Wait for SPI transaction complete flag
+	while (!lst_spi_ledDriver_writeCompleteFlag)
+	{
+
+		// Wait
+
+	}
+
 }
 
 void lst_spi_ledDriver_callback(void)

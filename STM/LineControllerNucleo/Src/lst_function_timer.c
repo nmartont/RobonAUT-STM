@@ -7,12 +7,12 @@
 
 #include "lst_function_timer.h"
 
-void lst_timer1_delay_nanoseconds(uint16_t nano)
+void lst_timer1_delay_timClk(uint16_t clk)
 {
 
-	for (volatile int i=0; i<(nano / LST_NANOS_PER_TICK); i++)
+	for (volatile int i=0; i<clk; i++)
 	{
-
+		// Dummy loop
 	}
 
 }
@@ -41,19 +41,22 @@ void lst_timer1_delay_microSeconds(uint16_t micro)
 		for (int i=0; i<(micro / 1000); i++)
 		{
 
-			lst_timer1_init_timing(LST_TICKS_PER_MICRO * 1000, LST_REPETITION_DEFAULT);
+			lst_timer1_init_timing(LST_TICKS_PER_MICRO * 1000,
+					LST_REPETITION_DEFAULT);
 
 			lst_timer1_start();
 
 		}
 
-		lst_timer1_init_timing(LST_TICKS_PER_MICRO * (micro % 1000), LST_REPETITION_DEFAULT);
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * (micro % 1000),
+				LST_REPETITION_DEFAULT);
 
 	}
 	else
 	{
 
-		lst_timer1_init_timing(LST_TICKS_PER_MICRO * micro, LST_REPETITION_DEFAULT);
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * micro,
+				LST_REPETITION_DEFAULT);
 
 	}
 
@@ -71,19 +74,22 @@ void lst_timer1_delay_milliSeconds(uint16_t milli)
 		for (int i=0; i<(milli / 100); i++)
 		{
 
-			lst_timer1_init_timing(LST_TICKS_PER_MICRO * 1000, LST_REPETITION_MILLI);
+			lst_timer1_init_timing(LST_TICKS_PER_MICRO * 1000,
+					LST_REPETITION_MILLI);
 
 			lst_timer1_start();
 
 		}
 
-		lst_timer1_init_timing(LST_TICKS_PER_MICRO * (milli % 100) * 10, LST_REPETITION_MILLI);
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * (milli % 100) * 10,
+				LST_REPETITION_MILLI);
 
 	}
 	else
 	{
 
-		lst_timer1_init_timing(LST_TICKS_PER_MICRO * milli * 10, LST_REPETITION_MILLI);
+		lst_timer1_init_timing(LST_TICKS_PER_MICRO * milli * 10,
+				LST_REPETITION_MILLI);
 
 	}
 

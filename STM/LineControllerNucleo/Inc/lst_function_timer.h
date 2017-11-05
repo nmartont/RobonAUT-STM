@@ -35,11 +35,11 @@ uint8_t lst_timer1_flag;
 
 // Function declarations
 
-void lst_timer1_delay_nanoSeconds(uint16_t nano);
+void lst_timer1_delay_timClk(uint16_t clk);
 /*
  * @Description
  * 	Blocking function which causes the CPU to idle for at least
- * 	the specified time in nanoseconds. Based on dummy calculations
+ * 	the specified timer clock periods. Based on dummy calculations
  * 	rather than a timer.
  */
 
@@ -68,15 +68,13 @@ void lst_timer1_start(void);
 /*
  * @Description
  * 	Starts TIM1 and waits until PeriodElapsedCallback event
- *
- * @Test
- * 	Toggles LST_NUCLEO_TEST_PIN output each time TIM1 is started
  */
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 /*
  * @Description
  * 	HAL callback function, signals lst_timer1_start function
+ * 	to return.
  */
 
 #endif /* LST_FUNCTION_TIMER_H_ */

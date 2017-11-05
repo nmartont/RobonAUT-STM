@@ -22,6 +22,7 @@
 #define LATCH_PIN SPI2_LATCH_Pin
 
 // Function declarations
+
 void lst_gpio_latch_ledSegment(void);
 /*
  * @Description
@@ -29,5 +30,11 @@ void lst_gpio_latch_ledSegment(void);
  * 	to enable the LED drive outputs (at least 30 nanoseconds)
  */
 
+void lst_gpio_write_muxes(uint8_t segment_id);
+/*
+ * @Description
+ *	Sets all analog MUX addresses to pass on the output
+ *	of the segment's TCRT sensors to the 4 ADCs.
+ */
 
 #endif /* LST_FUNCTION_GPIO_H_ */

@@ -56,6 +56,12 @@
 #define SPI2_LATCH_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
+#define ADDR2_Pin GPIO_PIN_9
+#define ADDR2_GPIO_Port GPIOA
+#define ADDR1_Pin GPIO_PIN_10
+#define ADDR1_GPIO_Port GPIOA
+#define ADDR0_Pin GPIO_PIN_11
+#define ADDR0_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
