@@ -39,7 +39,7 @@ void read_segment(uint8_t segment_id)
 	for (uint8_t i=0; i<4; i++)
 	{
 
-		values[i * 8 + segment_id] = lst_adc_result[i];
+		lst_tcrt_values[i * 8 + segment_id] = lst_adc_result[i];
 
 	}
 

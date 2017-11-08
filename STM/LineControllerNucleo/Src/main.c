@@ -123,7 +123,7 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-	  entryPoint();
+	  entry_point();
 
   }
   /* USER CODE END 3 */

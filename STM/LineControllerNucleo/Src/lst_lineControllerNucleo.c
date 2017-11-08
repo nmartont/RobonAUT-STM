@@ -7,19 +7,30 @@
 
 #include "lst_lineControllerNucleo.h"
 
-void entryPoint(void)
+void entry_point(void)
 {
 
 	while (1)
 	{
 
-		testTimer();
+		test_timer();
 
 	}
 
 }
 
-void testTimer(void)
+void main_function(void)
+{
+
+	read_line();
+
+	evaluate_line();
+
+	send_data();
+
+}
+
+void test_timer(void)
 {
 
 	lst_timer1_delay_milliSeconds(1);

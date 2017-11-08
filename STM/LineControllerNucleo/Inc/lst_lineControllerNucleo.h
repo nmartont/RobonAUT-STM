@@ -5,8 +5,33 @@
  *      Author: Balazs
  */
 
-#include "lst_function_timer.h"
+#ifndef LST_LINECONTROLLERNUCLEO_H_
+#define LST_LINECONTROLLERNUCLEO_H_
 
-void entryPoint(void);
+// Includes
 
-void testTimer(void);
+#include "lst_function_timer.h" // Timer Test
+#include "lst_task_readLine.h"
+#include "lst_task_evaluateLine.h"
+#include "lst_task_sendData.h"
+
+void entry_point(void);
+/*
+ * @Description
+ * 	Calls the function that needs to be executed on the microcontroller.
+ * 	Use it to set a Test or the Main function.
+ */
+
+void main_function(void);
+/*
+ * @Description
+ * 	Executes the RACE FUNCTION.
+ */
+
+void test_timer(void);
+/*
+ * @Description
+ * 	Tests the custom-made timer functions.
+ */
+
+#endif /* LST_LINECONTROLLERNUCLEO_H_ */

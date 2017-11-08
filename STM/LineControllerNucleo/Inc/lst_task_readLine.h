@@ -9,12 +9,14 @@
 #define LST_TASK_READLINE_H_
 
 // Includes
+
 #include "lst_function_adc.h"
 #include "lst_function_gpio.h"
 #include "lst_function_spi.h"
 
-// Local variables
-uint8_t values[32];
+// External variables
+
+extern uint8_t lst_tcrt_values[32];
 
 // Function declarations
 
