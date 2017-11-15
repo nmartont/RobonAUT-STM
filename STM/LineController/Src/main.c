@@ -41,7 +41,7 @@
 
 /* USER CODE BEGIN Includes */
 
-#include "lineController.h"
+#include "lst_lineController.h"
 
 /* USER CODE END Includes */
 
@@ -126,7 +126,7 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-	 initialize_controller(); // never returns
+	 entry_point(); // never returns
 
   }
   /* USER CODE END 3 */
