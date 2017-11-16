@@ -132,3 +132,17 @@ void LST_Tasks_BT_Test(void const * argument)
 		osDelay(2);
 	}
 }
+
+/**
+* @brief This task tests the ADC.
+*/
+void LST_Tasks_ADC_Test(void const * argument)
+{
+
+	/* Infinite loop */
+	while(1)
+	{
+		HAL_ADC_Start_IT(&hadc3);
+		osDelay(1);
+	}
+}
