@@ -11,6 +11,19 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
+uint8_t buffer_baud[UART2_TX_BUFFER_SIZE] = "AT+AB ChangeDefaultBaud 2000000\r\n";
+
+uint8_t buffer_var[UART2_TX_BUFFER_SIZE] = {
+		0x03,
+		0x03, 0x41, 0x42, 0x43, 0x00,
+		0x03, 0x44, 0x45, 0x46, 0x01,
+		0x03, 0x47, 0x48, 0x49, 0x02,
+		0x01, 0x50, 0x03,
+		0x01, 0x51, 0x04,
+		0x01, 0x52, 0x05,
+		0xFF};
+
+uint8_t buffer_vars[UART2_TX_BUFFER_SIZE] = {0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF};
 
 /* External variables --------------------------------------------------------*/
 
@@ -92,17 +105,30 @@ void LST_Tasks_TIM_Test(void const * argument)
 */
 void LST_Tasks_BT_Test(void const * argument)
 {
-	/* Turn on Bluetooth power */
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
-
 	/* Receive a byte on UART2 */
-  HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2, 1);
+	HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2, 1);
+
+	/* Send var list */
+	HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer_var, 26);
 
 	/* Infinite loop */
 	while(1)
 	{
+		/* Wait until UART2 is ready */
+		while(huart2.gState != HAL_UART_STATE_READY){}
+
+		/* Increment data */
+		uint8_t i = 0;
+		for(i = 1; i < 15; i++){
+			buffer_vars[i]++;
+			if(buffer_vars[i] == 0xFF){
+				buffer_vars[i] = 0x00;
+			}
+		}
+
 		/* Transmit data to PC */
-		HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&lst_uart_buffer_tx, 3);
-		osDelay(100);
+		HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer_vars, 16);
+
+		osDelay(2);
 	}
 }
