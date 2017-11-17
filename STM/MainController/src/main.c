@@ -46,12 +46,12 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
+#include <lst_task.h>
 #include "main.h"
 #include "stm32f4xx_hal.h"
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
-#include "lst_tasks.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -107,7 +107,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-extern void LST_Task_Start(void const * argument);
+extern void LST_Start(void const * argument);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -780,8 +780,8 @@ void StartDefaultTask(void const * argument)
   /* USER CODE BEGIN 5 */
 
   /* Start LST starter task */
-  osThreadDef(LST_Task_Start, LST_Task_Start, osPriorityNormal, 0, 128);
-  lst_tasks_StartTaskHandle = osThreadCreate(osThread(LST_Task_Start), NULL);
+  osThreadDef(LST_Start, LST_Start, osPriorityNormal, 0, 128);
+  lst_task_StartTaskHandle = osThreadCreate(osThread(LST_Start), NULL);
 
   /* Terminate default task */
   osThreadTerminate(defaultTaskHandle);

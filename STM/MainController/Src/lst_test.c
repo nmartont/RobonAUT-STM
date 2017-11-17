@@ -1,13 +1,14 @@
 /*
- * lst_tasks.c
+ * lst_tests.c
  *
- *  Created on: 2017. okt. 26.
+ *  Created on: 2017. nov. 17.
  *      Author: nmartont
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "lst_tasks.h"
+#include <lst_test.h>
 
+#ifdef LST_CONFIG_TEST
 /* Private define ------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
@@ -28,13 +29,26 @@ uint8_t buffer_vars[UART2_TX_BUFFER_SIZE] = {0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 /* External variables --------------------------------------------------------*/
 
 /******************************************************************************/
-/*                  FreeRTOS tasks for RobonAUT 2018 Team LST                 */
+/*                  FreeRTOS tests for RobonAUT 2018 Team LST                 */
 /******************************************************************************/
+
+/**
+* @brief This task starts the MainController tests.
+*/
+void LST_Test_Start(void const * argument)
+{
+	/* Start a test */
+	osThreadDef(LST_Test_BT, LST_Test_BT, osPriorityNormal, 0, 128);
+	lst_test_BtTestHandle = osThreadCreate(osThread(LST_Test_BT), NULL);
+
+	/* Exit starter task */
+	osThreadTerminate(lst_test_StartTestHandle);
+}
 
 /**
 * @brief This task tests the UART communication.
 */
-void LST_Tasks_UART_Test(void const * argument)
+void LST_Test_UART(void const * argument)
 {
   HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2, 1);
 
@@ -59,7 +73,7 @@ void LST_Tasks_UART_Test(void const * argument)
 /**
 * @brief This task tests the SPI communication.
 */
-void LST_Tasks_SPI_Test(void const * argument)
+void LST_Test_SPI(void const * argument)
 {
 	/* Get 8 bytes from Master */
 	// Important: the slave needs to call this function before the master initially starts sending data.
@@ -87,7 +101,7 @@ void LST_Tasks_SPI_Test(void const * argument)
 /**
 * @brief This task tests the Timer.
 */
-void LST_Tasks_TIM_Test(void const * argument)
+void LST_Test_TIM(void const * argument)
 {
 	HAL_TIM_Base_Start_IT(&htim8);
 	// HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
@@ -103,7 +117,7 @@ void LST_Tasks_TIM_Test(void const * argument)
 /**
 * @brief This task tests the Bluetooth.
 */
-void LST_Tasks_BT_Test(void const * argument)
+void LST_Test_BT(void const * argument)
 {
 	/* Receive a byte on UART2 */
 	HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2, 1);
@@ -136,7 +150,7 @@ void LST_Tasks_BT_Test(void const * argument)
 /**
 * @brief This task tests the ADC.
 */
-void LST_Tasks_ADC_Test(void const * argument)
+void LST_Test_ADC(void const * argument)
 {
 
 	/* Infinite loop */
@@ -146,3 +160,5 @@ void LST_Tasks_ADC_Test(void const * argument)
 		osDelay(1);
 	}
 }
+
+#endif /* LST_CONFIG_TEST */

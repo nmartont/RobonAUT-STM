@@ -51,7 +51,7 @@
   /* Includes ------------------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
-
+#include "lst_config.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/

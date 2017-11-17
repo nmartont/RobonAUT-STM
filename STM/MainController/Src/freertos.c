@@ -47,11 +47,14 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "lst_task.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
 /* USER CODE BEGIN Includes */     
-#include "lst_tasks.h"
+#ifdef LST_CONFIG_TEST
+#include "lst_test.h"
+#endif
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -63,22 +66,29 @@
 /* Function prototypes -------------------------------------------------------*/
 
 /* USER CODE BEGIN FunctionPrototypes */
-void LST_Task_Start(void const * argument);
+void LST_Start(void const * argument);
 /* USER CODE END FunctionPrototypes */
 
 /* Hook prototypes */
 
 /* USER CODE BEGIN Application */
-void LST_Task_Start(void const * argument)
+void LST_Start(void const * argument)
 {
   /* Setup of controller */
+	/* TODO */
 
+#ifdef LST_CONFIG_TEST
+	/* Start tests */
+	osThreadDef(LST_Test_Start, LST_Test_Start, osPriorityNormal, 0, 128);
+	lst_test_StartTestHandle = osThreadCreate(osThread(LST_Test_Start), NULL);
+#else
 	/* Start tasks */
-	osThreadDef(LST_Tasks_ADC_Test, LST_Tasks_ADC_Test, osPriorityNormal, 0, 128);
-	lst_tasks_ADC_TestHandle = osThreadCreate(osThread(LST_Tasks_ADC_Test), NULL);
+	osThreadDef(LST_Task_Start, LST_Task_Start, osPriorityNormal, 0, 128);
+	lst_task_StartTaskHandle = osThreadCreate(osThread(LST_Task_Start), NULL);
+#endif
 
 	/* Terminate LST Start task */
-	osThreadTerminate(lst_tasks_StartTaskHandle);
+	osThreadTerminate(lst_task_StartTaskHandle);
 }
 /* USER CODE END Application */
 
