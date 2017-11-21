@@ -14,6 +14,7 @@
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_CONFIG_TEST
+// #define LST_CONFIG_CHANGE_BT_BAUD
 
 /* Function prototypes -------------------------------------------------------*/
 

@@ -12,9 +12,11 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
-uint8_t buffer_baud[UART2_TX_BUFFER_SIZE] = "AT+AB ChangeDefaultBaud 2000000\r\n";
+#ifdef LST_CONFIG_CHANGE_BT_BAUD
+uint8_t buffer_baud[33] = "AT+AB ChangeDefaultBaud 2000000\r\n";
+#endif
 
-uint8_t buffer_var[UART2_TX_BUFFER_SIZE] = {
+uint8_t buffer_var[26] = {
 		0x03,
 		0x03, 0x41, 0x42, 0x43, 0x00,
 		0x03, 0x44, 0x45, 0x46, 0x01,
@@ -24,7 +26,7 @@ uint8_t buffer_var[UART2_TX_BUFFER_SIZE] = {
 		0x01, 0x52, 0x05,
 		0xFF};
 
-uint8_t buffer_vars[UART2_TX_BUFFER_SIZE] = {0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF};
+uint8_t buffer_vars[16] = {0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF};
 
 /* External variables --------------------------------------------------------*/
 
@@ -121,6 +123,11 @@ void LST_Test_BT(void const * argument)
 {
 	/* Receive a byte on UART2 */
 	HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2, 1);
+
+#ifdef LST_CONFIG_CHANGE_BT_BAUD
+	/* Send BT baud change command */
+	HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer_baud, 33);
+#endif
 
 	/* Send var list */
 	HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer_var, 26);
