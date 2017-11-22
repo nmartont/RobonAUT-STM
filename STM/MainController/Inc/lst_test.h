@@ -5,8 +5,8 @@
  *      Author: nmartont
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef LST_TASKS_H_
-#define LST_TASKS_H_
+#ifndef LST_TEST_H_
+#define LST_TEST_H_
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
@@ -18,22 +18,27 @@
 #include "lst_spi.h"
 #include "lst_uart.h"
 #include "lst_adc.h"
+#include "lst_bt.h"
+
+#ifdef LST_CONFIG_TEST
 
 /* Defines -------------------------------------------------------------------*/
 
 /* Function prototypes -------------------------------------------------------*/
-void LST_Tasks_UART_Test(void const * argument);
-void LST_Tasks_SPI_Test(void const * argument);
-void LST_Tasks_TIM_Test(void const * argument);
-void LST_Tasks_BT_Test(void const * argument);
-void LST_Tasks_ADC_Test(void const * argument);
+void LST_Test_Start(void const * argument);
+void LST_Test_UART(void const * argument);
+void LST_Test_SPI(void const * argument);
+void LST_Test_TIM(void const * argument);
+void LST_Test_BT(void const * argument);
+void LST_Test_ADC(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/
-osThreadId lst_tasks_StartTaskHandle;
-osThreadId lst_tasks_UartTestHandle;
-osThreadId lst_tasks_TimerTestHandle;
-osThreadId lst_tasks_SpiTestHandle;
-osThreadId lst_tasks_BT_TestHandle;
-osThreadId lst_tasks_ADC_TestHandle;
+osThreadId lst_test_StartTestHandle;
+osThreadId lst_test_UartTestHandle;
+osThreadId lst_test_TimerTestHandle;
+osThreadId lst_test_SpiTestHandle;
+osThreadId lst_test_BtTestHandle;
+osThreadId lst_test_AdcTestHandle;
 
-#endif /* LST_TASKS_H_ */
+#endif /* LST_CONFIG_TEST */
+#endif /* LST_TEST_H_ */

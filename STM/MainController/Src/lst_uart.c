@@ -26,22 +26,22 @@ uint8_t lst_uart_buffer_tx[UART2_TX_BUFFER_SIZE]    = {0x01, 0xFF};
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART2){
+		HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2[cntr_uart2], 1);
 		if(cntr_uart2 == UART2_RX_BUFFER_SIZE - 1){
 			cntr_uart2 = 0;
 		}
 		else{
 			cntr_uart2++;
 		}
-		HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2[cntr_uart2], 1);
 	}
 
 	if (huart->Instance == USART1){
+		HAL_UART_Receive_IT(&huart1, (uint8_t *)&lst_uart_buffer_uart1[cntr_uart1], 1);
 		if(cntr_uart1 == UART1_RX_BUFFER_SIZE - 1){
 			cntr_uart1 = 0;
 		}
 		else{
 			cntr_uart1++;
 		}
-		HAL_UART_Receive_IT(&huart1, (uint8_t *)&lst_uart_buffer_uart1[cntr_uart1], 1);
 	}
 }
