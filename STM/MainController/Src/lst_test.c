@@ -16,17 +16,7 @@
 uint8_t buffer_baud[33] = "AT+AB ChangeDefaultBaud 2000000\r\n";
 #endif
 
-uint8_t buffer_var[26] = {
-		0x03,
-		0x03, 0x41, 0x42, 0x43, 0x00,
-		0x03, 0x44, 0x45, 0x46, 0x01,
-		0x03, 0x47, 0x48, 0x49, 0x02,
-		0x01, 0x50, 0x03,
-		0x01, 0x51, 0x04,
-		0x01, 0x52, 0x05,
-		0xFF};
-
-uint8_t buffer_vars[16] = {0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF};
+uint8_t buffer_test_error_string[9] = "TestError";
 
 /* External variables --------------------------------------------------------*/
 
@@ -129,28 +119,16 @@ void LST_Test_BT(void const * argument)
 	HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer_baud, 33);
 #endif
 
-	/* Send var list */
-	HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer_var, 26);
+	LST_BT_Send_StatusOk();
+	LST_BT_Send_StatusError((uint8_t *)&buffer_test_error_string, 9);
+	LST_BT_Send_StatusRequest();
+	LST_BT_Send_VarList();
 
 	/* Infinite loop */
 	while(1)
 	{
-		/* Wait until UART2 is ready */
-		while(huart2.gState != HAL_UART_STATE_READY){}
-
-		/* Increment data */
-		uint8_t i = 0;
-		for(i = 1; i < 15; i++){
-			buffer_vars[i]++;
-			if(buffer_vars[i] == 0xFF){
-				buffer_vars[i] = 0x00;
-			}
-		}
-
-		/* Transmit data to PC */
-		HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&buffer_vars, 16);
-
-		osDelay(2);
+		LST_BT_Send_VarValues();
+		osDelay(10);
 	}
 }
 

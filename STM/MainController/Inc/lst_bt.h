@@ -14,6 +14,8 @@
 #include "stm32f4xx_it.h"
 #include "cmsis_os.h"
 #include "main.h"
+#include "lst_utils.h"
+#include "lst_uart.h"
 
 /* Defines -------------------------------------------------------------------*/
 /* BT Defines ----------------------------------------------------------------*/
@@ -82,6 +84,11 @@
 #define LST_GAMEPAD_AXIS_MIDDLE 	0x8000
 
 /* Function prototypes -------------------------------------------------------*/
+void LST_BT_Send_StatusOk();
+void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len);
+void LST_BT_Send_StatusRequest();
+void LST_BT_Send_VarList();
+void LST_BT_Send_VarValues();
 
 /* Private variables ---------------------------------------------------------*/
 

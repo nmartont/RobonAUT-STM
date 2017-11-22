@@ -16,11 +16,15 @@
 #include "main.h"
 
 /* Private defines -----------------------------------------------------------*/
-#define UART1_RX_BUFFER_SIZE 128
-#define UART2_RX_BUFFER_SIZE 256
-#define UART2_TX_BUFFER_SIZE 128
+#define LST_UART1_RX_BUFFER_SIZE 128
+#define LST_UART2_RX_BUFFER_SIZE 128
+#define LST_UART2_TX_BUFFER_SIZE 128
+
+#define LST_UART_TX_NOTCPLT 0
+#define LST_UART_TX_CPLT 		1
 
 /* Function prototypes -------------------------------------------------------*/
+void LST_UART_BT_Send_Bytes(uint8_t data_bytes);
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -28,8 +32,11 @@
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 
-extern uint8_t lst_uart_buffer_uart1[UART1_RX_BUFFER_SIZE];
-extern uint8_t lst_uart_buffer_uart2[UART2_RX_BUFFER_SIZE];
-extern uint8_t lst_uart_buffer_tx[UART2_TX_BUFFER_SIZE];
+extern uint8_t lst_uart_buffer_uart1[LST_UART1_RX_BUFFER_SIZE];
+extern uint8_t lst_uart_buffer_uart2[LST_UART2_RX_BUFFER_SIZE];
+extern uint8_t lst_uart_buffer_tx[LST_UART2_TX_BUFFER_SIZE];
+
+extern uint8_t lst_uart_uart1_txcplt;
+extern uint8_t lst_uart_uart2_txcplt;
 
 #endif /* LST_UART_H_ */
