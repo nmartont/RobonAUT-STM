@@ -42,8 +42,12 @@ void read_segment(uint8_t segment_id)
 	for (uint8_t i=0; i<4; i++)
 	{
 
-		lst_tcrt_values[i * 8 + segment_id] = lst_adc_result[i];
+		lst_tcrt_values[lst_result_control[segment_id][i]]
+										= lst_adc_result[i];
+		//lst_tcrt_values[i * 8 + segment_id] = lst_adc_result[i];
 
 	}
+
+	lst_timer1_delay_microSeconds(60); // TODO TEMP
 
 }

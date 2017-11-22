@@ -21,6 +21,15 @@ void lst_gpio_latch_ledSegment(void)
 void lst_gpio_write_muxes(uint8_t segment_id)
 {
 
+	// Write address
+		HAL_GPIO_WritePin(ADDR0_GPIO_Port, ADDR0_Pin,
+				(lst_mux_control[segment_id] & 1));
+		HAL_GPIO_WritePin(ADDR1_GPIO_Port, ADDR1_Pin,
+				(lst_mux_control[segment_id] & 2));
+		HAL_GPIO_WritePin(ADDR2_GPIO_Port, ADDR2_Pin,
+				(lst_mux_control[segment_id] & 4));
+
+	/*
 	// Convert segment_id to MUX address TODO check
 	switch (segment_id)
 	{
@@ -51,10 +60,6 @@ void lst_gpio_write_muxes(uint8_t segment_id)
 		break;
 
 	}
-
-	// Write address
-	HAL_GPIO_WritePin(ADDR0_GPIO_Port, ADDR0_Pin, (lst_segment_id_mux & 1));
-	HAL_GPIO_WritePin(ADDR1_GPIO_Port, ADDR1_Pin, (lst_segment_id_mux & 2));
-	HAL_GPIO_WritePin(ADDR2_GPIO_Port, ADDR2_Pin, (lst_segment_id_mux & 4));
+*/
 
 }

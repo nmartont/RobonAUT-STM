@@ -18,7 +18,7 @@
 #include "lst_task_testOnly.h"
 
 // Variables
-int a;
+
 
 void entry_point(void);
 /*
@@ -31,12 +31,6 @@ void main_function(void);
 /*
  * @Description
  * 	Executes the RACE FUNCTION.
- */
-
-void test_timer(void);
-/*
- * @Description
- * 	Tests the custom-made timer functions.
  */
 
 #endif /* LST_LINECONTROLLERNUCLEO_H_ */

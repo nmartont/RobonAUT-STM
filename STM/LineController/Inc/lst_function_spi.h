@@ -11,6 +11,7 @@
 // Includes
 
 #include "lst_constants.h"
+#include "lst_task_readLine.h"
 
 // External variables
 
@@ -33,7 +34,6 @@ extern SPI_HandleTypeDef hspi2;
 // Variables
 
 uint8_t lst_spi_interStm_writeCompleteFlag;
-uint8_t lst_spi_ledDriver_writeCompleteFlag;
 
 uint8_t lst_spi_ledDriver_txBuf[4];
 uint8_t lst_spi_ledDriver_rxBuf[4];
@@ -45,12 +45,6 @@ uint8_t lst_spi_ledDriver_rxBuf[4];
 // Function declarations
 
 void lst_spi_write_ledSegment(uint8_t segment_id);
-/*
- * @Description
- *	TODO
- */
-
-void lst_spi_ledDriver_callback(void);
 /*
  * @Description
  *	TODO

@@ -11,6 +11,7 @@
 // Includes
 #include "lst_constants.h"
 #include "lst_function_timer.h"
+#include "lst_task_readLine.h"
 #ifdef LST_NUCLEO_TEST
 	#include "stm32f4xx_hal.h"
 #else
@@ -22,7 +23,7 @@
 #define LATCH_PIN SPI2_LATCH_Pin
 
 // Local variables
-uint8_t lst_segment_id_mux;
+//uint8_t lst_segment_id_mux;
 
 // Function declarations
 

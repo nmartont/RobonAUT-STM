@@ -10,15 +10,14 @@
 void lst_spi_write_ledSegment(uint8_t segment_id)
 {
 
-	lst_spi_ledDriver_writeCompleteFlag = 0;
-
 	// Fill TX buffer
 	for (int i=0; i<4; i++)
 	{
 
-		lst_spi_ledDriver_txBuf[i] = 1 << (7 -segment_id);
+		lst_spi_ledDriver_txBuf[i] =
+				lst_ledDriver_control[segment_id][i];
 
-	} // TODO check address validity w/ measurement
+	}
 
 	// Write LED drivers
 	HAL_SPI_Transmit(
@@ -26,23 +25,8 @@ void lst_spi_write_ledSegment(uint8_t segment_id)
 			(uint8_t *)&lst_spi_ledDriver_txBuf,
 			4,
 			LST_SPI_TXRX_TIMEOUT);
-/*
-	// Wait for SPI transaction complete flag
-	while (!lst_spi_ledDriver_writeCompleteFlag)
-	{
 
-		// Wait
-
-	}
-*/
-	// TODO where to handle received LED error data??
-
-}
-
-void lst_spi_ledDriver_callback(void)
-{
-
-	lst_spi_ledDriver_writeCompleteFlag = 1;
+	// TODO where to handle received LED error data?
 
 }
 
@@ -66,13 +50,6 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 	{
 
 		spi_interStm_callback();
-
-	}
-
-	if (hspi->Instance == SPI2)
-	{
-
-		lst_spi_ledDriver_callback();
 
 	}
 
