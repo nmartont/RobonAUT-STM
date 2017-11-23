@@ -18,8 +18,20 @@
 #include "lst_uart.h"
 
 /* Defines -------------------------------------------------------------------*/
+/* Buffer defines */
+#define LST_BT_RX_BUFFER_SIZE 128
+
 /* BT Defines ----------------------------------------------------------------*/
 #define LST_BT_MESSAGE_END 0xFF
+#define LST_BT_CONF_MSG_END1 '\r'
+#define LST_BT_CONF_MSG_END2 '\n'
+#define LST_BT_CONF_MSG_START1 'A'
+#define LST_BT_CONF_MSG_START2 'T'
+#define LST_BT_CONF_MSG_START3 '-'
+#define LST_BT_CONF_MSG_START4 'A'
+#define LST_BT_CONF_MSG_START5 'B'
+#define LST_BT_CONF_MSG_START6 ' '
+
 /* BT Message Types */
 #define LST_BT_MSGTYPE_STATUSERROR	0
 #define LST_BT_MSGTYPE_STATUSOK			1
@@ -84,6 +96,7 @@
 #define LST_GAMEPAD_AXIS_MIDDLE 	0x8000
 
 /* Function prototypes -------------------------------------------------------*/
+void LST_BT_Process_Incoming_Byte();
 void LST_BT_Send_StatusOk();
 void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len);
 void LST_BT_Send_StatusRequest();

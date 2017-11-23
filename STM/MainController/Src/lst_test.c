@@ -52,13 +52,13 @@ void LST_Test_UART(void const * argument)
 		osDelay(100);
 
 		lst_uart_buffer_tx[0] += 1;
-		lst_uart_buffer_tx[1] += 1;
-		lst_uart_buffer_tx[2] += 1;
-		lst_uart_buffer_tx[3] += 1;
-		lst_uart_buffer_tx[4] += 1;
-		lst_uart_buffer_tx[5] += 1;
-		lst_uart_buffer_tx[6] += 1;
-		lst_uart_buffer_tx[7] += 1;
+//		lst_uart_buffer_tx[1] += 1;
+//		lst_uart_buffer_tx[2] += 1;
+//		lst_uart_buffer_tx[3] += 1;
+//		lst_uart_buffer_tx[4] += 1;
+//		lst_uart_buffer_tx[5] += 1;
+//		lst_uart_buffer_tx[6] += 1;
+//		lst_uart_buffer_tx[7] += 1;
   }
 }
 

@@ -8,6 +8,11 @@
 #include "lst_bt.h"
 
 /* Private variables ---------------------------------------------------------*/
+/* Buffer for receiving bytes */
+uint8_t buffer_rx[LST_BT_RX_BUFFER_SIZE] = {0x00};
+/* Counter for buffer */
+uint8_t buffer_rx_cntr = 0;
+
 // ToDo some of these variables are for testing.
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
 #define LST_BT_VARLIST_DATALEN 24
@@ -31,9 +36,120 @@ uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
 #define LST_BT_VARVALUES_DATALEN 14
 uint8_t buffer_vars[LST_BT_VARVALUES_DATALEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+/* Function prototypes ------------------------------------------------------ */
+inline void process_bt_message();
+inline void process_config_message();
+
 /******************************************************************************/
 /*                 BlueTooth handling for RobonAUT 2018 Team LST              */
 /******************************************************************************/
+
+/* Data processing functions -------------------------------------------------*/
+/**
+* @brief Processes a byte from the BT module
+*/
+void LST_BT_Process_Incoming_Byte(){
+	/* Check for message end byte */
+	if(lst_uart_buffer_uart2[0] == LST_BT_MESSAGE_END){
+		/* Process message */
+		process_bt_message();
+		/* Reset counter */
+		buffer_rx_cntr = 0;
+	}
+	/* Check for message end byte for config messages from the BT module */
+	else if(lst_uart_buffer_uart2[0] == LST_BT_CONF_MSG_END2){ // Last byte of the message is '\n'
+		if(buffer_rx_cntr > 0){
+			if(buffer_rx[buffer_rx_cntr] == LST_BT_CONF_MSG_END1){ // Second to last byte of the message is '\r'
+				process_config_message();
+				/* Reset counter */
+				buffer_rx_cntr = 0;
+			}
+		}
+	}else{
+		/* Store byte in buffer */
+		buffer_rx[buffer_rx_cntr] = lst_uart_buffer_uart2[0];
+		/* Increment buffer counter */
+		if(buffer_rx_cntr == LST_BT_RX_BUFFER_SIZE - 1){
+			buffer_rx_cntr = 0;
+		}
+		else{
+			buffer_rx_cntr++;
+		}
+	}
+}
+
+/**
+* @brief Processes a BT message from the computer
+*/
+inline void process_bt_message(){
+	/* Check if counter is greater than zero */
+	if(buffer_rx_cntr == 0) return;
+
+	/* Switch case for msg type */
+	switch(buffer_rx[0]){
+	case LST_BT_MSGTYPE_STATUSREQ:
+		/* Message counter value should be 1 */
+		if(buffer_rx_cntr != 1) return;
+		/* Do stuff */
+
+		break;
+	case LST_BT_MSGTYPE_STATUSOK:
+		/* Message counter value should be 1 */
+		if(buffer_rx_cntr != 1) return;
+		/* Do stuff */
+
+		break;
+	case LST_BT_MSGTYPE_STATUSERROR:
+		/* Message counter value should greater than 2 */
+		if(buffer_rx_cntr < 2) return;
+		/* Do stuff */
+
+		break;
+	case LST_BT_MSGTYPE_VARLISTREQ:
+		/* Message counter value should be 1 */
+		if(buffer_rx_cntr != 1) return;
+		/* Do stuff */
+
+		break;
+	case LST_BT_MSGTYPE_MONITORSTART:
+		/* Message counter value should be 1 */
+		if(buffer_rx_cntr != 1) return;
+		/* Do stuff */
+
+		break;
+	case LST_BT_MSGTYPE_MONITORSTOP:
+		/* Message counter value should be 1 */
+		if(buffer_rx_cntr != 1) return;
+		/* Do stuff */
+
+		break;
+	case LST_BT_MSGTYPE_BTINPUT:
+		/* Message counter value should be 4 */
+		if(buffer_rx_cntr != 4) return;
+		/* Do stuff */
+		break;
+	default:
+		return;
+	}
+}
+
+/**
+* @brief Processes a BT config message from the BT module
+*/
+inline void process_config_message(){
+	/* Check if counter is greater than 8 */
+	if(buffer_rx_cntr < 8) return;
+
+	/* Check if the start of the message is the appropriate characters */
+	if(buffer_rx[0] != LST_BT_CONF_MSG_START1) return;
+	if(buffer_rx[1] != LST_BT_CONF_MSG_START2) return;
+	if(buffer_rx[2] != LST_BT_CONF_MSG_START3) return;
+	if(buffer_rx[3] != LST_BT_CONF_MSG_START4) return;
+	if(buffer_rx[4] != LST_BT_CONF_MSG_START5) return;
+	if(buffer_rx[5] != LST_BT_CONF_MSG_START6) return;
+
+	/* Do the processing */
+}
 
 /* Message sender functions --------------------------------------------------*/
 /**
