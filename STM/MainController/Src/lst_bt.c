@@ -167,6 +167,9 @@ inline void process_bt_message(){
 	case LST_BT_MSGTYPE_BTINPUT:
 		/* Message counter value should be 4 */
 		if(buffer_rx_cntr != 4) return;
+		/* We cannot get 0xFF: replace 0xFE for 0xFF so that the max value can be properly set */
+		if(buffer_rx[3] == 0xFE) buffer_rx[3] = 0xFF;
+		if(buffer_rx[2] == 0xFE) buffer_rx[2] = 0xFF;
 		/* Store value */
 		lst_bt_gamepad_values[buffer_rx[1]] = (buffer_rx[3] << 8) | (buffer_rx[2]);
 		break;
