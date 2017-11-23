@@ -50,7 +50,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* USER CODE BEGIN Includes */     
+/* USER CODE BEGIN Includes */
 #include "lst_task.h"
 #ifdef LST_CONFIG_TEST
 #include "lst_test.h"
@@ -66,6 +66,7 @@
 /* Function prototypes -------------------------------------------------------*/
 
 /* USER CODE BEGIN FunctionPrototypes */
+void LST_Init();
 void LST_Start(void const * argument);
 /* USER CODE END FunctionPrototypes */
 
@@ -74,8 +75,8 @@ void LST_Start(void const * argument);
 /* USER CODE BEGIN Application */
 void LST_Start(void const * argument)
 {
-  /* Setup of controller */
-	/* TODO */
+  /* Init of controller */
+	LST_Init();
 
 #ifdef LST_CONFIG_TEST
 	/* Start tests */
@@ -89,6 +90,15 @@ void LST_Start(void const * argument)
 
 	/* Terminate LST Start task */
 	osThreadTerminate(lst_task_StartTaskHandle);
+}
+
+void LST_Init(){
+	LST_Timer_Init();
+	LST_SPI_Init();
+	LST_ADC_Init();
+	LST_Radio_Init();
+	LST_BT_Init();
+	LST_UART_Init();
 }
 /* USER CODE END Application */
 

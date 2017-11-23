@@ -14,10 +14,44 @@
 #include "stm32f4xx_it.h"
 #include "cmsis_os.h"
 #include "main.h"
+#include "lst_utils.h"
+#include "lst_uart.h"
 
 /* Defines -------------------------------------------------------------------*/
+/* Buffer defines */
+#define LST_BT_RX_BUFFER_SIZE 128
+
 /* BT Defines ----------------------------------------------------------------*/
 #define LST_BT_MESSAGE_END 0xFF
+#define LST_BT_CONF_MSG_END1 '\r'
+#define LST_BT_CONF_MSG_END2 '\n'
+#define LST_BT_CONF_MSG_START1 'A'
+#define LST_BT_CONF_MSG_START2 'T'
+#define LST_BT_CONF_MSG_START3 '-'
+#define LST_BT_CONF_MSG_START4 'A'
+#define LST_BT_CONF_MSG_START5 'B'
+#define LST_BT_CONF_MSG_START6 ' '
+
+#define LST_BT_CONF_MSG_CONNECTION1   'C'
+#define LST_BT_CONF_MSG_CONNECTION2   'o'
+#define LST_BT_CONF_MSG_CONNECTION3   'n'
+#define LST_BT_CONF_MSG_CONNECTION4   'n'
+#define LST_BT_CONF_MSG_CONNECTION5   'e'
+#define LST_BT_CONF_MSG_CONNECTION6   'c'
+#define LST_BT_CONF_MSG_CONNECTION7   't'
+#define LST_BT_CONF_MSG_CONNECTION8   'i'
+#define LST_BT_CONF_MSG_CONNECTION9   'o'
+#define LST_BT_CONF_MSG_CONNECTION10  'n'
+#define LST_BT_CONF_MSG_CONNECTIONUP1 'U'
+#define LST_BT_CONF_MSG_CONNECTIONUP2 'p'
+#define LST_BT_CONF_MSG_CONNECTIONDOWN1 'D'
+#define LST_BT_CONF_MSG_CONNECTIONDOWN2 'o'
+#define LST_BT_CONF_MSG_CONNECTIONDOWN3 'w'
+#define LST_BT_CONF_MSG_CONNECTIONDOWN4 'n'
+
+#define LST_BT_CONNECTION_UP 		1
+#define LST_BT_CONNECTION_DOWN 	0
+
 /* BT Message Types */
 #define LST_BT_MSGTYPE_STATUSERROR	0
 #define LST_BT_MSGTYPE_STATUSOK			1
@@ -40,6 +74,7 @@
 #define LST_BT_STATUS_ERROR			1
 
 /* GamePad Defines ---------------------------------------------------------- */
+#define LST_GAMEPAD_ARRAY_SIZE			64
 /* Key mapping for Ipega BT Controller */
 /* Face Buttons */
 #define LST_GAMEPAD_BUTTON_A 				48
@@ -62,7 +97,7 @@
 #define LST_GAMEPAD_BUTTON_LSTICK 	61
 #define LST_GAMEPAD_BUTTON_RSTICK 	62
 /* D-Pad */
-#define GAMEPAD_DPAD 								32
+#define LST_GAMEPAD_DPAD 						32
 
 /* Button states */
 #define LST_GAMEPAD_BUTTON_STATE_PRESSED	128
@@ -82,7 +117,17 @@
 #define LST_GAMEPAD_AXIS_MIDDLE 	0x8000
 
 /* Function prototypes -------------------------------------------------------*/
+void LST_BT_Init();
+void LST_BT_Process_Incoming_Byte();
+void LST_BT_Send_StatusOk();
+void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len);
+void LST_BT_Send_StatusRequest();
+void LST_BT_Send_VarList();
+void LST_BT_Send_VarValues();
 
 /* Private variables ---------------------------------------------------------*/
+
+/* External variables --------------------------------------------------------*/
+extern uint16_t lst_bt_gamepad_values[LST_GAMEPAD_ARRAY_SIZE];
 
 #endif /* LST_BT_H_ */

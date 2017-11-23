@@ -1,12 +1,12 @@
 /*
- * lst_timer.h
+ * lst_radio.h
  *
- *  Created on: 2017. nov. 1.
+ *  Created on: 2017. nov. 23.
  *      Author: nmartont
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef LST_TIMER_H_
-#define LST_TIMER_H_
+#ifndef LST_RADIO_H_
+#define LST_RADIO_H_
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
@@ -18,15 +18,11 @@
 /* Defines -------------------------------------------------------------------*/
 
 /* Function prototypes -------------------------------------------------------*/
-void LST_Timer_Init();
+void LST_Radio_Init();
+void LST_Radio_Process_Incoming_Byte();
 
 /* Private variables ---------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim5;
-extern TIM_HandleTypeDef htim6;
-extern TIM_HandleTypeDef htim8;
 
-#endif /* LST_TIMER_H_ */
+#endif /* LST_RADIO_H_ */
