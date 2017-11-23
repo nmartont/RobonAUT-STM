@@ -50,7 +50,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* USER CODE BEGIN Includes */
+/* USER CODE BEGIN Includes */     
 #include "lst_task.h"
 #ifdef LST_CONFIG_TEST
 #include "lst_test.h"

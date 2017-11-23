@@ -55,6 +55,7 @@ uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
 uint8_t buffer_vars[LST_BT_VARVALUES_DATALEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 /* Function prototypes ------------------------------------------------------ */
+inline void gamepad_default_values();
 inline void process_bt_message();
 inline void process_config_message();
 
@@ -66,6 +67,15 @@ inline void process_config_message();
 * @brief Initializes the BT part of the software
 */
 void LST_BT_Init(){
+	gamepad_default_values();
+}
+
+inline void gamepad_default_values(){
+	uint8_t cntr = 0;
+	for(cntr=0; cntr<LST_GAMEPAD_ARRAY_SIZE; cntr++){
+		lst_bt_gamepad_values[cntr] = LST_GAMEPAD_BUTTON_STATE_RELEASED;
+	}
+
 	/* Default value of GAMEPAD_DPAD is 1 */
 	lst_bt_gamepad_values[LST_GAMEPAD_DPAD] = LST_GAMEPAD_DPAD_RELEASED;
 	/* Default value of axes */
@@ -90,7 +100,7 @@ void LST_BT_Process_Incoming_Byte(){
 	/* Check for message end byte for config messages from the BT module */
 	else if(lst_uart_buffer_uart2[0] == LST_BT_CONF_MSG_END2){ // Last byte of the message is '\n'
 		if(buffer_rx_cntr > 0){
-			if(buffer_rx[buffer_rx_cntr] == LST_BT_CONF_MSG_END1){ // Second to last byte of the message is '\r'
+			if(buffer_rx[buffer_rx_cntr - 1] == LST_BT_CONF_MSG_END1){ // Second to last byte of the message is '\r'
 				process_config_message();
 				/* Reset counter */
 				buffer_rx_cntr = 0;
@@ -158,7 +168,7 @@ inline void process_bt_message(){
 		/* Message counter value should be 4 */
 		if(buffer_rx_cntr != 4) return;
 		/* Store value */
-		lst_bt_gamepad_values[buffer_rx[1]] = (buffer_rx[4] << 8) | (buffer_rx[3]);
+		lst_bt_gamepad_values[buffer_rx[1]] = (buffer_rx[3] << 8) | (buffer_rx[2]);
 		break;
 	default:
 		return;
@@ -206,6 +216,7 @@ inline void process_config_message(){
 		 buffer_rx[18] == LST_BT_CONF_MSG_CONNECTIONDOWN3 && buffer_rx[19] == LST_BT_CONF_MSG_CONNECTIONDOWN4){
 		/* Do the thing */
 		lst_bt_connection_status = LST_BT_CONNECTION_DOWN;
+		gamepad_default_values();
 		return;
 	}
 }
@@ -246,7 +257,7 @@ void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len){
 
 	/* Copy source buffer to TX buffer */
 	if(error_msg_len > 0){
-		memoryCopy((uint8_t *)&lst_uart_buffer_tx[1], (uint8_t *)&error_msg, error_msg_len);
+		memoryCopy((uint8_t *)&lst_uart_buffer_tx[1], (uint8_t *)&error_msg[0], error_msg_len);
 	}
 
 	/* Put message end character at the end of the message */

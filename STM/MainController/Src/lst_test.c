@@ -31,7 +31,7 @@ void LST_Test_Start(void const * argument)
 {
 	/* Start a test */
 	osThreadDef(LST_Test_PWM, LST_Test_PWM, osPriorityNormal, 0, 128);
-	lst_test_PwmTestHandle = osThreadCreate(osThread(LST_Test_PWM), NULL);
+	lst_test_BtTestHandle = osThreadCreate(osThread(LST_Test_PWM), NULL);
 
 	/* Exit starter task */
 	osThreadTerminate(lst_test_StartTestHandle);
@@ -116,14 +116,14 @@ void LST_Test_BT(void const * argument)
 #endif
 
 	LST_BT_Send_StatusOk();
-	LST_BT_Send_StatusError((uint8_t *)&buffer_test_error_string, 9);
+	LST_BT_Send_StatusError((uint8_t *)&buffer_test_error_string[0], 9);
 	LST_BT_Send_StatusRequest();
 	LST_BT_Send_VarList();
 
 	/* Infinite loop */
 	while(1)
 	{
-		LST_BT_Send_VarValues();
+		// LST_BT_Send_VarValues();
 		osDelay(10);
 	}
 }
@@ -147,14 +147,28 @@ void LST_Test_ADC(void const * argument)
 */
 void LST_Test_PWM(void const * argument)
 {
-	/* Start PWM */
-	HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
-
-	__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, 3900);
+	LST_BT_Send_StatusOk();
+	LST_BT_Send_VarList();
 
 	/* Infinite loop */
 	while(1)
 	{
+		int16_t steering = 4575;
+		int16_t motor = 4575;
+
+		int16_t new_st = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_LX] - LST_GAMEPAD_AXIS_MIDDLE;
+		new_st = new_st / -21.487f;
+		steering += new_st;
+
+		int16_t new_motor = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_RY] - LST_GAMEPAD_AXIS_MIDDLE;
+		new_motor = new_motor / -60.0f;
+		motor += new_motor;
+
+		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, steering);
+		__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, motor);
+		if(lst_bt_send_diagdata_flag) LST_BT_Send_VarValues();
+		osDelay(10);
+
 /*		for(int i=4500; i<=5100; i = i+10){
 
 			__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, i);

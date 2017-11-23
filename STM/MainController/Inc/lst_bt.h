@@ -129,5 +129,11 @@ void LST_BT_Send_VarValues();
 
 /* External variables --------------------------------------------------------*/
 extern uint16_t lst_bt_gamepad_values[LST_GAMEPAD_ARRAY_SIZE];
+extern uint8_t lst_bt_connection_status;
+extern uint8_t lst_bt_pc_status;
+extern uint8_t lst_bt_stm_status;
+extern uint8_t lst_bt_send_status_flag;
+extern uint8_t lst_bt_send_varlist_flag;
+extern uint8_t lst_bt_send_diagdata_flag;
 
 #endif /* LST_BT_H_ */
