@@ -54,6 +54,7 @@
 #define LST_BT_STATUS_ERROR			1
 
 /* GamePad Defines ---------------------------------------------------------- */
+#define LST_GAMEPAD_ARRAY_SIZE			64
 /* Key mapping for Ipega BT Controller */
 /* Face Buttons */
 #define LST_GAMEPAD_BUTTON_A 				48
@@ -76,7 +77,7 @@
 #define LST_GAMEPAD_BUTTON_LSTICK 	61
 #define LST_GAMEPAD_BUTTON_RSTICK 	62
 /* D-Pad */
-#define GAMEPAD_DPAD 								32
+#define LST_GAMEPAD_DPAD 						32
 
 /* Button states */
 #define LST_GAMEPAD_BUTTON_STATE_PRESSED	128
@@ -96,6 +97,7 @@
 #define LST_GAMEPAD_AXIS_MIDDLE 	0x8000
 
 /* Function prototypes -------------------------------------------------------*/
+void LST_BT_Init();
 void LST_BT_Process_Incoming_Byte();
 void LST_BT_Send_StatusOk();
 void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len);
@@ -104,5 +106,8 @@ void LST_BT_Send_VarList();
 void LST_BT_Send_VarValues();
 
 /* Private variables ---------------------------------------------------------*/
+
+/* External variables --------------------------------------------------------*/
+extern uint16_t lst_bt_gamepad_values[LST_GAMEPAD_ARRAY_SIZE];
 
 #endif /* LST_BT_H_ */

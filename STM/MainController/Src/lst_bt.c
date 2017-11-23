@@ -10,8 +10,12 @@
 /* Private variables ---------------------------------------------------------*/
 /* Buffer for receiving bytes */
 uint8_t buffer_rx[LST_BT_RX_BUFFER_SIZE] = {0x00};
+
 /* Counter for buffer */
 uint8_t buffer_rx_cntr = 0;
+
+/* Array for gamepad values */
+uint16_t lst_bt_gamepad_values[LST_GAMEPAD_ARRAY_SIZE] = {0x00};
 
 // ToDo some of these variables are for testing.
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
@@ -43,6 +47,20 @@ inline void process_config_message();
 /******************************************************************************/
 /*                 BlueTooth handling for RobonAUT 2018 Team LST              */
 /******************************************************************************/
+
+/* Initialization function -------------------------------------------------- */
+/**
+* @brief Initializes the BT part of the software
+*/
+void LST_BT_Init(){
+	/* Default value of GAMEPAD_DPAD is 1 */
+	lst_bt_gamepad_values[LST_GAMEPAD_DPAD] = LST_GAMEPAD_DPAD_RELEASED;
+	/* Default value of axes */
+	lst_bt_gamepad_values[LST_GAMEPAD_AXIS_LX] = LST_GAMEPAD_AXIS_MIDDLE;
+	lst_bt_gamepad_values[LST_GAMEPAD_AXIS_LY] = LST_GAMEPAD_AXIS_MIDDLE;
+	lst_bt_gamepad_values[LST_GAMEPAD_AXIS_RX] = LST_GAMEPAD_AXIS_MIDDLE;
+	lst_bt_gamepad_values[LST_GAMEPAD_AXIS_RY] = LST_GAMEPAD_AXIS_MIDDLE;
+}
 
 /* Data processing functions -------------------------------------------------*/
 /**

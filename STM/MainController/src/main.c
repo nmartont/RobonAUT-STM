@@ -46,12 +46,12 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include <lst_task.h>
 #include "main.h"
 #include "stm32f4xx_hal.h"
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
+#include <lst_task.h>
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
