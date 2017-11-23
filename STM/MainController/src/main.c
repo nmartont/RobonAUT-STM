@@ -46,12 +46,12 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include <lst_task.h>
 #include "main.h"
 #include "stm32f4xx_hal.h"
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
+#include "lst_task.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -550,9 +550,9 @@ static void MX_TIM5_Init(void)
   TIM_OC_InitTypeDef sConfigOC;
 
   htim5.Instance = TIM5;
-  htim5.Init.Prescaler = 500;
+  htim5.Init.Prescaler = 29;
   htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim5.Init.Period = 3600;
+  htim5.Init.Period = 50000;
   htim5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   if (HAL_TIM_PWM_Init(&htim5) != HAL_OK)
   {

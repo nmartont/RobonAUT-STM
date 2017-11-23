@@ -40,8 +40,8 @@ uint8_t buffer_vars[16] = {0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF}
 void LST_Test_Start(void const * argument)
 {
 	/* Start a test */
-	osThreadDef(LST_Test_BT, LST_Test_BT, osPriorityNormal, 0, 128);
-	lst_test_BtTestHandle = osThreadCreate(osThread(LST_Test_BT), NULL);
+	osThreadDef(LST_Test_PWM, LST_Test_PWM, osPriorityNormal, 0, 128);
+	lst_test_PwmTestHandle = osThreadCreate(osThread(LST_Test_PWM), NULL);
 
 	/* Exit starter task */
 	osThreadTerminate(lst_test_StartTestHandle);
@@ -166,6 +166,65 @@ void LST_Test_ADC(void const * argument)
 		HAL_ADC_Start_IT(&hadc3);
 		osDelay(1);
 	}
+}
+
+/**
+* @brief Test for PWM
+*/
+void LST_Test_PWM(void const * argument)
+{
+	/* Start PWM */
+	HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
+
+	__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, 3900);
+
+	/* Infinite loop */
+	while(1)
+	{
+/*		for(int i=4500; i<=5100; i = i+10){
+
+			__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, i);
+			osDelay(50);
+		}
+		osDelay(1500);
+
+		for(int i=5300; i>=4400; i = i-10){
+
+			__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, i);
+			osDelay(50);
+		}
+		for(int i=4400; i<=4500; i = i+10){
+
+			__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, i);
+			osDelay(50);
+		}
+
+		__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, 4500);
+			osDelay(2000);
+
+//Backward
+
+		for(int i=4500; i>=3900; i = i-10){
+
+			__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, i);
+			osDelay(50);
+		}
+			osDelay(1500);
+
+		for(int i=3900; i<=4600; i = i+10){
+
+			__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, i);
+			osDelay(50);
+		}
+		for(int i=4600; i>=4500; i = i-10){
+
+			__HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, i);
+			osDelay(50);
+		}
+		osDelay(2000);
+*/
+	}
+
 }
 
 #endif /* LST_CONFIG_TEST */

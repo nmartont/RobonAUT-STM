@@ -31,6 +31,7 @@ void LST_Test_SPI(void const * argument);
 void LST_Test_TIM(void const * argument);
 void LST_Test_BT(void const * argument);
 void LST_Test_ADC(void const * argument);
+void LST_Test_PWM(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/
 osThreadId lst_test_StartTestHandle;
@@ -39,6 +40,7 @@ osThreadId lst_test_TimerTestHandle;
 osThreadId lst_test_SpiTestHandle;
 osThreadId lst_test_BtTestHandle;
 osThreadId lst_test_AdcTestHandle;
+osThreadId lst_test_PwmTestHandle;
 
 #endif /* LST_CONFIG_TEST */
 #endif /* LST_TEST_H_ */
