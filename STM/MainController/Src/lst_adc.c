@@ -18,6 +18,13 @@ uint8_t cntr_adc = 0;
 /******************************************************************************/
 /*                    ADC handler  for RobonAUT 2018 Team LST                 */
 /******************************************************************************/
+/* Initialization function ---------------------------------------------------*/
+/**
+* @brief Initializes the ADC part of the software
+*/
+void LST_ADC_Init(){
+
+}
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* adcHandle)
 {

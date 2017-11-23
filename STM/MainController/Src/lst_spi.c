@@ -20,6 +20,13 @@ uint8_t lst_spi_slave_rx[8] = {0x00};
 /******************************************************************************/
 /*             SPI Communication handling for RobonAUT 2018 Team LST          */
 /******************************************************************************/
+/* Initialization function ---------------------------------------------------*/
+/**
+* @brief Initializes the SPI part of the software
+*/
+void LST_SPI_Init(){
+
+}
 
 /**
 * @brief This function handles the SPI receive complete callback.

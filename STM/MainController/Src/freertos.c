@@ -93,7 +93,12 @@ void LST_Start(void const * argument)
 }
 
 void LST_Init(){
+	LST_Timer_Init();
+	LST_SPI_Init();
+	LST_ADC_Init();
+	LST_Radio_Init();
 	LST_BT_Init();
+	LST_UART_Init();
 }
 /* USER CODE END Application */
 

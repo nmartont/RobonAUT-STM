@@ -7,6 +7,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "lst_bt.h"
 
+/* Defines -------------------------------------------------------------------*/
+#ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
+#define LST_BT_VARLIST_DATALEN 24
+#else
+#define LST_BT_VARLIST_DATALEN 24
+#endif
+
+#define LST_BT_VARVALUES_DATALEN 14
 /* Private variables ---------------------------------------------------------*/
 /* Buffer for receiving bytes */
 uint8_t buffer_rx[LST_BT_RX_BUFFER_SIZE] = {0x00};
@@ -17,9 +25,16 @@ uint8_t buffer_rx_cntr = 0;
 /* Array for gamepad values */
 uint16_t lst_bt_gamepad_values[LST_GAMEPAD_ARRAY_SIZE] = {0x00};
 
+/* BT Control Flags */
+uint8_t lst_bt_connection_status = LST_BT_CONNECTION_DOWN;
+uint8_t lst_bt_pc_status 	= LST_BT_STATUS_OK;
+uint8_t lst_bt_stm_status = LST_BT_STATUS_OK;
+uint8_t lst_bt_send_status_flag = 0;
+uint8_t lst_bt_send_varlist_flag = 0;
+uint8_t lst_bt_send_diagdata_flag = 0;
+
 // ToDo some of these variables are for testing.
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
-#define LST_BT_VARLIST_DATALEN 24
 uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
 		0x03, 0x41, 0x42, 0x43, 0x00,
 		0x03, 0x44, 0x45, 0x46, 0x01,
@@ -28,7 +43,6 @@ uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
 		0x01, 0x51, 0x04,
 		0x01, 0x52, 0x05};
 #else
-#define LST_BT_VARLIST_DATALEN 24
 uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
 		0x03, 0x41, 0x42, 0x43, 0x00,
 		0x03, 0x44, 0x45, 0x46, 0x01,
@@ -37,7 +51,7 @@ uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
 		0x01, 0x51, 0x04,
 		0x01, 0x52, 0x05};
 #endif
-#define LST_BT_VARVALUES_DATALEN 14
+
 uint8_t buffer_vars[LST_BT_VARVALUES_DATALEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 /* Function prototypes ------------------------------------------------------ */
@@ -47,8 +61,7 @@ inline void process_config_message();
 /******************************************************************************/
 /*                 BlueTooth handling for RobonAUT 2018 Team LST              */
 /******************************************************************************/
-
-/* Initialization function -------------------------------------------------- */
+/* Initialization function ---------------------------------------------------*/
 /**
 * @brief Initializes the BT part of the software
 */
@@ -109,42 +122,43 @@ inline void process_bt_message(){
 		/* Message counter value should be 1 */
 		if(buffer_rx_cntr != 1) return;
 		/* Do stuff */
-
+		lst_bt_send_status_flag = 1;
 		break;
 	case LST_BT_MSGTYPE_STATUSOK:
 		/* Message counter value should be 1 */
 		if(buffer_rx_cntr != 1) return;
 		/* Do stuff */
-
+		lst_bt_pc_status = LST_BT_STATUS_OK;
 		break;
 	case LST_BT_MSGTYPE_STATUSERROR:
 		/* Message counter value should greater than 2 */
 		if(buffer_rx_cntr < 2) return;
 		/* Do stuff */
-
+		lst_bt_pc_status = LST_BT_STATUS_ERROR;
 		break;
 	case LST_BT_MSGTYPE_VARLISTREQ:
 		/* Message counter value should be 1 */
 		if(buffer_rx_cntr != 1) return;
 		/* Do stuff */
-
+		lst_bt_send_varlist_flag = 1;
 		break;
 	case LST_BT_MSGTYPE_MONITORSTART:
 		/* Message counter value should be 1 */
 		if(buffer_rx_cntr != 1) return;
 		/* Do stuff */
-
+		lst_bt_send_diagdata_flag = 1;
 		break;
 	case LST_BT_MSGTYPE_MONITORSTOP:
 		/* Message counter value should be 1 */
 		if(buffer_rx_cntr != 1) return;
 		/* Do stuff */
-
+		lst_bt_send_diagdata_flag = 0;
 		break;
 	case LST_BT_MSGTYPE_BTINPUT:
 		/* Message counter value should be 4 */
 		if(buffer_rx_cntr != 4) return;
-		/* Do stuff */
+		/* Store value */
+		lst_bt_gamepad_values[buffer_rx[1]] = (buffer_rx[4] << 8) | (buffer_rx[3]);
 		break;
 	default:
 		return;
@@ -167,6 +181,33 @@ inline void process_config_message(){
 	if(buffer_rx[5] != LST_BT_CONF_MSG_START6) return;
 
 	/* Do the processing */
+	/* Messages we care about:
+	 * ConnectionUp[...]
+	 * ConnectionDown[...]
+	 * */
+	if(buffer_rx[6] != LST_BT_CONF_MSG_CONNECTION1) return;
+	if(buffer_rx[7] != LST_BT_CONF_MSG_CONNECTION2) return;
+	if(buffer_rx[8] != LST_BT_CONF_MSG_CONNECTION3) return;
+	if(buffer_rx[9] != LST_BT_CONF_MSG_CONNECTION4) return;
+	if(buffer_rx[10] != LST_BT_CONF_MSG_CONNECTION5) return;
+	if(buffer_rx[11] != LST_BT_CONF_MSG_CONNECTION6) return;
+	if(buffer_rx[12] != LST_BT_CONF_MSG_CONNECTION7) return;
+	if(buffer_rx[13] != LST_BT_CONF_MSG_CONNECTION8) return;
+	if(buffer_rx[14] != LST_BT_CONF_MSG_CONNECTION9) return;
+	if(buffer_rx[15] != LST_BT_CONF_MSG_CONNECTION10) return;
+
+	/* Determine if Up or Down */
+	if(buffer_rx[16] == LST_BT_CONF_MSG_CONNECTIONUP1 && buffer_rx[17] == LST_BT_CONF_MSG_CONNECTIONUP2){
+		/* Do the thing */
+		lst_bt_connection_status = LST_BT_CONNECTION_UP;
+		return;
+	}
+	if(buffer_rx[16] == LST_BT_CONF_MSG_CONNECTIONDOWN1 && buffer_rx[17] == LST_BT_CONF_MSG_CONNECTIONDOWN2 &&
+		 buffer_rx[18] == LST_BT_CONF_MSG_CONNECTIONDOWN3 && buffer_rx[19] == LST_BT_CONF_MSG_CONNECTIONDOWN4){
+		/* Do the thing */
+		lst_bt_connection_status = LST_BT_CONNECTION_DOWN;
+		return;
+	}
 }
 
 /* Message sender functions --------------------------------------------------*/
@@ -174,6 +215,8 @@ inline void process_config_message(){
 * @brief Sends an UART BT StatusOK message
 */
 void LST_BT_Send_StatusOk(){
+	lst_bt_send_status_flag = 0;
+
 	/* Wait until other sender functions are not using the BT */
 	while(lst_uart_uart2_txcplt == LST_UART_TX_NOTCPLT){}
 	lst_uart_uart2_txcplt = LST_UART_TX_NOTCPLT;
@@ -192,6 +235,8 @@ void LST_BT_Send_StatusOk(){
 * @brief Sends an UART BT StatusError message
 */
 void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len){
+	lst_bt_send_status_flag = 0;
+
 	/* Wait until UART2 is ready */
 	while(lst_uart_uart2_txcplt == LST_UART_TX_NOTCPLT){}
 	lst_uart_uart2_txcplt = LST_UART_TX_NOTCPLT;
@@ -233,6 +278,8 @@ void LST_BT_Send_StatusRequest(){
 * @brief Sends an UART BT Variable List message
 */
 void LST_BT_Send_VarList(){
+	lst_bt_send_varlist_flag = 0;
+
 	/* Wait until UART2 is ready */
 	while(lst_uart_uart2_txcplt == LST_UART_TX_NOTCPLT){}
 	lst_uart_uart2_txcplt = LST_UART_TX_NOTCPLT;

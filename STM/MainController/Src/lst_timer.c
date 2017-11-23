@@ -13,6 +13,13 @@ uint8_t cntr = 0;
 /******************************************************************************/
 /*                   Timer handling for RobonAUT 2018 Team LST                */
 /******************************************************************************/
+/* Initialization function ---------------------------------------------------*/
+/**
+* @brief Initializes the Timer part of the software
+*/
+void LST_Timer_Init(){
+
+}
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {

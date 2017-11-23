@@ -24,6 +24,7 @@
 #define LST_UART_TX_CPLT 		1
 
 /* Function prototypes -------------------------------------------------------*/
+void LST_UART_Init();
 void LST_UART_BT_Send_Bytes(uint8_t data_bytes);
 extern void LST_BT_Process_Incoming_Byte();
 extern void LST_Radio_Process_Incoming_Byte();

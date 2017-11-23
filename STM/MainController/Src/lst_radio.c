@@ -17,6 +17,13 @@
 /******************************************************************************/
 /*                   Radio handler  for RobonAUT 2018 Team LST                */
 /******************************************************************************/
+/* Initialization function ---------------------------------------------------*/
+/**
+* @brief Initializes the Radio part of the software
+*/
+void LST_Radio_Init(){
+
+}
 
 /**
 * @brief Processes a byte from the Radio module

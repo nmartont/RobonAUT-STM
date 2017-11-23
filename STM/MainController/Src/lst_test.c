@@ -42,8 +42,6 @@ void LST_Test_Start(void const * argument)
 */
 void LST_Test_UART(void const * argument)
 {
-  HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2, 1);
-
   /* Infinite loop */
   for(;;)
   {
@@ -111,8 +109,6 @@ void LST_Test_TIM(void const * argument)
 */
 void LST_Test_BT(void const * argument)
 {
-	/* Receive a byte on UART2 */
-	HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2, 1);
 
 #ifdef LST_CONFIG_CHANGE_BT_BAUD
 	/* Send BT baud change command */

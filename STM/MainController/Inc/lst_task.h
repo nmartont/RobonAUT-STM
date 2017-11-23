@@ -18,6 +18,8 @@
 #include "lst_spi.h"
 #include "lst_uart.h"
 #include "lst_adc.h"
+#include "lst_bt.h"
+#include "lst_radio.h"
 
 /* Defines -------------------------------------------------------------------*/
 

@@ -22,6 +22,18 @@ uint8_t lst_uart_buffer_tx[LST_UART2_TX_BUFFER_SIZE]    = {0x00};
 /*            UART Communication handling for RobonAUT 2018 Team LST          */
 /******************************************************************************/
 
+/* Initialization function -------------------------------------------------- */
+/**
+* @brief Initializes the UART part of the software
+*/
+void LST_UART_Init(){
+	/* Receive a byte on UART1 */
+	HAL_UART_Receive_IT(&huart1, (uint8_t *)&lst_uart_buffer_uart1, 1);
+
+	/* Receive a byte on UART2 */
+	HAL_UART_Receive_IT(&huart2, (uint8_t *)&lst_uart_buffer_uart2, 1);
+}
+
 /**
 * @brief This function handles the UART receive complete callback.
 */
