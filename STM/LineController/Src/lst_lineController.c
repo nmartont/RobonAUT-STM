@@ -7,15 +7,15 @@
 
 #include "lst_lineController.h"
 
-void entry_point(void)
+void lst_entry_point(void)
 {
 
 	while (1)
 	{
 
-		//test_timer();
+		lst_main_function();
 
-		main_function();
+		//test_timer();
 
 		//test_LedDrivers();
 
@@ -25,14 +25,16 @@ void entry_point(void)
 
 }
 
-void main_function(void)
+void lst_main_function(void)
 {
 
-	read_line();
+	lst_read_line();
 
-	//evaluate_line();
+	lst_display_line(LST_LINEDISPLAY_RAW_THRESHOLD);
 
-	//send_data();
+	//lst_evaluate_line();
+
+	//lst_send_data();
 
 }
 

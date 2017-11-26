@@ -5,22 +5,22 @@
  *      Author: Balazs
  */
 
-#include "lst_task_readLine.h"
+#include <task/lst_task_readLine.h>
 
-void read_line(void)
+void lst_read_line(void)
 {
 
 	for (uint8_t i=0; i<8; i++)
 	{
 
 		// Read 4 sensors at a time
-		read_segment(i);
+		lst_read_segment(i);
 
 	}
 
 }
 
-void read_segment(uint8_t segment_id)
+void lst_read_segment(uint8_t segment_id)
 {
 
 	// Write LED drivers
@@ -44,10 +44,7 @@ void read_segment(uint8_t segment_id)
 
 		lst_tcrt_values[lst_result_control[segment_id][i]]
 										= lst_adc_result[i];
-		//lst_tcrt_values[i * 8 + segment_id] = lst_adc_result[i];
 
 	}
-
-	lst_timer1_delay_microSeconds(60); // TODO TEMP
 
 }

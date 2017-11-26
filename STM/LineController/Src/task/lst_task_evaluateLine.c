@@ -5,7 +5,7 @@
  *      Author: Balazs
  */
 
-#include "lst_task_evaluateLine.h"
+#include <task/lst_task_evaluateLine.h>
 
 void lst_evaluate_line(void)
 {
@@ -68,6 +68,7 @@ void lst_eval_algorithm_01_findMaxima(void)
 
 	}
 
+	// Sensors in the middle
 	for (int i=1; i<31; i++)
 	{
 
@@ -116,6 +117,7 @@ void lst_eval_algorithm_01_findMaxima(void)
 			{
 
 				lst_eval_localMaxima2[lst_eval_localMaxima2_size] = lst_eval_localMaxima1[i];
+				lst_eval_localMaxima2_size++;
 
 			}
 
@@ -123,18 +125,21 @@ void lst_eval_algorithm_01_findMaxima(void)
 
 	}
 
-	/* Check if the maxima are appropriately salient values */
+	/* Check if the maxima are sufficiently salient values */
 
+	// Iterate through previous local maximum positions
 	for (int i=0; i<lst_eval_localMaxima2_size; i++)
 	{
 
 		lst_eval_salient_ok = 0;
 
-		for (int j = (i - LST_LINEEVAL_BASIC_MAX_PRX);
-				j <= (i + LST_LINEEVAL_BASIC_MAX_PRX);
-				j++)
+		// Iterate through the neighbours of the local maximum
+		for (int 	j = 	lst_eval_localMaxima2[i] - LST_LINEEVAL_BASIC_MAX_PRX;
+							j <= 	lst_eval_localMaxima2[i] + LST_LINEEVAL_BASIC_MAX_PRX;
+							j++)
 		{
 
+			// Skip if the targeted neighbour is outside [0, 31]
 			if ((j >=0) && (j<=31))
 			{
 
@@ -142,6 +147,7 @@ void lst_eval_algorithm_01_findMaxima(void)
 						(lst_tcrt_values[j] + LST_LINEEVAL_BASIC_MAX_THR))
 				{
 
+					// If at least one sufficiently low value is found, maximum is OK
 					lst_eval_salient_ok = 1;
 
 				}
@@ -166,6 +172,8 @@ void lst_eval_algorithm_01_findMaxima(void)
 void lst_eval_calculate_subSensor_positions()
 {
 
-	// TODO
+	// TODO continue here
+
+
 
 }

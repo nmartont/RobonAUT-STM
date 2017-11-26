@@ -5,7 +5,7 @@
  *      Author: Balazs
  */
 
-#include "lst_function_adc.h"
+#include <function/lst_function_adc.h>
 
 void lst_adc_convert(void)
 {

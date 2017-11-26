@@ -126,7 +126,7 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-	 entry_point(); // never returns
+	 lst_entry_point(); // never returns
 
   }
   /* USER CODE END 3 */
@@ -483,24 +483,24 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, LED_FEEDBACK_SCLK_Pin|LED_FEEDBACK_SOUT_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, LED_FEEDBACK_SCLK_Pin|LED_FEEDBACK_SIN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED_FEEDBACK_LATCH_Pin|SPI1_DRDY_Pin|SPI2_LATCH_Pin|ADDR2_Pin 
                           |ADDR1_Pin|ADDR0_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_FEEDBACK_SCLK_Pin LED_FEEDBACK_SOUT_Pin */
-  GPIO_InitStruct.Pin = LED_FEEDBACK_SCLK_Pin|LED_FEEDBACK_SOUT_Pin;
+  /*Configure GPIO pins : LED_FEEDBACK_SCLK_Pin LED_FEEDBACK_SIN_Pin */
+  GPIO_InitStruct.Pin = LED_FEEDBACK_SCLK_Pin|LED_FEEDBACK_SIN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LED_FEEDBACK_SIN_Pin */
-  GPIO_InitStruct.Pin = LED_FEEDBACK_SIN_Pin;
+  /*Configure GPIO pin : LED_FEEDBACK_SOUT_Pin */
+  GPIO_InitStruct.Pin = LED_FEEDBACK_SOUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(LED_FEEDBACK_SIN_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(LED_FEEDBACK_SOUT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_FEEDBACK_LATCH_Pin */
   GPIO_InitStruct.Pin = LED_FEEDBACK_LATCH_Pin;
@@ -521,6 +521,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
 
 /* USER CODE END 4 */
 

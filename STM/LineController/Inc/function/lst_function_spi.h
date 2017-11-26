@@ -10,26 +10,27 @@
 
 // Includes
 
+#include <task/lst_task_readLine.h>
 #include "lst_constants.h"
-#include "lst_task_readLine.h"
 
 // External variables
 
+/**
+ * \brief
+ * 	SPI slave connected to mainController
+ */
 #ifdef LST_NUCLEO_TEST
 	extern SPI_HandleTypeDef hspi3;
 #else
 	extern SPI_HandleTypeDef hspi1;
 #endif
-/*
- * @Description
- * 	SPI slave connected to mainController
- */
 
-extern SPI_HandleTypeDef hspi2;
-/*
- * @Description
+/**
+ * \brief
  * 	SPI master connected to series TLC5928 LED drivers
  */
+extern SPI_HandleTypeDef hspi2;
+
 
 // Variables
 
@@ -44,22 +45,22 @@ uint8_t lst_spi_ledDriver_rxBuf[4];
 
 // Function declarations
 
+/**
+ * \brief
+ *	TODO
+ */
 void lst_spi_write_ledSegment(uint8_t segment_id);
-/*
- * @Description
+
+/**
+ * \brief
  *	TODO
  */
-
 void spi_interStm_callback(void);
-/*
- * @Description
- *	TODO
- */
 
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
-/*
- * @Description
+/**
+ * \brief
  *	TODO
  */
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
 
 #endif /* FUNCTION_SPI_H_ */

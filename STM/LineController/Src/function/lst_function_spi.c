@@ -5,7 +5,7 @@
  *      Author: Balazs
  */
 
-#include "lst_function_spi.h"
+#include <function/lst_function_spi.h>
 
 void lst_spi_write_ledSegment(uint8_t segment_id)
 {

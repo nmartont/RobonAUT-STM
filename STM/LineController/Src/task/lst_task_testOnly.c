@@ -5,7 +5,7 @@
  *      Author: Balazs
  */
 
-#include "lst_task_testOnly.h"
+#include <task/lst_task_testOnly.h>
 
 
 uint8_t lst_test_ledDriver_txBuf[4];

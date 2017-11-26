@@ -5,90 +5,98 @@
  *      Author: Balazs
  */
 
-#ifndef LST_TASK_EVALUATELINE_H_
-#define LST_TASK_EVALUATELINE_H_
+#ifndef TASK_LST_TASK_EVALUATELINE_H_
+#define TASK_LST_TASK_EVALUATELINE_H_
 
 // Includes
+
 #include "lst_constants.h"
 
 // Local variables
 
-uint8_t lst_eval_maximum_global;
-/*
- * @Description
+/**
+ * \brief
  * 	Stores the maximum of the detected values.
  */
+uint8_t lst_eval_maximum_global;
 
+/**
+ * \brief
+ * 	Stores the size of the corresponding array
+ */
 uint8_t lst_eval_localMaxima1_size;
-/*
- * @Description
+
+/**
+ * \brief
  * 	Stores the size of the corresponding array
  */
-
 uint8_t lst_eval_localMaxima2_size;
-/*
- * @Description
+
+/**
+ * \brief
  * 	Stores the size of the corresponding array
  */
-
 uint8_t lst_eval_localMaxima3_size;
-/*
- * @Description
- * 	Stores the size of the corresponding array
- */
 
-uint8_t lst_eval_localMaxima1[16];
-/*
- * @Description
+/**
+ * \brief
  * 	Stores the positions of the local maxima, for which the previous
  * 	and next value is	smaller than itself.
  */
+uint8_t lst_eval_localMaxima1[16];
 
-uint8_t lst_eval_localMaxima2[16];
-/*
- * @Description
+/**
+ * \brief
  * 	Stores the positions of the local maxima, for which the previous
  * 	and next value is	smaller than itself and are in the range of
  * 	[(lst_maximum_global - LST_LINEEVAL_GLOBALMAX_THR); lst_maximum_global].
  */
+uint8_t lst_eval_localMaxima2[16];
 
-uint8_t lst_eval_localMaxima3[16];
-/*
- * @Description
+/**
+ * \brief
  * 	Stores the positions of the detected valid maximum values.
  */
+uint8_t lst_eval_localMaxima3[16];
 
 uint8_t lst_eval_salient_ok;
 
+/**
+ * \brief
+ * 	TODO
+ */
+uint16_t lst_eval_subPositions[3];
+
 // External variables
+
 extern uint8_t lst_tcrt_values[32];
 
 // Function declarations
 
-void lst_evaluate_line(void);
-/*
- * @Description
+/**
+ * \brief
  *	Evaluates line data based on the results from
  *	read_line(). Calls the selected evaluation algorithm.
  */
+void lst_evaluate_line(void);
 
-void lst_eval_init_values(void);
-/*
- * @Description
+/**
+ * \brief
  * 	Clears local variables before evaluating line sensor data.
  */
+void lst_eval_init_values(void);
 
-void lst_eval_algorithm_01_findMaxima(void);
-/*
- * @Description
+/**
+ * \brief
  * 	Finds the positions of sensor value maxima with several iterations
  * 	through the sensor data array.
  */
+void lst_eval_algorithm_01_findMaxima(void);
 
-void lst_eval_calculate_subSensor_positions(void);
-/*
- * @Description
+/**
+ * \brief
  * 	Approximates the position of the detected lines.
  */
+void lst_eval_calculate_subSensor_positions(void);
 
-#endif /* LST_TASK_EVALUATELINE_H_ */
+#endif /* TASK_LST_TASK_EVALUATELINE_H_ */

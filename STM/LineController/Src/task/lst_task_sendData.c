@@ -5,11 +5,11 @@
  *      Author: Balazs
  */
 
-#include "lst_task_sendData.h"
+#include <task/lst_task_sendData.h>
 
 // TODO
 
-void send_data(void)
+void lst_send_data(void)
 {
 
 
