@@ -19,13 +19,12 @@
 /******************************************************************************/
 
 /**
-* @brief This task starts the MainController tests.
-*/
-void LST_Task_Start(void const * argument)
-{
-	/* Start the tasks */
-	/* TODO */
+ * @brief This task starts the MainController tests.
+ */
+void LST_Task_Start(void const * argument) {
+  /* Start the tasks */
+  /* TODO */
 
-	/* Exit starter task */
-	osThreadTerminate(lst_task_StartTaskHandle);
+  /* Exit starter task */
+  osThreadTerminate(lst_task_StartTaskHandle);
 }

@@ -20,13 +20,12 @@ uint8_t cntr_adc = 0;
 /******************************************************************************/
 /* Initialization function ---------------------------------------------------*/
 /**
-* @brief Initializes the ADC part of the software
-*/
-void LST_ADC_Init(){
-
+ * @brief Initializes the ADC part of the software
+ */
+void LST_ADC_Init() {
+  
 }
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* adcHandle)
-{
-	cntr_adc++;
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* adcHandle) {
+  cntr_adc++;
 }

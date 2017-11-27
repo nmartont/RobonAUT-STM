@@ -21,7 +21,7 @@
 #define LST_UART2_TX_BUFFER_SIZE 128
 
 #define LST_UART_TX_NOTCPLT 0
-#define LST_UART_TX_CPLT 		1
+#define LST_UART_TX_CPLT    1
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_UART_Init();

@@ -24,8 +24,8 @@
 #define LST_RADIO_MSG_1 '1'
 #define LST_RADIO_MSG_0 '0'
 
-#define LST_RADIO_MSG_NOT_RECEIVED	0
-#define LST_RADIO_MSG_RECEIVED 			1
+#define LST_RADIO_MSG_NOT_RECEIVED  0
+#define LST_RADIO_MSG_RECEIVED      1
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Radio_Init();
