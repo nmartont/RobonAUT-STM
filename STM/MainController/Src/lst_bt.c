@@ -9,7 +9,7 @@
 
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
-#define LST_BT_VARLIST_DATALEN 24
+#define LST_BT_VARLIST_DATALEN 245
 #else
 #define LST_BT_VARLIST_DATALEN 24
 #endif
@@ -33,23 +33,81 @@ uint8_t lst_bt_send_status_flag = 0;
 uint8_t lst_bt_send_varlist_flag = 0;
 uint8_t lst_bt_send_diagdata_flag = 0;
 
-// ToDo some of these variables are for testing.
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
-uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = { 0x03, 0x41, 0x42, 0x43, 0x00,
-    0x03, 0x44, 0x45, 0x46, 0x01, 0x03, 0x47, 0x48, 0x49, 0x02, 0x01, 0x50,
-    0x03, 0x01, 0x51, 0x04, 0x01, 0x52, 0x05 };
+uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
+    0x05, 'L', 'i', 'n', 'e', '1', LST_BT_VARTYPE_INT16,
+    0x05, 'L', 'i', 'n', 'e', '2', LST_BT_VARTYPE_INT16,
+    0x05, 'L', 'i', 'n', 'e', '3', LST_BT_VARTYPE_INT16,
+    0x05, 'V', 'a', 'l', '0', '0', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '0', '1', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '0', '2', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '0', '3', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '0', '4', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '0', '5', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '0', '6', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '0', '7', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '0', '8', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '0', '9', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '0', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '1', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '2', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '3', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '4', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '5', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '6', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '7', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '8', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '1', '9', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '0', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '1', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '2', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '3', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '4', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '5', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '6', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '7', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '8', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '2', '9', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '3', '0', LST_BT_VARTYPE_UINT8,
+    0x05, 'V', 'a', 'l', '3', '1', LST_BT_VARTYPE_UINT8,};
 #else
 uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
-  0x03, 0x41, 0x42, 0x43, 0x00,
-  0x03, 0x44, 0x45, 0x46, 0x01,
-  0x03, 0x47, 0x48, 0x49, 0x02,
-  0x01, 0x50, 0x03,
-  0x01, 0x51, 0x04,
-  0x01, 0x52, 0x05};
+  0x05, 'L', 'i', 'n', 'e', '1', LST_BT_VARTYPE_INT16,
+  0x05, 'L', 'i', 'n', 'e', '2', LST_BT_VARTYPE_INT16,
+  0x05, 'L', 'i', 'n', 'e', '3', LST_BT_VARTYPE_INT16,
+  0x05, 'V', 'a', 'l', '0', '0', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '0', '1', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '0', '2', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '0', '3', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '0', '4', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '0', '5', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '0', '6', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '0', '7', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '0', '8', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '0', '9', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '0', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '1', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '2', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '3', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '4', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '5', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '6', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '7', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '8', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '1', '9', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '0', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '1', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '2', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '3', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '4', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '5', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '6', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '7', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '8', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '2', '9', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '3', '0', LST_BT_VARTYPE_UINT8,
+  0x05, 'V', 'a', 'l', '3', '1', LST_BT_VARTYPE_UINT8,};
 #endif
-
-uint8_t buffer_vars[LST_BT_VARVALUES_DATALEN] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0 };
 
 /* Function prototypes ------------------------------------------------------ */
 inline void gamepad_default_values();
@@ -351,27 +409,18 @@ void LST_BT_Send_VarValues() {
   while (lst_uart_uart2_txcplt == LST_UART_TX_NOTCPLT) {
   }
   
-  /* Increment data */
-  uint8_t i = 0;
-  for (i = 0; i < LST_BT_VARVALUES_DATALEN; i++) {
-    buffer_vars[i]++;
-    if (buffer_vars[i] == 0xFF) {
-      buffer_vars[i] = 0x00;
-    }
-  }
-  
   lst_uart_uart2_txcplt = LST_UART_TX_NOTCPLT;
-  
+
   /* Put message type at the start of the message */
   lst_uart_buffer_tx[0] = LST_BT_MSGTYPE_VARVALUES;
   
   /* Copy source buffer to TX buffer */
-  memoryCopy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_vars,
-      LST_BT_VARVALUES_DATALEN);
+  memoryCopy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &lst_spi_master1_rx,
+      LST_SPI_BUFFER1_SIZE);
   
   /* Put message end character at the end of the message */
-  lst_uart_buffer_tx[1 + LST_BT_VARVALUES_DATALEN] = LST_BT_MESSAGE_END;
+  lst_uart_buffer_tx[1 + LST_SPI_BUFFER1_SIZE] = LST_BT_MESSAGE_END;
   
   /* Send UART message */
-  LST_UART_BT_Send_Bytes(2 + LST_BT_VARVALUES_DATALEN);
+  LST_UART_BT_Send_Bytes(2 + LST_SPI_BUFFER1_SIZE);
 }

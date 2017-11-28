@@ -18,7 +18,7 @@
 /* Private defines -----------------------------------------------------------*/
 #define LST_UART1_RX_BUFFER_SIZE 1
 #define LST_UART2_RX_BUFFER_SIZE 1
-#define LST_UART2_TX_BUFFER_SIZE 128
+#define LST_UART2_TX_BUFFER_SIZE 256
 
 #define LST_UART_TX_NOTCPLT 0
 #define LST_UART_TX_CPLT    1

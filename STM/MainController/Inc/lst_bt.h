@@ -16,6 +16,7 @@
 #include "main.h"
 #include "lst_utils.h"
 #include "lst_uart.h"
+#include "lst_spi.h"
 
 /* Defines -------------------------------------------------------------------*/
 /* Buffer defines */

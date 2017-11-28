@@ -13,7 +13,7 @@
 /* Defines -------------------------------------------------------------------*/
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_CONFIG_TEST
+// #define LST_CONFIG_TEST
 // #define LST_CONFIG_CHANGE_BT_BAUD
 #define LST_CONFIG_LINECONTROLLER_DEBUG_DATA
 

@@ -20,13 +20,19 @@
 #include "lst_adc.h"
 #include "lst_bt.h"
 #include "lst_radio.h"
+#include "lst_control.h"
 
 /* Defines -------------------------------------------------------------------*/
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Task_Start(void const * argument);
+void LST_Task_Q1(void const * argument);
+void LST_Task_BT_Request_Handler(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/
 osThreadId lst_task_StartTaskHandle;
+osThreadId lst_task_TaskStartHandle;
+osThreadId lst_task_Q1TaskHandle;
+osThreadId lst_task_BTRequestHandlerTaskHandle;
 
 #endif /* LST_TASK_H_ */
