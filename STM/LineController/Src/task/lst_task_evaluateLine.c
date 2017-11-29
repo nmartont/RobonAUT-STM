@@ -172,7 +172,7 @@ void lst_eval_algorithm_01_findMaxima(void)
 void lst_eval_calculate_subSensor_positions()
 {
 
-	// TODO continue here
+	// TODO write function (subSensor)
 
 
 

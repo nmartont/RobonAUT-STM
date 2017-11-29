@@ -7,7 +7,7 @@
 
 #include <task/lst_task_displayLine.h>
 
-void lst_display_line(uint8_t threshold)
+void lst_displayLine(uint8_t threshold)
 {
 
 	// TODO if threshold = 0 -> display based on evaluation data
@@ -23,7 +23,6 @@ void lst_display_line(uint8_t threshold)
 		{
 
 			lst_feedbackLed_output = lst_feedbackLed_output | (1 << i);
-			// TODO check bit order
 
 		}
 

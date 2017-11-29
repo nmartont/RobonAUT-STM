@@ -40,22 +40,18 @@ void lst_gpio_write_feedbackLeds(uint32_t data)
 
 	// Latch hold time
 	lst_timer1_delay_timClk(LFB_RESET_HOLD_CLK);
-	//lst_timer1_delay_microSeconds(10);
 
 	// Shift bits
 	for (uint8_t i=0; i<32; i++)
 	{
 
 		// Data out
-		//HAL_GPIO_WritePin(LFB_SOUT_PORT, LFB_SOUT, ((data >> i) & 1));
 		HAL_GPIO_WritePin(LFB_SIN_PORT, LFB_SIN, ((data >> (31 -i)) & 1));
 		lst_timer1_delay_timClk(LFB_SET_HOLD_CLK);
-		//lst_timer1_delay_microSeconds(10);
 
 		// Clock
 		HAL_GPIO_WritePin(LFB_SCLK_PORT, LFB_SCLK, 1);
 		lst_timer1_delay_timClk(LFB_SET_HOLD_CLK);
-		//lst_timer1_delay_microSeconds(10);
 		HAL_GPIO_WritePin(LFB_SCLK_PORT, LFB_SCLK, 0);
 
 

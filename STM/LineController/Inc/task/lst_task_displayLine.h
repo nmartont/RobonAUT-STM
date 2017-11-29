@@ -18,6 +18,6 @@ uint32_t lst_feedbackLed_output;
 
 // Functions
 
-void lst_display_line(uint8_t threshold);
+void lst_displayLine(uint8_t threshold);
 
 #endif /* TASK_LST_TASK_DISPLAYLINE_H_ */

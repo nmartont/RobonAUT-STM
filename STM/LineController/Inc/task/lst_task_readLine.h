@@ -75,7 +75,7 @@ uint8_t lst_tcrt_values[32];
  *	Calls read_segment on the 8 LED segments. Acquired values
  *	are stored in values[32].
  */
-void lst_read_line(void);
+void lst_readLine(void);
 
 /**
  * \brief

@@ -55,13 +55,13 @@ void lst_gpio_write_muxes(uint8_t segment_id);
 
 /**
  * \brief
- *  // TODO
+ *  // TODO doxy
  */
 void lst_gpio_write_feedbackLeds(uint32_t data);
 
 /**
  * \brief
- *  // TODO
+ *  // TODO doxy
  */
 void lst_gpio_latch_feedbackLeds(void);
 

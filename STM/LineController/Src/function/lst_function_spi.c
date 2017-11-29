@@ -35,6 +35,7 @@ void lst_spi_write_ledSegment(uint8_t segment_id)
 void spi_interStm_callback(void)
 {
 
+	lst_sendData_TxRxComplete();
 	lst_spi_interStm_writeCompleteFlag = 1;
 
 }
@@ -55,5 +56,15 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 
 }
 
+// TODO:temp TEST
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
+{
 
+	if (hspi->Instance == SPI1)
+	{
 
+		spi_interStm_callback();
+
+	}
+
+}

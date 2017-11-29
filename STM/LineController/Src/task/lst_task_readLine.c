@@ -7,7 +7,7 @@
 
 #include <task/lst_task_readLine.h>
 
-void lst_read_line(void)
+void lst_readLine(void)
 {
 
 	for (uint8_t i=0; i<8; i++)

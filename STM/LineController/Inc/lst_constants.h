@@ -64,7 +64,7 @@
  * 	(not based on the evaluation algorithm result) this value
  * 	determines if a feedback LED is to be lit or not.
  */
-#define LST_LINEDISPLAY_RAW_THRESHOLD 150
+#define LST_LINEDISPLAY_RAW_THRESHOLD 190
 
 //#define LST_LINEEVAL_ADVANCED
 
@@ -88,8 +88,37 @@
 
 /**
  * \brief
- * 	TODO
+ * 	TODO doxy
  */
 #define LST_CD74HC4051_OUTRISE_HOLD_CLK 100 // TODO check w\ measurement
+
+/**
+ * \brief
+ * The size of the inter-STM SPI package.
+ */
+#define LST_SPI_SIZE 38
+
+/**
+ * \brief
+ *  The size of the inter-STM SPI transmit buffer in bytes.
+ * \warning
+ *  Cannot be higher than LST_SPI_SIZE.
+ */
+#define LST_SPI_TXBUF_SIZE 38
+
+/**
+ * \brief
+ *  The first byte of the sensor output data in the inter-STM SPI
+ *  transmit buffer.
+ * \warning
+ *  Cannot be higher than LST_SPI_SIZE.
+ */
+#define LST_SPI_TXBUF_VALUE_START 6
+
+/**
+ * \brief
+ *  The size of the inter-STM SPI receive buffer in bytes.
+ */
+#define LST_SPI_RXBUF_SIZE 1
 
 #endif /* LST_CONSTANTS_H_ */

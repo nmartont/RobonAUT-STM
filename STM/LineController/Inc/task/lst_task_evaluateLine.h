@@ -63,7 +63,7 @@ uint8_t lst_eval_salient_ok;
 
 /**
  * \brief
- * 	TODO
+ * 	TODO doxy
  */
 uint16_t lst_eval_subPositions[3];
 

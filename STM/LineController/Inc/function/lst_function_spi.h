@@ -12,6 +12,7 @@
 
 #include <task/lst_task_readLine.h>
 #include "lst_constants.h"
+#include "task/lst_task_sendData.h"
 
 // External variables
 
@@ -47,20 +48,22 @@ uint8_t lst_spi_ledDriver_rxBuf[4];
 
 /**
  * \brief
- *	TODO
+ *	TODO doxy
  */
 void lst_spi_write_ledSegment(uint8_t segment_id);
 
 /**
  * \brief
- *	TODO
+ *	TODO doxy
  */
 void spi_interStm_callback(void);
 
 /**
  * \brief
- *	TODO
+ *	TODO doxy
+ * \todo
+ *	redefine weak function here?
  */
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
+//void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
 
 #endif /* FUNCTION_SPI_H_ */
