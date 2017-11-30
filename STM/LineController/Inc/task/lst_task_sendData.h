@@ -11,6 +11,7 @@
 // Includes
 
 #include <function/lst_function_spi.h>
+#include <task/lst_task_readLine.h>
 
 // Variables
 
