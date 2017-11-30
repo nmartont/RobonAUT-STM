@@ -1,12 +1,12 @@
 /*
- * lst_spi.h
+ * lst_adc.h
  *
- *  Created on: 2017. nov. 1.
+ *  Created on: 2017. nov. 16.
  *      Author: nmartont
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef LST_SPI_H_
-#define LST_SPI_H_
+#ifndef LST_ADC_H_
+#define LST_ADC_H_
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
@@ -16,24 +16,15 @@
 #include "main.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_SPI_MODE_DEBUG    1
-#define LST_SPI_BUFFER1_SIZE  38
-#define LST_SPI_BUFFER3_SIZE  8
 
 /* Function prototypes -------------------------------------------------------*/
-void LST_SPI_Init();
-void LST_SPI_ReceiveLineControllerData();
-void LST_SPI_WaitForLineControllerData();
+void LST_ADC_Init();
 
 /* Private variables ---------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
-extern SPI_HandleTypeDef hspi1;
-extern SPI_HandleTypeDef hspi3;
+extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc2;
+extern ADC_HandleTypeDef hadc3;
 
-extern uint8_t lst_spi_master1_tx[LST_SPI_BUFFER1_SIZE];
-extern uint8_t lst_spi_master1_rx[LST_SPI_BUFFER1_SIZE];
-extern uint8_t lst_spi_master3_tx[LST_SPI_BUFFER3_SIZE];
-extern uint8_t lst_spi_master3_rx[LST_SPI_BUFFER3_SIZE];
-
-#endif /* LST_SPI_H_ */
+#endif /* LST_ADC_H_ */

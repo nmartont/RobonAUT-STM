@@ -50,8 +50,11 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* USER CODE BEGIN Includes */
-#include "lst_tasks.h"
+/* USER CODE BEGIN Includes */     
+#include "lst_task.h"
+#ifdef LST_CONFIG_TEST
+#include "lst_test.h"
+#endif
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -63,22 +66,39 @@
 /* Function prototypes -------------------------------------------------------*/
 
 /* USER CODE BEGIN FunctionPrototypes */
-void LST_Task_Start(void const * argument);
+void LST_Init();
+void LST_Start(void const * argument);
 /* USER CODE END FunctionPrototypes */
 
 /* Hook prototypes */
 
 /* USER CODE BEGIN Application */
-void LST_Task_Start(void const * argument)
-{
-  /* Setup of controller */
+void LST_Start(void const * argument) {
+  /* Init of controller */
+  LST_Init();
+  
+#ifdef LST_CONFIG_TEST
+  /* Start tests */
+  osThreadDef(LST_Test_Start, LST_Test_Start, osPriorityNormal, 0, 128);
+  lst_test_StartTestHandle = osThreadCreate(osThread(LST_Test_Start), NULL);
+#else
+  /* Start tasks */
+  osThreadDef(LST_Task_Start, LST_Task_Start, osPriorityNormal, 0, 128);
+  lst_task_TaskStartHandle = osThreadCreate(osThread(LST_Task_Start), NULL);
+#endif
+  
+  /* Terminate LST Start task */
+  osThreadTerminate(lst_task_StartTaskHandle);
+}
 
-	/* Start tasks */
-	osThreadDef(LST_Tasks_TIM_Test, LST_Tasks_TIM_Test, osPriorityNormal, 0, 128);
-	lst_tasks_TimerTestHandle = osThreadCreate(osThread(LST_Tasks_TIM_Test), NULL);
-
-	/* Terminate LST Start task */
-	osThreadTerminate(lst_tasks_StartTaskHandle);
+void LST_Init() {
+  LST_Timer_Init();
+  LST_SPI_Init();
+  LST_ADC_Init();
+  LST_Radio_Init();
+  LST_BT_Init();
+  LST_UART_Init();
+  LST_Control_Init();
 }
 /* USER CODE END Application */
 

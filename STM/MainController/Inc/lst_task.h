@@ -5,8 +5,8 @@
  *      Author: nmartont
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef LST_TASKS_H_
-#define LST_TASKS_H_
+#ifndef LST_TASK_H_
+#define LST_TASK_H_
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
@@ -17,18 +17,22 @@
 #include "lst_timer.h"
 #include "lst_spi.h"
 #include "lst_uart.h"
+#include "lst_adc.h"
+#include "lst_bt.h"
+#include "lst_radio.h"
+#include "lst_control.h"
 
 /* Defines -------------------------------------------------------------------*/
 
 /* Function prototypes -------------------------------------------------------*/
-void LST_Tasks_UART_Test(void const * argument);
-void LST_Tasks_SPI_Test(void const * argument);
-void LST_Tasks_TIM_Test(void const * argument);
+void LST_Task_Start(void const * argument);
+void LST_Task_Q1(void const * argument);
+void LST_Task_BT_Request_Handler(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/
-osThreadId lst_tasks_StartTaskHandle;
-osThreadId lst_tasks_UartTestHandle;
-osThreadId lst_tasks_TimerTestHandle;
-osThreadId lst_tasks_SpiTestHandle;
+osThreadId lst_task_StartTaskHandle;
+osThreadId lst_task_TaskStartHandle;
+osThreadId lst_task_Q1TaskHandle;
+osThreadId lst_task_BTRequestHandlerTaskHandle;
 
-#endif /* LST_TASKS_H_ */
+#endif /* LST_TASK_H_ */

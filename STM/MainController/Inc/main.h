@@ -51,17 +51,21 @@
   /* Includes ------------------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
-
+#include "lst_config.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
 
+#define SPI1_SS_Pin GPIO_PIN_4
+#define SPI1_SS_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+#define SPI1_DATA_READY_Pin GPIO_PIN_9
+#define SPI1_DATA_READY_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

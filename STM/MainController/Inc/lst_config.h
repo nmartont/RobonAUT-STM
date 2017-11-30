@@ -1,32 +1,26 @@
 /*
- * lst_timer.h
+ * lst_config.h
  *
- *  Created on: 2017. nov. 1.
+ *  Created on: 2017. nov. 17.
  *      Author: nmartont
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef LST_TIMER_H_
-#define LST_TIMER_H_
+#ifndef LST_CONFIG_H_
+#define LST_CONFIG_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx.h"
-#include "stm32f4xx_it.h"
-#include "cmsis_os.h"
-#include "main.h"
 
 /* Defines -------------------------------------------------------------------*/
 
+/* Defines -------------------------------------------------------------------*/
+// #define LST_CONFIG_TEST
+// #define LST_CONFIG_CHANGE_BT_BAUD
+#define LST_CONFIG_LINECONTROLLER_DEBUG_DATA
+
 /* Function prototypes -------------------------------------------------------*/
-void LST_Timer_Init();
 
 /* Private variables ---------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim5;
-extern TIM_HandleTypeDef htim6;
-extern TIM_HandleTypeDef htim8;
 
-#endif /* LST_TIMER_H_ */
+#endif /* LST_CONFIG_H_ */
