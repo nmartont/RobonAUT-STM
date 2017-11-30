@@ -40,6 +40,17 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
 //  if (hspi->Instance == SPI3) {
 //
 //  }
+
+  // TODO:test manual SS
+  if (hspi->Instance == SPI1)
+  {
+
+    // Pull slave select high when completed
+    HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, 1);
+
+  }
+
+
 }
 
 /**
@@ -57,9 +68,12 @@ void LST_SPI_ReceiveLineControllerData(){
   /* Put SPI command into the first byte */
   lst_spi_master1_tx[0] = LST_SPI_MODE_DEBUG;
 
+  // TODO:test manual SS
+  HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, 0);
+
   /* Send and receive data via SPI3 */
   HAL_SPI_TransmitReceive_IT(&hspi1, (uint8_t *) &lst_spi_master1_tx,
-    (uint8_t *) &lst_spi_master1_rx, LST_SPI_BUFFER3_SIZE);
+    (uint8_t *) &lst_spi_master1_rx, LST_SPI_BUFFER1_SIZE);
 }
 
 /**

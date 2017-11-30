@@ -56,6 +56,8 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define SPI1_SS_Pin GPIO_PIN_4
+#define SPI1_SS_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
