@@ -7,6 +7,13 @@
 
 #include <task/lst_task_evaluateLine.h>
 
+void lst_evaluate_line_simple()
+{
+
+	// TODO
+
+}
+
 void lst_evaluate_line(void)
 {
 

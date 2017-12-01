@@ -99,4 +99,7 @@ void lst_eval_algorithm_01_findMaxima(void);
  */
 void lst_eval_calculate_subSensor_positions(void);
 
+// TODO:temp
+void lst_evaluate_line_simple(void);
+
 #endif /* TASK_LST_TASK_EVALUATELINE_H_ */

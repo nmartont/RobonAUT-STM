@@ -32,7 +32,7 @@ void lst_main_function(void)
 
 		lst_readLine();
 
-		//lst_evaluate_line();
+		lst_evaluate_line_simple();
 
 		lst_sendData();
 

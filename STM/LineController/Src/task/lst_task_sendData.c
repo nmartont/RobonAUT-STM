@@ -15,36 +15,30 @@ void lst_sendData(void)
 	//while (!lst_spiCompleted) {};
 
 	if (lst_spiCompleted)
-		lst_spiTest();
-	/*
+		//lst_spiTest();
+
+
 	{
 
 		lst_sendData_initValues();
 
-		//lst_sendData_fillTxBuffer();
+		lst_sendData_fillTxBuffer();
 
 		lst_sendData_transmitReceive();
 
 	}
-*/
+
 }
 
 void lst_spiTest()
 {
 
 	// Fill data
-	for (uint8_t i=0; i<6; i++)
+
+	for (int i=0; i<38; i++)
 	{
 
-		lst_spiData_tx[i] = 255;
-
-	}
-
-
-	for (uint8_t i=6; i<38; i++)
-	{
-
-		lst_spiData_tx[i] = 0;
+		lst_spiData_tx[i] = i;
 
 	}
 
@@ -52,11 +46,23 @@ void lst_spiTest()
 
 	HAL_SPI_TransmitReceive_IT(
 				&hspi1,
-				(uint8_t *) &lst_spiData_tx,
-				(uint8_t *) &lst_spiData_rx,
-				LST_SPI_SIZE);
+				(uint8_t *) &lst_spiData_tx[0],
+				(uint8_t *) &lst_spiData_rx[0],
+				38);
 
 	HAL_GPIO_WritePin(SPI1_DRDY_GPIO_Port, SPI1_DRDY_Pin, 1);
+
+}
+
+void lst_sendData_TxRxComplete(void)
+{
+
+	// Signal the mainController - busy (pull DRDY low)
+	HAL_GPIO_WritePin(SPI1_DRDY_GPIO_Port, SPI1_DRDY_Pin, 0);
+
+	// Signal sendData that the next packet can be sent in
+	// the following cycle
+	lst_spiCompleted = 1; // TODO:TEMP
 
 }
 
@@ -89,15 +95,15 @@ void lst_sendData_fillTxBuffer(void)
 		// TODO:continue - fill line position data
 
 	}
-
+/*
 	for (uint8_t i=0; i<32; i++)
 	{
 
 		lst_spiData_rx[i] = lst_tcrt_values[i];
 
 	}
+*/
 
-	/*
 	// Fill sensor output data
 	for (uint8_t i=LST_SPI_TXBUF_VALUE_START; i<LST_SPI_TXBUF_SIZE; i++)
 	{
@@ -105,7 +111,7 @@ void lst_sendData_fillTxBuffer(void)
 		lst_spiData_tx[i] = lst_tcrt_values[i - LST_SPI_TXBUF_VALUE_START];
 
 	}
-	*/
+
 
 }
 
@@ -128,14 +134,4 @@ void lst_sendData_transmitReceive(void)
 
 }
 
-void lst_sendData_TxRxComplete(void)
-{
 
-	// Signal the mainController - busy (pull DRDY low)
-	HAL_GPIO_WritePin(SPI1_DRDY_GPIO_Port, SPI1_DRDY_Pin, 0);
-
-	// Signal sendData that the next packet can be sent in
-	// the following cycle
-	lst_spiCompleted = 1;
-
-}
