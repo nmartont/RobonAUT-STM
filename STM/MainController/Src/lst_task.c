@@ -58,7 +58,7 @@ void LST_Task_Q1(void const * argument) {
     /* Handle PWM controls */
     int16_t steering = 4575;
     int16_t motor = 4575;
-    int16_t temp1 = 0;
+    float temp1 = 0;
 
     switch(lst_control_mode){
     case LST_CONTROL_MODE_BT:
@@ -78,8 +78,9 @@ void LST_Task_Q1(void const * argument) {
           - LST_GAMEPAD_AXIS_MIDDLE;
       temp1 = temp1 / -60.0f;
       motor += temp1;
-      /* Get line position from the data */
 
+      /* Get line position from the data */
+      steering = LST_Control_SteeringController();
       break;
     }
 
