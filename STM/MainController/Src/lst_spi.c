@@ -37,20 +37,12 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
  * @brief This function handles the SPI Transfer/Receive complete callback.
  */
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
-//  if (hspi->Instance == SPI3) {
-//
-//  }
-
-  // TODO:test manual SS
+  // manual SS
   if (hspi->Instance == SPI1)
   {
-
     // Pull slave select high when completed
     HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, 1);
-
   }
-
-
 }
 
 /**
@@ -68,8 +60,14 @@ void LST_SPI_ReceiveLineControllerData(){
   /* Put SPI command into the first byte */
   lst_spi_master1_tx[0] = LST_SPI_MODE_DEBUG;
 
-  // TODO:test manual SS
+  // manual SS
   HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, 0);
+
+  // Counter delay for the SlaveSelect
+  volatile uint16_t vol_cntr = 0;
+  for(vol_cntr=0; vol_cntr<1000; ){
+    vol_cntr++;
+  }
 
   /* Send and receive data via SPI3 */
   HAL_SPI_TransmitReceive_IT(&hspi1, (uint8_t *) &lst_spi_master1_tx,

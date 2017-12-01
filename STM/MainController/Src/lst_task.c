@@ -58,7 +58,7 @@ void LST_Task_Q1(void const * argument) {
     /* Handle PWM controls */
     int16_t steering = 4575;
     int16_t motor = 4575;
-    int16_t temp1 = 0;
+    float temp1 = 0;
 
     switch(lst_control_mode){
     case LST_CONTROL_MODE_BT:
@@ -73,7 +73,14 @@ void LST_Task_Q1(void const * argument) {
       motor += temp1;
       break;
     case LST_CONTROL_MODE_Q1:
+      /* Set acceleration from GamePad */
+      temp1 = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_RY]
+          - LST_GAMEPAD_AXIS_MIDDLE;
+      temp1 = temp1 / -60.0f;
+      motor += temp1;
+
       /* Get line position from the data */
+      steering = LST_Control_SteeringController();
       break;
     }
 
@@ -95,7 +102,7 @@ void LST_Task_BT_Request_Handler(void const * argument) {
   /* Infinite loop */
   while (1) {
     if (lst_bt_send_status_flag)
-      LST_BT_Send_StatusOk(); // todo send Error status as well
+      LST_BT_Send_StatusOk(); // ToDo send Error status as well
     if (lst_bt_send_varlist_flag)
       LST_BT_Send_VarList();
     osDelay(500);
