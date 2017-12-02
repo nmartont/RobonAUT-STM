@@ -20,10 +20,10 @@ uint8_t cntr = 0;
 void LST_Timer_Init() {
   /* Start PWMs */
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
-  __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, LST_TIM_RCPWM_MIDDLE);
+  LST_TIM_SetMotorRcPwm(0);
   
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, LST_TIM_RCPWM_MIDDLE);
+  LST_TIM_SetServoRcPwm(0);
 }
 
 /**
@@ -31,11 +31,11 @@ void LST_Timer_Init() {
  */
 void LST_TIM_SetMotorRcPwm(int16_t motor){
   /* Min/Max value */
-  if (motor < LST_TIM_RCPWM_MIN) motor = 3050;
-  if (motor > LST_TIM_RCPWM_MAX) motor = 6100;
+  if (motor < LST_TIM_RCPWM_MIN) motor = LST_TIM_RCPWM_MIN;
+  if (motor > LST_TIM_RCPWM_MAX) motor = LST_TIM_RCPWM_MAX;
 
   /* Set timer value */
-  __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, motor);
+  __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, LST_TIM_RCPWM_MIDDLE + motor);
 }
 
 /**
@@ -43,11 +43,11 @@ void LST_TIM_SetMotorRcPwm(int16_t motor){
  */
 void LST_TIM_SetServoRcPwm(int16_t servo){
   /* Min/Max value */
-  if (servo < LST_TIM_RCPWM_MIN) servo = 3050;
-  if (servo > LST_TIM_RCPWM_MAX) servo = 6100;
+  if (servo < LST_TIM_RCPWM_MIN) servo = LST_TIM_RCPWM_MIN;
+  if (servo > LST_TIM_RCPWM_MAX) servo = LST_TIM_RCPWM_MAX;
 
   /* Set timer value */
-  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, servo);
+  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, LST_TIM_RCPWM_MIDDLE + servo);
 }
 
 /**

@@ -43,8 +43,8 @@ void LST_Control(){
   LST_Control_Select_Mode();
 
   /* Handle PWM controls */
-  int16_t steering = LST_TIM_RCPWM_MIDDLE;
-  int16_t motor = LST_TIM_RCPWM_MIDDLE;
+  int16_t steering = 0;
+  int16_t motor = 0;
 
   switch(lst_control_mode){
   case LST_CONTROL_MODE_BT:
@@ -70,7 +70,7 @@ void LST_Control(){
  * @brief BT control of the servo
  */
 int16_t LST_Control_Servo_BT(){
-  int16_t steering = LST_TIM_RCPWM_MIDDLE;
+  int16_t steering = 0;
 
   float temp1 = 0;
   temp1 = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_LX]
@@ -85,7 +85,7 @@ int16_t LST_Control_Servo_BT(){
  * @brief BT control of the motor
  */
 int16_t LST_Control_Motor_BT(){
-  int16_t motor = LST_TIM_RCPWM_MIDDLE;
+  int16_t motor = 0;
 
   float temp1 = 0;
   temp1 = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_RY]
@@ -152,7 +152,7 @@ float LST_Control_GetLinePosition() {
  * @brief PI controller for the steering
  */
 int16_t LST_Control_SteeringController(){
-  int16_t str_cntrl_result = LST_TIM_RCPWM_MIDDLE;
+  int16_t str_cntrl_result = 0;
 
   lst_control_linePosOld = lst_control_linePos;
   lst_control_linePos = LST_Control_GetLinePosition(); /* 1525 --- -1525 */
@@ -170,7 +170,7 @@ int16_t LST_Control_SteeringController(){
   int16_t system_input = lst_control_steeringP*lst_control_errorSignal +
       lst_control_steeringD*(lst_control_errorSignal - lst_control_errorSignalOld);
 
-  str_cntrl_result = LST_TIM_RCPWM_MIDDLE - system_input;
+  str_cntrl_result = -system_input;
 
   /* Max/Min */
   if (str_cntrl_result < LST_TIM_RCPWM_MIN) str_cntrl_result = LST_TIM_RCPWM_MIN;

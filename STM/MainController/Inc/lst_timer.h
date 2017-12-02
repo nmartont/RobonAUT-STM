@@ -17,8 +17,8 @@
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_TIM_RCPWM_MIDDLE 4575
-#define LST_TIM_RCPWM_MIN    3050
-#define LST_TIM_RCPWM_MAX    6100
+#define LST_TIM_RCPWM_MIN    -1525
+#define LST_TIM_RCPWM_MAX    1525
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Timer_Init();
