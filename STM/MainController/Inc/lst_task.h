@@ -23,6 +23,8 @@
 #include "lst_control.h"
 
 /* Defines -------------------------------------------------------------------*/
+#define LST_TASK_Q1_TASK_REPEAT_TICKS 1900000  // 190000000[ticks/sec] / 100[Hz]
+#define LST_TASK_BT_TASK_REPEAT_TICKS 38000000 // 190000000[ticks/sec] / 5[Hz]
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Task_Start(void const * argument);

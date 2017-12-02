@@ -11,7 +11,7 @@
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
 #define LST_BT_VARLIST_DATALEN 245
 #else
-#define LST_BT_VARLIST_DATALEN 24
+#define LST_BT_VARLIST_DATALEN 245
 #endif
 
 #define LST_BT_VARVALUES_DATALEN 14
@@ -185,50 +185,43 @@ inline void process_bt_message() {
   switch (buffer_rx[0]) {
   case LST_BT_MSGTYPE_STATUSREQ:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_send_status_flag = 1;
     break;
   case LST_BT_MSGTYPE_STATUSOK:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_pc_status = LST_BT_STATUS_OK;
     break;
   case LST_BT_MSGTYPE_STATUSERROR:
     /* Message counter value should greater than 2 */
-    if (buffer_rx_cntr < 2)
-      return;
+    if (buffer_rx_cntr < 2) return;
     /* Do stuff */
     lst_bt_pc_status = LST_BT_STATUS_ERROR;
     break;
   case LST_BT_MSGTYPE_VARLISTREQ:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_send_varlist_flag = 1;
     break;
   case LST_BT_MSGTYPE_MONITORSTART:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_send_diagdata_flag = 1;
     break;
   case LST_BT_MSGTYPE_MONITORSTOP:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_send_diagdata_flag = 0;
     break;
   case LST_BT_MSGTYPE_BTINPUT:
     /* Message counter value should be 4 */
-    if (buffer_rx_cntr != 4)
-      return;
+    if (buffer_rx_cntr != 4) return;
     /* We cannot get 0xFF: replace 0xFE for 0xFF so that the max value can be properly set */
     if (buffer_rx[3] == 0xFE)
       buffer_rx[3] = 0xFF;
@@ -251,44 +244,28 @@ inline void process_config_message() {
     return;
   
   /* Check if the start of the message is the appropriate characters */
-  if (buffer_rx[0] != LST_BT_CONF_MSG_START1)
-    return;
-  if (buffer_rx[1] != LST_BT_CONF_MSG_START2)
-    return;
-  if (buffer_rx[2] != LST_BT_CONF_MSG_START3)
-    return;
-  if (buffer_rx[3] != LST_BT_CONF_MSG_START4)
-    return;
-  if (buffer_rx[4] != LST_BT_CONF_MSG_START5)
-    return;
-  if (buffer_rx[5] != LST_BT_CONF_MSG_START6)
-    return;
+  if (buffer_rx[0] != LST_BT_CONF_MSG_START1) return;
+  if (buffer_rx[1] != LST_BT_CONF_MSG_START2) return;
+  if (buffer_rx[2] != LST_BT_CONF_MSG_START3) return;
+  if (buffer_rx[3] != LST_BT_CONF_MSG_START4) return;
+  if (buffer_rx[4] != LST_BT_CONF_MSG_START5) return;
+  if (buffer_rx[5] != LST_BT_CONF_MSG_START6) return;
   
   /* Do the processing */
   /* Messages we care about:
    * ConnectionUp[...]
    * ConnectionDown[...]
    * */
-  if (buffer_rx[6] != LST_BT_CONF_MSG_CONNECTION1)
-    return;
-  if (buffer_rx[7] != LST_BT_CONF_MSG_CONNECTION2)
-    return;
-  if (buffer_rx[8] != LST_BT_CONF_MSG_CONNECTION3)
-    return;
-  if (buffer_rx[9] != LST_BT_CONF_MSG_CONNECTION4)
-    return;
-  if (buffer_rx[10] != LST_BT_CONF_MSG_CONNECTION5)
-    return;
-  if (buffer_rx[11] != LST_BT_CONF_MSG_CONNECTION6)
-    return;
-  if (buffer_rx[12] != LST_BT_CONF_MSG_CONNECTION7)
-    return;
-  if (buffer_rx[13] != LST_BT_CONF_MSG_CONNECTION8)
-    return;
-  if (buffer_rx[14] != LST_BT_CONF_MSG_CONNECTION9)
-    return;
-  if (buffer_rx[15] != LST_BT_CONF_MSG_CONNECTION10)
-    return;
+  if (buffer_rx[6] != LST_BT_CONF_MSG_CONNECTION1)   return;
+  if (buffer_rx[7] != LST_BT_CONF_MSG_CONNECTION2)   return;
+  if (buffer_rx[8] != LST_BT_CONF_MSG_CONNECTION3)   return;
+  if (buffer_rx[9] != LST_BT_CONF_MSG_CONNECTION4)   return;
+  if (buffer_rx[10] != LST_BT_CONF_MSG_CONNECTION5)  return;
+  if (buffer_rx[11] != LST_BT_CONF_MSG_CONNECTION6)  return;
+  if (buffer_rx[12] != LST_BT_CONF_MSG_CONNECTION7)  return;
+  if (buffer_rx[13] != LST_BT_CONF_MSG_CONNECTION8)  return;
+  if (buffer_rx[14] != LST_BT_CONF_MSG_CONNECTION9)  return;
+  if (buffer_rx[15] != LST_BT_CONF_MSG_CONNECTION10) return;
   
   /* Determine if Up or Down */
   if (buffer_rx[16] == LST_BT_CONF_MSG_CONNECTIONUP1
@@ -423,4 +400,14 @@ void LST_BT_Send_VarValues() {
   
   /* Send UART message */
   LST_UART_BT_Send_Bytes(2 + LST_SPI_BUFFER1_SIZE);
+}
+
+/**
+ * @brief Error handler for the BT module
+ */
+void LST_BT_ErrorHandler(){
+  /* If the UART2 Rx request didn't return HAL_OK, repeat request */
+  if(lst_uart_uart2_rx_status != HAL_OK){
+    LST_UART_Receive_Byte_UART2();
+  }
 }

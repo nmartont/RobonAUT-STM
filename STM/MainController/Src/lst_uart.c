@@ -8,10 +8,10 @@
 #include "lst_uart.h"
 
 /* Private variables ---------------------------------------------------------*/
-uint8_t cntr_uart1 = 0;
-uint8_t cntr_uart2 = 0;
 uint8_t lst_uart_uart1_txcplt = LST_UART_TX_CPLT;
 uint8_t lst_uart_uart2_txcplt = LST_UART_TX_CPLT;
+HAL_StatusTypeDef lst_uart_uart1_rx_status = HAL_OK;
+HAL_StatusTypeDef lst_uart_uart2_rx_status = HAL_OK;
 uint8_t lst_uart_buffer_uart1[LST_UART1_RX_BUFFER_SIZE] = { 0x00 };
 uint8_t lst_uart_buffer_uart2[LST_UART2_RX_BUFFER_SIZE] = { 0x00 };
 uint8_t lst_uart_buffer_tx[LST_UART2_TX_BUFFER_SIZE] = { 0x00 };
@@ -28,10 +28,28 @@ uint8_t lst_uart_buffer_tx[LST_UART2_TX_BUFFER_SIZE] = { 0x00 };
  */
 void LST_UART_Init() {
   /* Receive a byte on UART1 */
-  HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_uart_buffer_uart1, 1);
+  LST_UART_Receive_Byte_UART1();
   
   /* Receive a byte on UART2 */
-  HAL_UART_Receive_IT(&huart2, (uint8_t *) &lst_uart_buffer_uart2, 1);
+  LST_UART_Receive_Byte_UART2();
+}
+
+/**
+ * @brief Receives a byte from UART1
+ */
+void LST_UART_Receive_Byte_UART1(){
+  /* Receive a byte on UART1 */
+  lst_uart_uart1_rx_status =
+    HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_uart_buffer_uart1[0], 1);
+}
+
+/**
+ * @brief Receives a byte from UART2
+ */
+void LST_UART_Receive_Byte_UART2(){
+  /* Receive a byte on UART2 */
+  lst_uart_uart2_rx_status =
+    HAL_UART_Receive_IT(&huart2, (uint8_t *) &lst_uart_buffer_uart2[0], 1);
 }
 
 /**
@@ -40,19 +58,19 @@ void LST_UART_Init() {
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
   if (huart->Instance == USART2) {
     /* Receive another byte */
-    HAL_UART_Receive_IT(&huart2, (uint8_t *) &lst_uart_buffer_uart2[0], 1);
+    LST_UART_Receive_Byte_UART2();
     LST_BT_Process_Incoming_Byte();  // This function needs to be fast
   }
 
   else if (huart->Instance == USART1) {
     /* Receive another byte */
-    HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_uart_buffer_uart1[0], 1);
+    LST_UART_Receive_Byte_UART1();
     LST_Radio_Process_Incoming_Byte();  // This function needs to be fast
   }
 }
 
 /**
- * @brief This function handles the UART receive complete callback.
+ * @brief This function handles the UART transmit complete callback.
  */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
   if (huart->Instance == USART2) {

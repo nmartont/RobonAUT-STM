@@ -10,9 +10,19 @@
 
 /* Private variables ---------------------------------------------------------*/
 uint8_t lst_control_mode = LST_CONTROL_MODE_BT;
-float linePos = 0;
-float linePosSum = 0;
-float linePosOld = 0;
+
+/* Line positions for PID controller */
+float lst_control_linePos =     0.0f;
+float lst_control_linePosOld =  0.0f;
+// float lst_control_linePosSum =  0.0f;
+
+/* Controller parameters */
+float lst_control_steeringP = LST_CONTROL_STEERING_P;
+float lst_control_steeringD = LST_CONTROL_STEERING_D;
+
+/* Other controller variables */
+int16_t lst_control_errorSignal = 0;
+int16_t lst_control_errorSignalOld = 0;
 
 /******************************************************************************/
 /*                Controller handling for RobonAUT 2018 Team LST              */
@@ -23,6 +33,97 @@ float linePosOld = 0;
  */
 void LST_Control_Init() {
 
+}
+
+/**
+ * @brief Handles control of the car
+ */
+void LST_Control(){
+  /* Switch between control modes based on the GamePad */
+  LST_Control_Select_Mode();
+
+  /* Handle PWM controls */
+  int16_t steering = LST_TIM_RCPWM_MIDDLE;
+  int16_t motor = LST_TIM_RCPWM_MIDDLE;
+
+  switch(lst_control_mode){
+  case LST_CONTROL_MODE_BT:
+    steering = LST_Control_Servo_BT();
+    motor = LST_Control_Motor_BT();
+    break;
+  case LST_CONTROL_MODE_Q1:
+    /* Set acceleration from GamePad */
+    motor = LST_Control_Motor_BT();
+    /* Get line position from the data */
+    steering = LST_Control_SteeringController();
+    break;
+  case LST_CONTROL_MODE_STOP:
+    /* Leave values at default */
+    break;
+  }
+
+  LST_TIM_SetServoRcPwm(steering);
+  LST_TIM_SetMotorRcPwm(motor);
+}
+
+/**
+ * @brief BT control of the servo
+ */
+int16_t LST_Control_Servo_BT(){
+  int16_t steering = LST_TIM_RCPWM_MIDDLE;
+
+  float temp1 = 0;
+  temp1 = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_LX]
+      - LST_GAMEPAD_AXIS_MIDDLE;
+  temp1 = temp1 / LST_CONTROL_BT_STEERING_DENUM;
+  steering += temp1;
+
+  return steering;
+}
+
+/**
+ * @brief BT control of the motor
+ */
+int16_t LST_Control_Motor_BT(){
+  int16_t motor = LST_TIM_RCPWM_MIDDLE;
+
+  float temp1 = 0;
+  temp1 = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_RY]
+      - LST_GAMEPAD_AXIS_MIDDLE;
+  temp1 = temp1 / LST_CONTROL_BT_MOTOR_DENUM;
+  motor += temp1;
+
+  return motor;
+}
+
+/**
+ * @brief Switches between different modes of control
+ */
+void LST_Control_Select_Mode(){
+  /* Switch between BT/automatic mode */
+  if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_A] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
+    lst_control_mode = LST_CONTROL_MODE_BT;
+  }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_B] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
+    lst_control_mode = LST_CONTROL_MODE_Q1;
+  }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_Y] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
+    lst_control_mode = LST_CONTROL_MODE_STOP;
+  }
+
+  /* Change control parameters with DPad */
+  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_NORTH){
+    lst_control_steeringD = 0.02f;
+  }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_EAST){
+    lst_control_steeringD = 0.05f;
+  }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_SOUTH){
+    lst_control_steeringD = 0.1f;
+  }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_WEST){
+    lst_control_steeringD = 0.2f;
+  }
 }
 
 /**
@@ -51,22 +152,29 @@ float LST_Control_GetLinePosition() {
  * @brief PI controller for the steering
  */
 int16_t LST_Control_SteeringController(){
-  int16_t str_cntrl_result = 4575;
+  int16_t str_cntrl_result = LST_TIM_RCPWM_MIDDLE;
 
-  linePosOld = linePos;
-  linePos = LST_Control_GetLinePosition(); /* 1525 --- -1525 */
-  linePosSum += linePos;
+  lst_control_linePosOld = lst_control_linePos;
+  lst_control_linePos = LST_Control_GetLinePosition(); /* 1525 --- -1525 */
+  // lst_control_linePosSum += lst_control_linePos;
 
-  /* PID Controller */
+  /*    PD Controller    */
+  /* Reference is always 0 (middle of line sensor) */
+  int16_t reference = 0;  // ToDo: maybe change reference based on angle of steering
+
   /* Error signal */
-  int16_t error_signal = LST_CONTROLLER_STEERING_P*linePos +
-      LST_CONTROLLER_STEERING_I*linePosSum;
+  lst_control_errorSignalOld = lst_control_errorSignal;
+  lst_control_errorSignal = lst_control_linePos - reference;
 
-  str_cntrl_result = 4575 - error_signal;
+  /* System input */
+  int16_t system_input = lst_control_steeringP*lst_control_errorSignal +
+      lst_control_steeringD*(lst_control_errorSignal - lst_control_errorSignalOld);
+
+  str_cntrl_result = LST_TIM_RCPWM_MIDDLE - system_input;
 
   /* Max/Min */
-  if (str_cntrl_result < 3050) str_cntrl_result = 3050;
-  if (str_cntrl_result > 6100) str_cntrl_result = 6100;
+  if (str_cntrl_result < LST_TIM_RCPWM_MIN) str_cntrl_result = LST_TIM_RCPWM_MIN;
+  if (str_cntrl_result > LST_TIM_RCPWM_MAX) str_cntrl_result = LST_TIM_RCPWM_MAX;
 
   return str_cntrl_result;
 }

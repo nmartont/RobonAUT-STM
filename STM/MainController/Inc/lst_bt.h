@@ -125,6 +125,7 @@ void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len);
 void LST_BT_Send_StatusRequest();
 void LST_BT_Send_VarList();
 void LST_BT_Send_VarValues();
+void LST_BT_ErrorHandler();
 
 /* Private variables ---------------------------------------------------------*/
 

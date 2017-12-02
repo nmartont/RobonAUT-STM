@@ -38,73 +38,53 @@ void LST_Task_Start(void const * argument) {
  * @brief Task for Q1
  */
 void LST_Task_Q1(void const * argument) {
+  /* Send Status and VarList to the PC */
   LST_BT_Send_StatusOk();
   LST_BT_Send_VarList();
+
+  /* Record starting timestamp */
+  TickType_t xLastWakeTime = xTaskGetTickCount();
 
   /* Infinite loop */
   while (1) {
     /* Get line data from LineController */
     LST_SPI_ReceiveLineControllerData();
+
+    /* ToDo ADC conversion, I2C, other sensor data */
+
+    /* Wait for the end of the SPI transaction */
     LST_SPI_WaitForLineControllerData();
 
-    /* Switch between GamePad and Controller */
-    if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_A] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-      lst_control_mode = LST_CONTROL_MODE_BT;
-    }
-    if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_B] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-      lst_control_mode = LST_CONTROL_MODE_Q1;
-    }
-
-    /* Handle PWM controls */
-    int16_t steering = 4575;
-    int16_t motor = 4575;
-    float temp1 = 0;
-
-    switch(lst_control_mode){
-    case LST_CONTROL_MODE_BT:
-      temp1 = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_LX]
-          - LST_GAMEPAD_AXIS_MIDDLE;
-      temp1 = temp1 / -21.487f;
-      steering += temp1;
-
-      temp1 = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_RY]
-          - LST_GAMEPAD_AXIS_MIDDLE;
-      temp1 = temp1 / -60.0f;
-      motor += temp1;
-      break;
-    case LST_CONTROL_MODE_Q1:
-      /* Set acceleration from GamePad */
-      temp1 = lst_bt_gamepad_values[LST_GAMEPAD_AXIS_RY]
-          - LST_GAMEPAD_AXIS_MIDDLE;
-      temp1 = temp1 / -60.0f;
-      motor += temp1;
-
-      /* Get line position from the data */
-      steering = LST_Control_SteeringController();
-      break;
-    }
-
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, steering);
-    __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, motor);
+    /* Hand over control to the Controls module */
+    LST_Control();
 
     /* Send diag data via BT */
     if (lst_bt_send_diagdata_flag)
       LST_BT_Send_VarValues();
 
-    osDelay(10);
-    }
+    /* Wait for the next cycle */
+    vTaskDelayUntil(&xLastWakeTime, LST_TASK_Q1_TASK_REPEAT_TICKS);
+  }
 }
 
 /**
  * @brief This task handles the BT requests
  */
 void LST_Task_BT_Request_Handler(void const * argument) {
+  /* Record starting timestamp */
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+
   /* Infinite loop */
   while (1) {
+    /* Error handling for the BT module */
+    LST_BT_ErrorHandler();
+
     if (lst_bt_send_status_flag)
-      LST_BT_Send_StatusOk(); // ToDo send Error status as well
+      LST_BT_Send_StatusOk(); // ToDo send Error status as well?
     if (lst_bt_send_varlist_flag)
       LST_BT_Send_VarList();
-    osDelay(500);
+
+    /* Wait for the next cycle */
+    vTaskDelayUntil(&xLastWakeTime, LST_TASK_BT_TASK_REPEAT_TICKS);
   }
 }
