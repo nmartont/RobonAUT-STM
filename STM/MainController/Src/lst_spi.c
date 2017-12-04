@@ -68,7 +68,10 @@ void LST_SPI_ReceiveLineControllerData(){
   HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_RESET);
 
   /* 1000 ticks delay for the SlaveSelect */
-  vTaskDelay(LST_SPI_SS_DELAY_TICKS);
+  volatile uint16_t vol_cntr = 0;
+  for(vol_cntr=0; vol_cntr<1000; ){
+    vol_cntr++;
+  }
 
   /* Reset TxRx complete flag */
   lst_spi_master1_txrx_cmplt = LST_SPI_TXRX_NOT_COMPLETE;
