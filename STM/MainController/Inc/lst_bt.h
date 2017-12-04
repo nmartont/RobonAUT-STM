@@ -138,4 +138,10 @@ extern uint8_t lst_bt_send_status_flag;
 extern uint8_t lst_bt_send_varlist_flag;
 extern uint8_t lst_bt_send_diagdata_flag;
 
+extern uint16_t lst_control_steeringP;
+extern uint16_t lst_control_steeringD;
+
+extern int16_t lst_control_steering;
+extern int16_t lst_control_motor;
+
 #endif /* LST_BT_H_ */

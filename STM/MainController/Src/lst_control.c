@@ -17,12 +17,15 @@ float lst_control_linePosOld =  0.0f;
 // float lst_control_linePosSum =  0.0f;
 
 /* Controller parameters */
-float lst_control_steeringP = LST_CONTROL_STEERING_P;
-float lst_control_steeringD = LST_CONTROL_STEERING_D;
+uint16_t lst_control_steeringP = LST_CONTROL_STEERING_P;
+uint16_t lst_control_steeringD = LST_CONTROL_STEERING_D;
 
 /* Other controller variables */
 int16_t lst_control_errorSignal = 0;
 int16_t lst_control_errorSignalOld = 0;
+
+int16_t lst_control_steering = 0;
+int16_t lst_control_motor = 0;
 
 /******************************************************************************/
 /*                Controller handling for RobonAUT 2018 Team LST              */
@@ -43,27 +46,27 @@ void LST_Control(){
   LST_Control_Select_Mode();
 
   /* Handle PWM controls */
-  int16_t steering = 0;
-  int16_t motor = 0;
+  lst_control_steering = 0;
+  lst_control_motor = 0;
 
   switch(lst_control_mode){
   case LST_CONTROL_MODE_BT:
-    steering = LST_Control_Servo_BT();
-    motor = LST_Control_Motor_BT();
+    lst_control_steering = LST_Control_Servo_BT();
+    lst_control_motor = LST_Control_Motor_BT();
     break;
   case LST_CONTROL_MODE_Q1:
     /* Set acceleration from GamePad */
-    motor = LST_Control_Motor_BT();
+    lst_control_motor = LST_Control_Motor_BT();
     /* Get line position from the data */
-    steering = LST_Control_SteeringController();
+    lst_control_steering = LST_Control_SteeringController();
     break;
   case LST_CONTROL_MODE_STOP:
     /* Leave values at default */
     break;
   }
 
-  LST_TIM_SetServoRcPwm(steering);
-  LST_TIM_SetMotorRcPwm(motor);
+  LST_TIM_SetServoRcPwm(lst_control_steering);
+  LST_TIM_SetMotorRcPwm(lst_control_motor);
 }
 
 /**
@@ -113,17 +116,20 @@ void LST_Control_Select_Mode(){
 
   /* Change control parameters with DPad */
   if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_NORTH){
-    lst_control_steeringD = 0.02f;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_EAST){
-    lst_control_steeringD = 0.05f;
+    lst_control_steeringD += 5;
   }
   if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_SOUTH){
-    lst_control_steeringD = 0.1f;
+    lst_control_steeringD -= 5;
   }
   if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_WEST){
-    lst_control_steeringD = 0.2f;
+    lst_control_steeringP -= 20;
   }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_EAST){
+    lst_control_steeringP += 20;
+  }
+
+  if(lst_control_steeringP<0) lst_control_steeringP = 0;
+  if(lst_control_steeringD<0) lst_control_steeringD = 0;
 }
 
 /**
@@ -155,10 +161,15 @@ int16_t LST_Control_SteeringController(){
   int16_t str_cntrl_result = 0;
 
   lst_control_linePosOld = lst_control_linePos;
-  lst_control_linePos = LST_Control_GetLinePosition(); /* 1525 --- -1525 */
+  // lst_control_linePos = LST_Control_GetLinePosition(); /* 1525 --- -1525 */
   // lst_control_linePosSum += lst_control_linePos;
+  uint16_t line = (lst_spi_master1_rx[1] << 8) | (lst_spi_master1_rx[0]);
+  lst_control_linePos = (line - 0x8000) / 21.487f;
 
   /*    PD Controller    */
+  /* Divide PD parameters into float */
+  float floatP = lst_control_steeringP / 16384.0f;
+  float floatD = lst_control_steeringD / 32768.0f;
   /* Reference is always 0 (middle of line sensor) */
   int16_t reference = 0;  // ToDo: maybe change reference based on angle of steering
 
@@ -167,8 +178,8 @@ int16_t LST_Control_SteeringController(){
   lst_control_errorSignal = lst_control_linePos - reference;
 
   /* System input */
-  int16_t system_input = lst_control_steeringP*lst_control_errorSignal +
-      lst_control_steeringD*(lst_control_errorSignal - lst_control_errorSignalOld);
+  int16_t system_input = floatP*lst_control_errorSignal +
+      floatD*(lst_control_errorSignal - lst_control_errorSignalOld);
 
   str_cntrl_result = -system_input;
 
