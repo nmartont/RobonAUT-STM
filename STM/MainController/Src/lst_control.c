@@ -27,6 +27,8 @@ int16_t lst_control_errorSignalOld = 0;
 int16_t lst_control_steering = 0;
 int16_t lst_control_motor = 0;
 
+uint16_t mode_cntr = 0;
+
 /******************************************************************************/
 /*                Controller handling for RobonAUT 2018 Team LST              */
 /******************************************************************************/
@@ -51,17 +53,69 @@ void LST_Control(){
 
   switch(lst_control_mode){
   case LST_CONTROL_MODE_BT:
+    // ToDo temp
+    mode_cntr = 0;
+
     lst_control_steering = LST_Control_Servo_BT();
     lst_control_motor = LST_Control_Motor_BT();
     break;
-  case LST_CONTROL_MODE_Q1:
+  case LST_CONTROL_MODE_LINE_FOLLOW:
+    // ToDo temp
+    mode_cntr = 0;
+
     /* Set acceleration from GamePad */
     lst_control_motor = LST_Control_Motor_BT();
     /* Get line position from the data */
     lst_control_steering = LST_Control_SteeringController();
     break;
+  case LST_CONTROL_MODE_Q1_SLOW:
+    // ToDo temp
+    mode_cntr = 0;
+
+    /* Set acceleration */
+//    if(mode_cntr < 15){
+//      lst_control_motor = LST_CONTROL_Q1_SLOW_MOTOR_SPEED_1;
+//      mode_cntr++;
+//    }
+//    else{
+//      lst_control_motor = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
+//    }
+
+    lst_control_motor = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
+    /* Set up controller parameters */
+    lst_control_steeringP = LST_CONTROL_Q1_SLOW_P;
+    lst_control_steeringD = LST_CONTROL_Q1_SLOW_D;
+    /* Get line position from the data */
+    lst_control_steering = LST_Control_SteeringController();
+    break;
+  case LST_CONTROL_MODE_Q1_FAST:
+    if(mode_cntr<5){
+      lst_control_motor = -700;
+    }else if(mode_cntr<5){
+      lst_control_motor = 0;
+    }else if(mode_cntr<50){
+      lst_control_motor = -700;
+    }else{
+      lst_control_motor = 0;
+    }
+    mode_cntr++;
+    /* Set acceleration */
+    // lst_control_motor = LST_CONTROL_Q1_FAST_MOTOR_SPEED;
+    /* Set up controller parameters */
+    lst_control_steeringP = LST_CONTROL_Q1_FAST_P;
+    lst_control_steeringD = LST_CONTROL_Q1_FAST_D;
+    /* Get line position from the data */
+    // lst_control_steering = LST_Control_SteeringController();
+    lst_control_steering = LST_Control_Servo_BT();
+    break;
+  case LST_CONTROL_MODE_Q1:
+    /* ToDo Q1 mode switching */
+    break;
   case LST_CONTROL_MODE_STOP:
+  default:
     /* Leave values at default */
+    // ToDo temp
+    mode_cntr = 0;
     break;
   }
 
@@ -108,6 +162,15 @@ void LST_Control_Select_Mode(){
     lst_control_mode = LST_CONTROL_MODE_BT;
   }
   if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_B] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
+    lst_control_mode = LST_CONTROL_MODE_LINE_FOLLOW;
+  }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L1] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
+    lst_control_mode = LST_CONTROL_MODE_Q1_SLOW;
+  }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_R1] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
+    lst_control_mode = LST_CONTROL_MODE_Q1_FAST;
+  }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
     lst_control_mode = LST_CONTROL_MODE_Q1;
   }
   if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_Y] == LST_GAMEPAD_BUTTON_STATE_PRESSED){

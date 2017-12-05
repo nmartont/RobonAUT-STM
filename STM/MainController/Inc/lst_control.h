@@ -19,9 +19,12 @@
 #include "lst_timer.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_CONTROL_MODE_BT   0
-#define LST_CONTROL_MODE_Q1   1
-#define LST_CONTROL_MODE_STOP 2
+#define LST_CONTROL_MODE_BT             0
+#define LST_CONTROL_MODE_STOP           1
+#define LST_CONTROL_MODE_LINE_FOLLOW    2
+#define LST_CONTROL_MODE_Q1_SLOW        3
+#define LST_CONTROL_MODE_Q1_FAST        4
+#define LST_CONTROL_MODE_Q1             5
 
 #define LST_CONTROL_LINESENSOR_TRESHOLD 130
 #define LST_CONTROL_STEERING_P       0x8000
@@ -29,6 +32,15 @@
 
 #define LST_CONTROL_BT_STEERING_DENUM -21.487f
 #define LST_CONTROL_BT_MOTOR_DENUM    -60.0f
+
+#define LST_CONTROL_Q1_SLOW_MOTOR_SPEED   275
+#define LST_CONTROL_Q1_SLOW_MOTOR_SPEED_1 500
+#define LST_CONTROL_Q1_SLOW_P             20000
+#define LST_CONTROL_Q1_SLOW_D             5000
+
+#define LST_CONTROL_Q1_FAST_MOTOR_SPEED 350
+#define LST_CONTROL_Q1_FAST_P           6000
+#define LST_CONTROL_Q1_FAST_D           1000
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Control_Init();
