@@ -58,12 +58,7 @@ void lst_spi_write_ledSegment(uint8_t segment_id);
  */
 void spi_interStm_callback(void);
 
-/**
- * \brief
- *	TODO doxy
- * \todo
- *	redefine weak function here?
- */
-//void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
+// TODO:doxy
+void lst_spi_clear_ledSegment(void);
 
 #endif /* FUNCTION_SPI_H_ */

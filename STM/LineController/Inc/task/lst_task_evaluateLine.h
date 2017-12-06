@@ -59,6 +59,11 @@ uint8_t lst_eval_localMaxima2[16];
  */
 uint8_t lst_eval_localMaxima3[16];
 
+/**
+ * \brief
+ *  Flag that indicates that a local maximum is substantially larger
+ *  than its proximity.
+ */
 uint8_t lst_eval_salient_ok;
 
 /**
@@ -66,6 +71,15 @@ uint8_t lst_eval_salient_ok;
  * 	TODO doxy
  */
 uint16_t lst_eval_subPositions[3];
+
+/**
+ * \var lst_simpleEval_sum Sum of sensor values.
+ * \var lst_simpleEval_weightedSum Sum of sensor values multiplied by positions.
+ * \var lst_simpleEval_lineEstimate Evaluated line position.
+ */
+uint16_t lst_simpleEval_sum;
+uint32_t lst_simpleEval_weightedSum;
+uint16_t lst_simpleEval_lineEstimate;
 
 // External variables
 
@@ -82,6 +96,12 @@ void lst_evaluate_line(void);
 
 /**
  * \brief
+ *  Uses complex technique to distinct separate measured lines.
+ */
+void lst_eval_line_advanced();
+
+/**
+ * \brief
  * 	Clears local variables before evaluating line sensor data.
  */
 void lst_eval_init_values(void);
@@ -91,7 +111,7 @@ void lst_eval_init_values(void);
  * 	Finds the positions of sensor value maxima with several iterations
  * 	through the sensor data array.
  */
-void lst_eval_algorithm_01_findMaxima(void);
+void lst_eval_algorithm_findMaxima(void);
 
 /**
  * \brief
@@ -99,7 +119,10 @@ void lst_eval_algorithm_01_findMaxima(void);
  */
 void lst_eval_calculate_subSensor_positions(void);
 
-// TODO:temp
-void lst_evaluate_line_simple(void);
+/**
+ * \brief
+ *  Uses weighted average to calculate the line position.
+ */
+void lst_eval_line_simple(void);
 
 #endif /* TASK_LST_TASK_EVALUATELINE_H_ */

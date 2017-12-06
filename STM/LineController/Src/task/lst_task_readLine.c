@@ -23,10 +23,10 @@ void lst_readLine(void)
 void lst_read_segment(uint8_t segment_id)
 {
 
-	// Write LED drivers
+	// Write LED (TCRT) drivers
 	lst_spi_write_ledSegment(segment_id);
 
-	// Latch LED drivers
+	// Latch LED (TCRT) drivers
 	lst_gpio_latch_ledSegment();
 
 	// Set MUXes
@@ -46,5 +46,16 @@ void lst_read_segment(uint8_t segment_id)
 										= lst_adc_result[i];
 
 	}
+
+}
+
+void lst_readLine_init()
+{
+
+	// Write 0 to all LED (TCRT) drivers
+	lst_spi_clear_ledSegment();
+
+	// Latch LED (TCRT) drivers
+	lst_gpio_latch_ledSegment();
 
 }

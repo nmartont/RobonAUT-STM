@@ -83,4 +83,7 @@ void lst_readLine(void);
  */
 void lst_read_segment(uint8_t segment_id);
 
+// TODO:doxy
+void lst_readLine_init(void);
+
 #endif /* LST_TASK_READLINE_H_ */

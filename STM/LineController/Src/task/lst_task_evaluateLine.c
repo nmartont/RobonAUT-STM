@@ -7,25 +7,73 @@
 
 #include <task/lst_task_evaluateLine.h>
 
-void lst_evaluate_line_simple()
+void lst_eval_line_simple()
 {
 
-	// TODO
+	// TODO check
+
+	// Initialize sum
+	lst_simpleEval_sum = 0;
+	lst_simpleEval_weightedSum = 0;
+
+	// Calculate weighted sum
+	uint8_t found_one = 0;
+	for (uint8_t i=0; i<32; i++)
+	{
+
+		if (lst_tcrt_values[i] > LST_LINEDISPLAY_RAW_THRESHOLD)
+		{
+
+			found_one = 1;
+			lst_simpleEval_weightedSum += i * lst_tcrt_values[i];
+			lst_simpleEval_sum += lst_tcrt_values[i];
+
+		}
+
+	}
+
+	// Calculate weighted average TODO:check
+	// 5 -> 16 bit resolution shift
+	// position calculation
+	// uint -> int conversion
+	lst_simpleEval_lineEstimate = ((uint16_t) (lst_simpleEval_weightedSum
+			/ lst_simpleEval_sum)) << 11;
+
+	// Fill output variable
+	if (found_one)
+	{
+
+		for (uint8_t i=0; i<3; i++)
+		{
+
+			lst_eval_subPositions[i] = lst_simpleEval_lineEstimate;
+
+		}
+
+	}
+	else
+	{
+
+		for (uint8_t i=0; i<3; i++)
+		{
+
+			// Set middle position if no line is found
+			lst_eval_subPositions[i] = 0x8000;
+
+		}
+
+	}
 
 }
 
 void lst_evaluate_line(void)
 {
 
-	lst_eval_init_values();
-
 #ifdef LST_LINEEVAL_ADVANCED
-	lst_algorithm_02_findMaxima();
+	lst_eval_line_advanced();
 #else
-	lst_eval_algorithm_01_findMaxima();
+	lst_eval_line_simple();
 #endif
-
-	lst_eval_calculate_subSensor_positions();
 
 }
 
@@ -47,7 +95,18 @@ void lst_eval_init_values(void)
 
 }
 
-void lst_eval_algorithm_01_findMaxima(void)
+void lst_eval_line_advanced()
+{
+
+	lst_eval_init_values();
+
+	lst_eval_algorithm_findMaxima();
+
+	lst_eval_calculate_subSensor_positions();
+
+}
+
+void lst_eval_algorithm_findMaxima(void)
 {
 
 	/* Find global maximum */

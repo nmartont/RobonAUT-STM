@@ -12,27 +12,19 @@ void lst_entry_point(void)
 
 	lst_main_function();
 
-	//test_timer();
-
-	//test_LedDrivers();
-
-	//debug_driveAddress();
-
 }
 
 void lst_main_function(void)
 {
 
-	// TODO:move - init first data transfer
-	lst_spiCompleted = 1;
-	HAL_GPIO_WritePin(SPI1_DRDY_GPIO_Port, SPI1_DRDY_Pin, 0);
+	lst_init_functions();
 
 	while (1)
 	{
 
 		lst_readLine();
 
-		lst_evaluate_line_simple();
+		lst_evaluate_line();
 
 		lst_sendData();
 
@@ -42,5 +34,13 @@ void lst_main_function(void)
 
 }
 
+void lst_init_functions()
+{
+
+	lst_sendData_init();
+
+	lst_readLine_init();
+
+}
 
 

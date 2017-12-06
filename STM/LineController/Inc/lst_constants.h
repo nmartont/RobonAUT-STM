@@ -29,11 +29,13 @@
 
 // Line evaluation algorithm selection
 
+// TODO:expand explanation
 /**
  * \brief
- * 	Basic algorithm that was developed first.
+ * 	Line detection algorithm selection.
  */
 #define LST_LINEEVAL_BASIC
+//#define LST_LINEEVAL_ADVANCED
 
 // Line evaluation parameters - basic
 
@@ -64,9 +66,7 @@
  * 	(not based on the evaluation algorithm result) this value
  * 	determines if a feedback LED is to be lit or not.
  */
-#define LST_LINEDISPLAY_RAW_THRESHOLD 190
-
-//#define LST_LINEEVAL_ADVANCED
+#define LST_LINEDISPLAY_RAW_THRESHOLD 140
 
 // STM constants
 
@@ -120,5 +120,8 @@
  *  The size of the inter-STM SPI receive buffer in bytes.
  */
 #define LST_SPI_RXBUF_SIZE 1
+
+// TODO:doxy
+#define LST_SENDDATA_MAX 65534
 
 #endif /* LST_CONSTANTS_H_ */

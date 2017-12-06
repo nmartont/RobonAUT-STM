@@ -12,8 +12,10 @@
 
 #include <function/lst_function_spi.h>
 #include <task/lst_task_readLine.h>
+#include <task/lst_task_evaluateLine.h>
 
 // Variables
+uint8_t data;
 
 /**
  * \brief
@@ -80,5 +82,8 @@ void lst_sendData_TxRxComplete(void);
 
 //TODO:TEST
 void lst_spiTest(void);
+
+// TODO:doxy
+void lst_sendData_init(void);
 
 #endif /* TASK_LST_TASK_SENDDATA_H_ */

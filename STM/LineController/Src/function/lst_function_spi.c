@@ -30,6 +30,24 @@ void lst_spi_write_ledSegment(uint8_t segment_id)
 
 }
 
+void lst_spi_clear_ledSegment()
+{
+
+	for (int i=0; i<4; i++)
+	{
+
+		lst_spi_ledDriver_txBuf[i] = 0;
+
+	}
+
+	HAL_SPI_Transmit(
+				&hspi2,
+				(uint8_t *)&lst_spi_ledDriver_txBuf,
+				4,
+				LST_SPI_TXRX_TIMEOUT);
+
+}
+
 // TODO inter-STM send/receive functions
 
 void spi_interStm_callback(void)

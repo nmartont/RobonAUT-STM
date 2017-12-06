@@ -33,4 +33,7 @@ void lst_entry_point(void);
  */
 void lst_main_function(void);
 
+// TODO:doxy
+void lst_init_functions(void);
+
 #endif /* LST_LINECONTROLLERNUCLEO_H_ */
