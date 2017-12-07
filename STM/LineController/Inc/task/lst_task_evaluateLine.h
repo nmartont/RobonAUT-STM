@@ -16,55 +16,14 @@
 
 /**
  * \brief
- * 	Stores the maximum of the detected values.
+ *  TODO
  */
-uint8_t lst_eval_maximum_global;
+uint8_t lst_eval_largeValues[32];
+uint8_t lst_eval_largeValues_size;
 
-/**
- * \brief
- * 	Stores the size of the corresponding array
- */
-uint8_t lst_eval_localMaxima1_size;
+int8_t lst_eval_previousPosition;
+uint8_t lst_eval_maximumValues[32];
 
-/**
- * \brief
- * 	Stores the size of the corresponding array
- */
-uint8_t lst_eval_localMaxima2_size;
-
-/**
- * \brief
- * 	Stores the size of the corresponding array
- */
-uint8_t lst_eval_localMaxima3_size;
-
-/**
- * \brief
- * 	Stores the positions of the local maxima, for which the previous
- * 	and next value is	smaller than itself.
- */
-uint8_t lst_eval_localMaxima1[16];
-
-/**
- * \brief
- * 	Stores the positions of the local maxima, for which the previous
- * 	and next value is	smaller than itself and are in the range of
- * 	[(lst_maximum_global - LST_LINEEVAL_GLOBALMAX_THR); lst_maximum_global].
- */
-uint8_t lst_eval_localMaxima2[16];
-
-/**
- * \brief
- * 	Stores the positions of the detected valid maximum values.
- */
-uint8_t lst_eval_localMaxima3[16];
-
-/**
- * \brief
- *  Flag that indicates that a local maximum is substantially larger
- *  than its proximity.
- */
-uint8_t lst_eval_salient_ok;
 
 /**
  * \brief
@@ -124,5 +83,17 @@ void lst_eval_calculate_subSensor_positions(void);
  *  Uses weighted average to calculate the line position.
  */
 void lst_eval_line_simple(void);
+
+void lst_eval_line_simple2(void);
+
+uint8_t lst_simpleEval_firstLargePos;
+uint8_t lst_simpleEval_lastLargePos;
+
+uint8_t lst_simpleEval_firstSumPos;
+uint8_t lst_simpleEval_lastSumPos;
+
+uint8_t lst_simpleEval_firstPosMin;
+uint8_t lst_simpleEval_lastPosMax;
+
 
 #endif /* TASK_LST_TASK_EVALUATELINE_H_ */

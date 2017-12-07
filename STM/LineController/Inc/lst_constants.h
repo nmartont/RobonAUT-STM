@@ -41,24 +41,17 @@
 
 /**
  * \brief
- * 	The proximity of a valid maximum, where a sufficiently low value
- * 	has to be found.
+ *  Multiplier value used in simple summing line position calculation.
  */
-#define LST_LINEEVAL_BASIC_MAX_PRX 2
+#define LST_LINEEVAL_BASIC_MULTIPLIER 2048
+
 
 /**
  * \brief
- * 	A value lower than the local maximum minus this value has to be
- * 	found in the proximity of a valid maximum.
+ * 	TODO
  */
-#define LST_LINEEVAL_BASIC_MAX_THR 40
-
-/**
- * \brief
- * 	A local maximum can only be valid if it is no less than the global
- * 	maximum minus this value.
- */
-#define LST_LINEEVAL_BASIC_GLOBALMAX_THR 60
+#define LST_LINEEVAL_ADVANCED_THR_HIGH 100
+#define LST_LINEEVAL_ADVANCED_THR_LOW 40
 
 /**
  * \brief
@@ -67,6 +60,9 @@
  * 	determines if a feedback LED is to be lit or not.
  */
 #define LST_LINEDISPLAY_RAW_THRESHOLD 140
+
+#define LST_SIMPLEEVAL_LOW_THRESHOLD 40
+#define LST_SIMPLEEVAL_HIGH_THRESHOLD 140
 
 // STM constants
 
