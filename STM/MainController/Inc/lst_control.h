@@ -27,11 +27,13 @@
 #define LST_CONTROL_MODE_Q1             5
 
 #define LST_CONTROL_LINESENSOR_TRESHOLD 130
-#define LST_CONTROL_STEERING_P       0x8000
-#define LST_CONTROL_STEERING_D       328
+#define LST_CONTROL_STEERING_P       1540
+#define LST_CONTROL_STEERING_D       18400
 
 #define LST_CONTROL_BT_STEERING_DENUM -21.487f
 #define LST_CONTROL_BT_MOTOR_DENUM    -60.0f
+
+#define LST_CONTROL_STEERING_DENUM    21.487f
 
 #define LST_CONTROL_Q1_SLOW_MOTOR_SPEED   275
 #define LST_CONTROL_Q1_SLOW_MOTOR_SPEED_1 500
@@ -49,7 +51,7 @@ void LST_Control_Select_Mode();
 int16_t LST_Control_Motor_BT();
 int16_t LST_Control_Servo_BT();
 float LST_Control_GetLinePosition();
-int16_t LST_Control_SteeringController();
+int32_t LST_Control_SteeringController();
 
 /* Private variables ---------------------------------------------------------*/
 
