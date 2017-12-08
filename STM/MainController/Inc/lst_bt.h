@@ -145,4 +145,6 @@ extern int16_t lst_control_steering;
 extern int16_t lst_control_motor;
 extern int16_t lst_control_steering_offset;
 
+extern uint8_t lst_control_line_no;
+
 #endif /* LST_BT_H_ */

@@ -26,6 +26,9 @@
 #define LST_CONTROL_MODE_Q1_FAST        4
 #define LST_CONTROL_MODE_Q1             5
 
+#define LST_CONTROL_MODE_LINE_SLOW      10
+#define LST_CONTROL_MODE_LINE_FAST      11
+
 #define LST_CONTROL_LINESENSOR_TRESHOLD 130
 #define LST_CONTROL_STEERING_P       1540
 #define LST_CONTROL_STEERING_D       18400
@@ -47,11 +50,13 @@
 /* Function prototypes -------------------------------------------------------*/
 void LST_Control_Init();
 void LST_Control();
+void LST_Control_Resolve_Line_Mode();
 void LST_Control_Select_Mode();
 int16_t LST_Control_Motor_BT();
 int16_t LST_Control_Servo_BT();
 float LST_Control_GetLinePosition();
 int32_t LST_Control_SteeringController();
+void LST_Control_Reset_State_Machine();
 
 /* Private variables ---------------------------------------------------------*/
 

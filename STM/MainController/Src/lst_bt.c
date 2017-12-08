@@ -9,7 +9,7 @@
 
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
-#define LST_BT_VARLIST_DATALEN 187
+#define LST_BT_VARLIST_DATALEN 189
 #else
 #define LST_BT_VARLIST_DATALEN 8
 #endif
@@ -39,10 +39,11 @@ uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
     0x01, 'D', LST_BT_VARTYPE_UINT16,
     0x01, 'S', LST_BT_VARTYPE_INT16,
     0x01, 'M', LST_BT_VARTYPE_INT16,
-    0x01, 'O', LST_BT_VARTYPE_INT16,
+    0x01, 'O', LST_BT_VARTYPE_UINT8,
+    0x01, 'X', LST_BT_VARTYPE_UINT8,
+    0x01, 'Y', LST_BT_VARTYPE_UINT8,
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,
     0x02, 'L', '2', LST_BT_VARTYPE_UINT16,
-    0x02, 'L', '3', LST_BT_VARTYPE_UINT16,
     0x03, 'V', '0', '0', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '0', '1', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '0', '2', LST_BT_VARTYPE_UINT8,
@@ -370,18 +371,17 @@ void LST_BT_Send_VarValues() {
   lst_uart_buffer_tx[6]=(lst_control_steering >> 8);
   lst_uart_buffer_tx[7]=lst_control_motor & 0xff;
   lst_uart_buffer_tx[8]=(lst_control_motor >> 8);
-  lst_uart_buffer_tx[9]=lst_control_steering_offset & 0xff;
-  lst_uart_buffer_tx[10]=(lst_control_steering_offset >> 8);
+  lst_uart_buffer_tx[9]=lst_control_line_no;
 
   /* Copy source buffer to TX buffer */
-  memoryCopy((uint8_t *) &lst_uart_buffer_tx[11], (uint8_t *) &lst_spi_master1_rx,
+  memoryCopy((uint8_t *) &lst_uart_buffer_tx[10], (uint8_t *) &lst_spi_master1_rx,
       LST_SPI_BUFFER1_SIZE);
   
   /* Put message end character at the end of the message */
-  lst_uart_buffer_tx[11 + LST_SPI_BUFFER1_SIZE] = LST_BT_MESSAGE_END;
+  lst_uart_buffer_tx[10 + LST_SPI_BUFFER1_SIZE] = LST_BT_MESSAGE_END;
   
   /* Send UART message */
-  LST_UART_BT_Send_Bytes(12 + LST_SPI_BUFFER1_SIZE);
+  LST_UART_BT_Send_Bytes(11 + LST_SPI_BUFFER1_SIZE);
 }
 
 /**

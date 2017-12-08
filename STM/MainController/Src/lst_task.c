@@ -55,6 +55,9 @@ void LST_Task_Q1(void const * argument) {
     /* Wait for the end of the SPI transaction */
     LST_SPI_WaitForLineControllerData();
 
+    /* ToDo Check for 0xFF control byte at the first byte of the SPI Rx buffer */
+    /* ToDo Handle SPI Rx data in a separate module */
+
     /* Hand over control to the Controls module */
     LST_Control();
 

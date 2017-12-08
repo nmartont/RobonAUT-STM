@@ -11,6 +11,11 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t lst_control_mode = LST_CONTROL_MODE_BT;
 
+uint8_t lst_control_line_no          = 0;
+uint8_t lst_control_line_no_input    = 0;
+uint8_t lst_control_line_mode        = LST_CONTROL_MODE_LINE_SLOW;
+uint8_t lst_control_line_no_array[8] = { 0x00 };
+
 /* Line positions for PID controller */
 float lst_control_linePos =     0.0f;
 float lst_control_linePosOld =  0.0f;
@@ -26,7 +31,7 @@ int16_t lst_control_errorSignalOld = 0;
 
 int16_t lst_control_steering = 0;
 int16_t lst_control_motor = 0;
-int16_t lst_control_steering_offset = -150;
+int16_t lst_control_steering_offset = 0; // -150
 
 uint16_t mode_cntr = 0;
 
@@ -48,13 +53,16 @@ void LST_Control(){
   /* Switch between control modes based on the GamePad */
   LST_Control_Select_Mode();
 
+  /* Number of lines */
+  LST_Control_Resolve_Line_Mode();
+
   /* Handle PWM controls */
   lst_control_steering = 0;
   lst_control_motor = 0;
 
   switch(lst_control_mode){
   case LST_CONTROL_MODE_BT:
-    // ToDo temp
+    LST_Control_Reset_State_Machine();
     mode_cntr = 0;
 
     lst_control_steering = LST_Control_Servo_BT();
@@ -92,7 +100,7 @@ void LST_Control(){
   case LST_CONTROL_MODE_Q1_FAST:
     if(mode_cntr<5){
       lst_control_motor = -700;
-    }else if(mode_cntr<5){
+    }else if(mode_cntr<10){
       lst_control_motor = 0;
     }else if(mode_cntr<50){
       lst_control_motor = -700;
@@ -122,6 +130,43 @@ void LST_Control(){
 
   LST_TIM_SetServoRcPwm(lst_control_steering + lst_control_steering_offset);
   LST_TIM_SetMotorRcPwm(lst_control_motor);
+}
+
+void LST_Control_Reset_State_Machine(){
+  lst_control_line_no          = 0;
+  lst_control_line_no_input    = 0;
+  lst_control_line_mode        = LST_CONTROL_MODE_LINE_SLOW;
+}
+
+/**
+ * @brief Resolves line mode
+ */
+void LST_Control_Resolve_Line_Mode(){
+  // Get lumber of lines from Line Controller
+  lst_control_line_no_input = lst_spi_master1_rx[1] >> 1;
+
+  // Line values array
+  uint8_t cccntr = 0;
+  for(cccntr=0; cccntr<4; cccntr++){
+    lst_control_line_no_array[cccntr+1] = lst_control_line_no_array[cccntr];
+  }
+  lst_control_line_no_array[0] = lst_control_line_no_input;
+
+
+  // Check if all values are the same
+  // ToDo Doesnt work as expected
+  uint8_t temp1 = lst_control_line_no_array[0];
+  uint8_t flag1 = 1;
+  for(cccntr=1; cccntr<4; cccntr++){
+    if(lst_control_line_no_array[cccntr] != temp1){
+      flag1 = 0;
+    }
+  }
+
+  // If all values are the same, change internal line counter
+  if(flag1 == 1){
+    lst_control_line_no = temp1;
+  }
 }
 
 /**
@@ -171,9 +216,9 @@ void LST_Control_Select_Mode(){
   if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_R1] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
     lst_control_mode = LST_CONTROL_MODE_Q1_FAST;
   }
-//  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-//    lst_control_mode = LST_CONTROL_MODE_Q1;
-//  }
+  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
+    lst_control_mode = LST_CONTROL_MODE_Q1;
+  }
   if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_Y] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
     lst_control_mode = LST_CONTROL_MODE_STOP;
   }
@@ -193,12 +238,12 @@ void LST_Control_Select_Mode(){
   }
 
   /* Steering offset */
-  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_control_steering_offset += 1;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_R2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_control_steering_offset -= 1;
-  }
+//  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
+//    lst_control_steering_offset += 1;
+//  }
+//  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_R2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
+//    lst_control_steering_offset -= 1;
+//  }
 
   if(lst_control_steeringP<0) lst_control_steeringP = 0;
   if(lst_control_steeringD<0) lst_control_steeringD = 0;
@@ -233,9 +278,8 @@ int32_t LST_Control_SteeringController(){
   int32_t str_cntrl_result = 0;
 
   lst_control_linePosOld = lst_control_linePos;
-  // lst_control_linePos = LST_Control_GetLinePosition(); /* 1525 --- -1525 */
   // lst_control_linePosSum += lst_control_linePos;
-  uint16_t line = (lst_spi_master1_rx[1] << 8) | (lst_spi_master1_rx[0]);
+  uint16_t line = (lst_spi_master1_rx[3] << 8) | (lst_spi_master1_rx[2]);
   lst_control_linePos = (line - 0x8000);
 
   /*    PD Controller    */
@@ -243,7 +287,7 @@ int32_t LST_Control_SteeringController(){
   float floatP = lst_control_steeringP / 16384.0f;
   float floatD = lst_control_steeringD / 1630.0f;
   /* Reference is always 0 (middle of line sensor) */
-  int16_t reference = 0;  // ToDo: maybe change reference based on angle of steering
+  int16_t reference = 0;
 
   /* Error signal */
   lst_control_errorSignalOld = lst_control_errorSignal;
