@@ -69,7 +69,7 @@ void LST_Control(){
   LST_Control_Select_Mode();
 
   /* Number of lines */
-  LST_Control_Resolve_Line_Mode();
+  LST_Control_Resolve_Line();
 
   /* Handle PWM controls */
   lst_control_steering = 0;
@@ -92,6 +92,7 @@ void LST_Control(){
     break;
   case LST_CONTROL_MODE_Q1:
   	LST_Control_Q1();
+    lst_control_steering = LST_Control_SteeringController();
     break;
   case LST_CONTROL_MODE_STOP:
   default:
@@ -230,7 +231,7 @@ void LST_Control_Reset_State_Machine(){
 /**
  * @brief Resolves line mode
  */
-void LST_Control_Resolve_Line_Mode(){
+void LST_Control_Resolve_Line(){
   // Get lumber of lines from Line Controller
   lst_control_line_no_input = lst_spi_master1_rx[1] >> 1;
 
@@ -326,38 +327,8 @@ void LST_Control_Select_Mode(){
     lst_control_steeringP += 20;
   }
 
-  /* Steering offset */
-//  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-//    lst_control_steering_offset += 1;
-//  }
-//  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_R2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-//    lst_control_steering_offset -= 1;
-//  }
-
   if(lst_control_steeringP<0) lst_control_steeringP = 0;
   if(lst_control_steeringD<0) lst_control_steeringD = 0;
-}
-
-/**
- * @brief temp Calculates the line position
- */
-float LST_Control_GetLinePosition() {
-  uint8_t getlp_cntr = 0;
-  uint16_t numerator = 16;
-  uint16_t denumerator = 1;
-  float line_result = 0.0f;
-
-  for(getlp_cntr=0; getlp_cntr<32; getlp_cntr++){
-    if(lst_spi_master1_rx[getlp_cntr + 6]>LST_CONTROL_LINESENSOR_THRESHOLD){
-      numerator += lst_spi_master1_rx[getlp_cntr + 6]*getlp_cntr;
-      denumerator += lst_spi_master1_rx[getlp_cntr + 6];
-    }
-  }
-
-  line_result = numerator/denumerator;
-  line_result = (line_result-16)*95.3;
-
-  return line_result;
 }
 
 /**

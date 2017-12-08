@@ -71,7 +71,7 @@
 /* Function prototypes -------------------------------------------------------*/
 void LST_Control_Init();
 void LST_Control();
-void LST_Control_Resolve_Line_Mode();
+void LST_Control_Resolve_Line();
 void LST_Control_Select_Mode();
 void LST_Control_Q1();
 int16_t LST_Control_Motor_BT();
