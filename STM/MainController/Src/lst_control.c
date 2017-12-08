@@ -136,7 +136,7 @@ void LST_Control_Q1(){
 		else{
 			if (lst_control_line_no > 1) cntr_q1_slow_single = 0;
 			if (lst_control_line_no == 1) cntr_q1_slow_single++;
-			if(cntr_q1_slow_single > LST_CONTROL_Q1_SLOW_FILTER_THRESHOLD){
+			if (cntr_q1_slow_single > LST_CONTROL_Q1_SLOW_FILTER_THRESHOLD){
 				flag_q1_slow_triple_search = 1;
 				cntr_q1_slow_single = 0;
 				cntr_q1_slow_dotted_lines++;
@@ -144,7 +144,7 @@ void LST_Control_Q1(){
 		}
 
 		/* Check for total number of dotted lines */
-		if(cntr_q1_slow_dotted_lines > 2){
+		if(cntr_q1_slow_dotted_lines > LST_CONTROL_Q1_SLOW_LINES_THRESHOLD){
 			lst_control_q1_mode = LST_CONTROL_MODE_Q1_ACCEL;
 			cntr_q1_slow_dotted_lines = 0;
 		}
@@ -339,7 +339,7 @@ float LST_Control_GetLinePosition() {
   float line_result = 0.0f;
 
   for(getlp_cntr=0; getlp_cntr<32; getlp_cntr++){
-    if(lst_spi_master1_rx[getlp_cntr + 6]>LST_CONTROL_LINESENSOR_TRESHOLD){
+    if(lst_spi_master1_rx[getlp_cntr + 6]>LST_CONTROL_LINESENSOR_THRESHOLD){
       numerator += lst_spi_master1_rx[getlp_cntr + 6]*getlp_cntr;
       denumerator += lst_spi_master1_rx[getlp_cntr + 6];
     }
