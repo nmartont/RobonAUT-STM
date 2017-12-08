@@ -22,9 +22,12 @@
 #define LST_CONTROL_MODE_BT             0
 #define LST_CONTROL_MODE_STOP           1
 #define LST_CONTROL_MODE_LINE_FOLLOW    2
-#define LST_CONTROL_MODE_Q1_SLOW        3
-#define LST_CONTROL_MODE_Q1_FAST        4
-#define LST_CONTROL_MODE_Q1             5
+#define LST_CONTROL_MODE_Q1             3
+#define LST_CONTROL_MODE_Q1_SLOW        4
+#define LST_CONTROL_MODE_Q1_FAST        5
+#define LST_CONTROL_MODE_Q1_START       6
+#define LST_CONTROL_MODE_Q1_ACCEL       7
+#define LST_CONTROL_MODE_Q1_BRAKE       8
 
 #define LST_CONTROL_MODE_LINE_SLOW      10
 #define LST_CONTROL_MODE_LINE_FAST      11
@@ -38,20 +41,37 @@
 
 #define LST_CONTROL_STEERING_DENUM    21.487f
 
-#define LST_CONTROL_Q1_SLOW_MOTOR_SPEED   275
-#define LST_CONTROL_Q1_SLOW_MOTOR_SPEED_1 500
-#define LST_CONTROL_Q1_SLOW_P             20000
-#define LST_CONTROL_Q1_SLOW_D             5000
+#define LST_CONTROL_Q1_START_MOTOR_SPEED  500
+#define LST_CONTROL_Q1_START_STEERING_P   20000
+#define LST_CONTROL_Q1_START_STEERING_D   10000
+#define LST_CONTROL_Q1_START_TIME         15
 
-#define LST_CONTROL_Q1_FAST_MOTOR_SPEED 350
-#define LST_CONTROL_Q1_FAST_P           6000
-#define LST_CONTROL_Q1_FAST_D           1000
+#define LST_CONTROL_Q1_SLOW_MOTOR_SPEED     	275
+#define LST_CONTROL_Q1_SLOW_STEERING_P    	 20000
+#define LST_CONTROL_Q1_SLOW_STEERING_D    	 10000
+#define LST_CONTROL_Q1_SLOW_FILTER_THRESHOLD 5
+
+#define LST_CONTROL_Q1_ACCEL_PLUS_P				-85
+#define LST_CONTROL_Q1_ACCEL_PLUS_D				13
+#define LST_CONTROL_Q1_ACCEL_PLUS_MOTOR		1
+
+#define LST_CONTROL_Q1_FAST_MOTOR_SPEED  375
+#define LST_CONTROL_Q1_FAST_STEERING_P   3000
+#define LST_CONTROL_Q1_FAST_STEERING_D   12600
+#define LST_CONTROL_Q1_FAST_TRIPLE_LINES 100
+
+#define LST_CONTROL_Q1_BRAKE_STEERING_P  20000
+#define LST_CONTROL_Q1_BRAKE_STEERING_D  10000
+#define LST_CONTROL_Q1_BRAKE_MOTOR		   -700
+#define LST_CONTROL_BRAKE_DELAY	5
+#define LST_CONTROL_BRAKE_TIME  40
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Control_Init();
 void LST_Control();
 void LST_Control_Resolve_Line_Mode();
 void LST_Control_Select_Mode();
+void LST_Control_Q1();
 int16_t LST_Control_Motor_BT();
 int16_t LST_Control_Servo_BT();
 float LST_Control_GetLinePosition();

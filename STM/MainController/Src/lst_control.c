@@ -11,9 +11,17 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t lst_control_mode = LST_CONTROL_MODE_BT;
 
+uint8_t cntr_q1_accel								 = 0;
+uint8_t cntr_q1_start         			 = 0;
+uint8_t cntr_q1_brake								 = 0;
+uint8_t cntr_q1_fast_triple_line     = 0;
+uint8_t flag_q1_slow_triple_search   = 1;
+uint8_t cntr_q1_slow_triple          = 0;
+uint8_t cntr_q1_slow_single          = 0;
+uint8_t cntr_q1_slow_dotted_lines 	 = 0;
 uint8_t lst_control_line_no          = 0;
 uint8_t lst_control_line_no_input    = 0;
-uint8_t lst_control_line_mode        = LST_CONTROL_MODE_LINE_SLOW;
+uint8_t lst_control_q1_mode          = LST_CONTROL_MODE_Q1_START;
 uint8_t lst_control_line_no_array[8] = { 0x00 };
 
 /* Line positions for PID controller */
@@ -63,68 +71,25 @@ void LST_Control(){
   switch(lst_control_mode){
   case LST_CONTROL_MODE_BT:
     LST_Control_Reset_State_Machine();
-    mode_cntr = 0;
 
     lst_control_steering = LST_Control_Servo_BT();
     lst_control_motor = LST_Control_Motor_BT();
     break;
   case LST_CONTROL_MODE_LINE_FOLLOW:
-    // ToDo temp
-    mode_cntr = 0;
+    LST_Control_Reset_State_Machine();
 
     /* Set acceleration from GamePad */
     lst_control_motor = LST_Control_Motor_BT();
     /* Get line position from the data */
     lst_control_steering = LST_Control_SteeringController();
     break;
-  case LST_CONTROL_MODE_Q1_SLOW:
-    // ToDo temp
-    mode_cntr = 0;
-
-    /* Set acceleration */
-//    if(mode_cntr < 15){
-//      lst_control_motor = LST_CONTROL_Q1_SLOW_MOTOR_SPEED_1;
-//      mode_cntr++;
-//    }
-//    else{
-//      lst_control_motor = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
-//    }
-
-    lst_control_motor = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
-    /* Set up controller parameters */
-    lst_control_steeringP = LST_CONTROL_Q1_SLOW_P;
-    lst_control_steeringD = LST_CONTROL_Q1_SLOW_D;
-    /* Get line position from the data */
-    lst_control_steering = LST_Control_SteeringController();
-    break;
-  case LST_CONTROL_MODE_Q1_FAST:
-    if(mode_cntr<5){
-      lst_control_motor = -700;
-    }else if(mode_cntr<10){
-      lst_control_motor = 0;
-    }else if(mode_cntr<50){
-      lst_control_motor = -700;
-    }else{
-      lst_control_motor = 0;
-    }
-    mode_cntr++;
-    /* Set acceleration */
-    // lst_control_motor = LST_CONTROL_Q1_FAST_MOTOR_SPEED;
-    /* Set up controller parameters */
-    lst_control_steeringP = LST_CONTROL_Q1_FAST_P;
-    lst_control_steeringD = LST_CONTROL_Q1_FAST_D;
-    /* Get line position from the data */
-    // lst_control_steering = LST_Control_SteeringController();
-    lst_control_steering = LST_Control_Servo_BT();
-    break;
   case LST_CONTROL_MODE_Q1:
-    /* ToDo Q1 mode switching */
+  	LST_Control_Q1();
     break;
   case LST_CONTROL_MODE_STOP:
   default:
     /* Leave values at default */
-    // ToDo temp
-    mode_cntr = 0;
+    LST_Control_Reset_State_Machine();
     break;
   }
 
@@ -132,10 +97,125 @@ void LST_Control(){
   LST_TIM_SetMotorRcPwm(lst_control_motor);
 }
 
+void LST_Control_Q1(){
+	switch(lst_control_q1_mode){
+	case LST_CONTROL_MODE_Q1_START:
+		/* Set controller values */
+		lst_control_steeringP = LST_CONTROL_Q1_START_STEERING_P;
+		lst_control_steeringD = LST_CONTROL_Q1_START_STEERING_D;
+
+		/* Accelerate to the desired starting speed */
+		if(cntr_q1_start < LST_CONTROL_Q1_START_TIME){
+			lst_control_motor = LST_CONTROL_Q1_START_MOTOR_SPEED;
+			cntr_q1_start++;
+		}
+		else{
+			lst_control_q1_mode = LST_CONTROL_MODE_Q1_SLOW;
+			cntr_q1_start = 0;
+		}
+		break;
+	case LST_CONTROL_MODE_Q1_SLOW:
+		/* Set controller values */
+		lst_control_steeringP = LST_CONTROL_Q1_SLOW_STEERING_P;
+		lst_control_steeringD = LST_CONTROL_Q1_SLOW_STEERING_D;
+
+		/* Set motor value */
+		lst_control_motor = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
+
+		/* Check for dotted lines */
+		// Check for triple lines
+		if(flag_q1_slow_triple_search == 1){
+			if (lst_control_line_no < 3) cntr_q1_slow_triple = 0;
+			if (lst_control_line_no == 3) cntr_q1_slow_triple++;
+			if(cntr_q1_slow_triple > LST_CONTROL_Q1_SLOW_FILTER_THRESHOLD){
+				flag_q1_slow_triple_search = 0;
+				cntr_q1_slow_triple = 0;
+			}
+		}
+		// Check for single lines
+		else{
+			if (lst_control_line_no > 1) cntr_q1_slow_single = 0;
+			if (lst_control_line_no == 1) cntr_q1_slow_single++;
+			if(cntr_q1_slow_single > LST_CONTROL_Q1_SLOW_FILTER_THRESHOLD){
+				flag_q1_slow_triple_search = 1;
+				cntr_q1_slow_single = 0;
+				cntr_q1_slow_dotted_lines++;
+			}
+		}
+
+		/* Check for total number of dotted lines */
+		if(cntr_q1_slow_dotted_lines > 2){
+			lst_control_q1_mode = LST_CONTROL_MODE_Q1_ACCEL;
+			cntr_q1_slow_dotted_lines = 0;
+		}
+		break;
+	case LST_CONTROL_MODE_Q1_ACCEL:
+		/* Linearly increase everything from slow to fast */
+		if(cntr_q1_accel < 200){
+			lst_control_steeringP += LST_CONTROL_Q1_ACCEL_PLUS_P;
+			lst_control_steeringD += LST_CONTROL_Q1_ACCEL_PLUS_D;
+			if (cntr_q1_accel % 2)
+				lst_control_motor   += LST_CONTROL_Q1_ACCEL_PLUS_MOTOR;
+
+			cntr_q1_accel++;
+		}
+		else{
+			lst_control_q1_mode = LST_CONTROL_MODE_Q1_FAST;
+			cntr_q1_accel = 0;
+		}
+		break;
+	case LST_CONTROL_MODE_Q1_FAST:
+		/* Set controller values */
+		lst_control_steeringP = LST_CONTROL_Q1_FAST_STEERING_P;
+		lst_control_steeringD = LST_CONTROL_Q1_FAST_STEERING_D;
+
+		/* Set motor value */
+		lst_control_motor = LST_CONTROL_Q1_FAST_MOTOR_SPEED;
+
+		/* Check for triple lines */
+		if (lst_control_line_no < 3) cntr_q1_fast_triple_line = 0;
+		if (lst_control_line_no == 3) cntr_q1_fast_triple_line++;
+		if(cntr_q1_fast_triple_line>LST_CONTROL_Q1_FAST_TRIPLE_LINES){
+			/* Switch to braking */
+			lst_control_q1_mode = LST_CONTROL_MODE_Q1_BRAKE;
+			cntr_q1_fast_triple_line = 0;
+		}
+		break;
+	case LST_CONTROL_MODE_Q1_BRAKE:
+		/* Set controller values */
+		lst_control_steeringP = LST_CONTROL_Q1_BRAKE_STEERING_P;
+		lst_control_steeringD = LST_CONTROL_Q1_BRAKE_STEERING_D;
+
+		/* Satufék */
+		if(cntr_q1_brake<LST_CONTROL_BRAKE_DELAY){
+			lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
+			cntr_q1_brake++;
+		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY){
+			lst_control_motor = 0;
+			cntr_q1_brake++;
+		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + LST_CONTROL_BRAKE_TIME){
+			lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
+			cntr_q1_brake++;
+		}else{
+			lst_control_q1_mode = LST_CONTROL_MODE_Q1_SLOW;
+			cntr_q1_brake = 0;
+		}
+		break;
+	}
+}
+
 void LST_Control_Reset_State_Machine(){
+	cntr_q1_fast_triple_line     = 0;
+	cntr_q1_start 							 = 0;
+	cntr_q1_brake 							 = 0;
+	cntr_q1_accel								 = 0;
+	flag_q1_slow_triple_search   = 1;
   lst_control_line_no          = 0;
   lst_control_line_no_input    = 0;
-  lst_control_line_mode        = LST_CONTROL_MODE_LINE_SLOW;
+  cntr_q1_slow_triple 			   = 0;
+	cntr_q1_slow_single 				 = 0;
+	cntr_q1_slow_dotted_lines 	 = 0;
+  lst_control_q1_mode          = LST_CONTROL_MODE_Q1_START;
 }
 
 /**
@@ -154,7 +234,7 @@ void LST_Control_Resolve_Line_Mode(){
 
 
   // Check if all values are the same
-  // ToDo Doesnt work as expected
+  // ToDo Doesn't work as expected but good enough
   uint8_t temp1 = lst_control_line_no_array[0];
   uint8_t flag1 = 1;
   for(cccntr=1; cccntr<4; cccntr++){
