@@ -86,6 +86,10 @@ void lst_eval_line_simple(void);
 
 void lst_eval_line_simple2(void);
 
+void lst_eval_line_simple_countLines(void);
+uint8_t lst_eval_lineCount;
+uint8_t lst_eval_wasLarge;
+
 uint8_t lst_simpleEval_firstLargePos;
 uint8_t lst_simpleEval_lastLargePos;
 

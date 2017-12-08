@@ -83,12 +83,17 @@ void lst_sendData_initValues(void)
 void lst_sendData_fillTxBuffer(void)
 {
 
-	// Fill line position data
-	for (uint8_t i=0; i<LST_SPI_TXBUF_VALUE_START / 2; i++)
+	// Write 0xff and line count into first two bytes TODO
+	lst_spiData_tx[0] = 255;
+	lst_spiData_tx[1] = lst_eval_lineCount << 1; // TODO:FIRST BIT SHIT
+	// random SPI error first bit always 1
+
+	// Fill line position data into bytes 2,3 and 4,5
+	for (uint8_t i=1; i<LST_SPI_TXBUF_VALUE_START / 2; i++)
 	{
 
-		lst_spiData_tx[2 * i] = lst_eval_subPositions[i] & 255;
-		lst_spiData_tx[2 * i + 1] = lst_eval_subPositions[i] >> 8;
+		lst_spiData_tx[2 * i] = lst_eval_subPositions[i - 1] & 255;
+		lst_spiData_tx[2 * i + 1] = lst_eval_subPositions[i - 1] >> 8;
 
 	}
 

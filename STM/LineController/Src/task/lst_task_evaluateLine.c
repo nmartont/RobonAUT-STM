@@ -158,15 +158,48 @@ void lst_eval_line_simple2()
 
 		}
 
+		lst_eval_line_simple_countLines();
+
 	}
 	else // Send middle position if no line found
 	{
+
+		lst_eval_lineCount = 0;
 
 		for (uint8_t i=0; i<3; i++)
 		{
 
 			// Set middle position if no line is found
 			lst_eval_subPositions[i] = 0x8000;
+
+		}
+
+	}
+
+}
+
+void lst_eval_line_simple_countLines()
+{
+
+	lst_eval_lineCount = 0;
+	lst_eval_wasLarge = 0;
+
+	for (uint8_t i=0/*lst_simpleEval_firstSumPos*/; i<31; i++)
+	{
+
+		if (lst_tcrt_values[i] > LST_SIMPLEEVAL_HIGH_THRESHOLD)
+		{
+
+			lst_eval_wasLarge = 1;
+
+		}
+
+		if ((lst_tcrt_values[i] < LST_SIMPLEEVAL_HIGH_THRESHOLD) &&
+				(lst_eval_wasLarge))
+		{
+
+			lst_eval_lineCount++;
+			lst_eval_wasLarge = 0;
 
 		}
 
