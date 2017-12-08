@@ -11,6 +11,10 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t lst_control_mode = LST_CONTROL_MODE_BT;
 
+float lst_control_q1_accel_plus_p    = 0.0f;
+float lst_control_q1_accel_plus_d    = 0.0f;
+float lst_control_q1_accel_plus_motor= 0.0f;
+float lst_control_motor_float 		   = 0.0f;
 uint8_t cntr_q1_accel								 = 0;
 uint8_t cntr_q1_start         			 = 0;
 uint8_t cntr_q1_brake								 = 0;
@@ -51,7 +55,10 @@ uint16_t mode_cntr = 0;
  * @brief Initializes the Control part of the software
  */
 void LST_Control_Init() {
-
+	/* Calculate values to add to the parameters during acceleration */
+	lst_control_q1_accel_plus_p     = (float)(LST_CONTROL_Q1_FAST_STEERING_P  - LST_CONTROL_Q1_SLOW_STEERING_P) /(float)(LST_CONTROL_Q1_ACCEL_TIME);
+	lst_control_q1_accel_plus_d     = (float)(LST_CONTROL_Q1_FAST_STEERING_D  - LST_CONTROL_Q1_SLOW_STEERING_D) /(float)(LST_CONTROL_Q1_ACCEL_TIME);
+	lst_control_q1_accel_plus_motor = (float)(LST_CONTROL_Q1_FAST_MOTOR_SPEED - LST_CONTROL_Q1_SLOW_MOTOR_SPEED)/(float)(LST_CONTROL_Q1_ACCEL_TIME);
 }
 
 /**
@@ -151,15 +158,16 @@ void LST_Control_Q1(){
 		break;
 	case LST_CONTROL_MODE_Q1_ACCEL:
 		/* Linearly increase everything from slow to fast */
-		if(cntr_q1_accel < 200){
-			lst_control_steeringP += LST_CONTROL_Q1_ACCEL_PLUS_P;
-			lst_control_steeringD += LST_CONTROL_Q1_ACCEL_PLUS_D;
-			if (cntr_q1_accel % 2)
-				lst_control_motor   += LST_CONTROL_Q1_ACCEL_PLUS_MOTOR;
+		if(cntr_q1_accel < LST_CONTROL_Q1_ACCEL_TIME){
+			lst_control_steeringP  += lst_control_q1_accel_plus_p;
+			lst_control_steeringD  += lst_control_q1_accel_plus_d;
+			lst_control_motor_float+= lst_control_q1_accel_plus_motor;
+			lst_control_motor       = lst_control_motor_float;
 
 			cntr_q1_accel++;
 		}
 		else{
+			lst_control_motor_float = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
 			lst_control_q1_mode = LST_CONTROL_MODE_Q1_FAST;
 			cntr_q1_accel = 0;
 		}
@@ -205,6 +213,7 @@ void LST_Control_Q1(){
 }
 
 void LST_Control_Reset_State_Machine(){
+	lst_control_motor_float      = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
 	cntr_q1_fast_triple_line     = 0;
 	cntr_q1_start 							 = 0;
 	cntr_q1_brake 							 = 0;
