@@ -117,18 +117,21 @@ void LST_UART_ReceiveLineControllerData(){
   while (huart1.gState != HAL_UART_STATE_READY) {}
 
   /* Check LineCntrl GPIO on PB9 */
-  GPIO_PinState state = HAL_GPIO_ReadPin(SPI1_DATA_READY_GPIO_Port, SPI1_DATA_READY_Pin);
-  if(state==GPIO_PIN_RESET) return;
+  //GPIO_PinState state = HAL_GPIO_ReadPin(SPI1_DATA_READY_GPIO_Port, SPI1_DATA_READY_Pin);
+  //if(state==GPIO_PIN_RESET) return;
 
   lst_uart_uart1_rxcplt = 0;
+
+  /* receive data via UART1 */
+  HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_spi_master1_rx, 38);
 
   /* Manual Slave Select -> Low */
   HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_RESET);
 
-  /* receive data via UART1 */
-  HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_spi_master1_rx, 38);
 }
 
 void LST_UART_WaitForLineControllerData(){
   while (lst_uart_uart1_rxcplt != 1) {}
+  /* Manual Slave Select -> High */
+  HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_SET);
 }
