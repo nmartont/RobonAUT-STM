@@ -8,6 +8,10 @@
 #include "lst_uart.h"
 
 /* Private variables ---------------------------------------------------------*/
+// ToDo temp
+uint8_t lst_uart_uart1_rxcplt = 1;
+extern uint8_t lst_spi_master1_rx[38];
+
 uint8_t lst_uart_uart1_txcplt = LST_UART_TX_CPLT;
 uint8_t lst_uart_uart2_txcplt = LST_UART_TX_CPLT;
 HAL_StatusTypeDef lst_uart_uart1_rx_status = HAL_OK;
@@ -63,9 +67,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
   }
 
   else if (huart->Instance == USART1) {
+    // ToDo temp
+    lst_uart_uart1_rxcplt = 1;
     /* Receive another byte */
-    LST_UART_Receive_Byte_UART1();
-    LST_Radio_Process_Incoming_Byte();  // This function needs to be fast
+    // LST_UART_Receive_Byte_UART1();
+    // LST_Radio_Process_Incoming_Byte();  // This function needs to be fast
   }
 }
 
@@ -103,4 +109,26 @@ void LST_UART_BT_Send_Bytes(uint8_t data_bytes) {
 
   /* Send UART message */
   HAL_UART_Transmit_DMA(&huart2, (uint8_t *) &lst_uart_buffer_tx, data_bytes);
+}
+
+/* ToDo temp */
+void LST_UART_ReceiveLineControllerData(){
+  /* Wait for UART1 to be ready */
+  while (huart1.gState != HAL_UART_STATE_READY) {}
+
+  /* Check LineCntrl GPIO on PB9 */
+  GPIO_PinState state = HAL_GPIO_ReadPin(SPI1_DATA_READY_GPIO_Port, SPI1_DATA_READY_Pin);
+  if(state==GPIO_PIN_RESET) return;
+
+  lst_uart_uart1_rxcplt = 0;
+
+  /* Manual Slave Select -> Low */
+  HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_RESET);
+
+  /* receive data via UART1 */
+  HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_spi_master1_rx, 38);
+}
+
+void LST_UART_WaitForLineControllerData(){
+  while (lst_uart_uart1_rxcplt != 1) {}
 }
