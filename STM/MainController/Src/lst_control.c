@@ -11,6 +11,9 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t lst_control_mode = LST_CONTROL_MODE_BT;
 
+uint8_t cntr_brake                   = 0;
+uint8_t cntr_lost_lines              = 0;
+
 float lst_control_q1_accel_plus_p    = 0.0f;
 float lst_control_q1_accel_plus_d    = 0.0f;
 float lst_control_q1_accel_plus_motor= 0.0f;
@@ -91,10 +94,36 @@ void LST_Control(){
     lst_control_steering = LST_Control_SteeringController();
     break;
   case LST_CONTROL_MODE_Q1:
+    /* Check for lost line */
+    if(LST_Control_Check_Lost_Line()){
+      lst_control_mode = LST_CONTROL_MODE_STOP;
+    }
+    /* Q1 logic */
   	LST_Control_Q1();
+  	/*Controlled steering*/
     lst_control_steering = LST_Control_SteeringController();
     break;
   case LST_CONTROL_MODE_STOP:
+    /* Set steering to 0 */
+    lst_control_steering = 0;
+
+    /* Satufék */
+    if(cntr_brake<LST_CONTROL_BRAKE_DELAY){
+      lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
+      cntr_brake++;
+    }else if(cntr_brake < 2*LST_CONTROL_BRAKE_DELAY){
+      lst_control_motor = 0;
+      cntr_brake++;
+    }else if(cntr_brake < 2*LST_CONTROL_BRAKE_DELAY + LST_CONTROL_BRAKE_TIME){
+      lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
+      cntr_brake++;
+    }else{
+      // Wait for reset...
+      lst_control_motor = 0;
+    }
+    break;
+  case LST_CONTROL_MODE_NO_CONTROL:
+    /* Leave values on default */
   default:
     /* Leave values at default */
     LST_Control_Reset_State_Machine();
@@ -105,6 +134,9 @@ void LST_Control(){
   LST_TIM_SetMotorRcPwm(lst_control_motor);
 }
 
+/**
+ * @brief Handles Q1 logic
+ */
 void LST_Control_Q1(){
 	switch(lst_control_q1_mode){
 	case LST_CONTROL_MODE_Q1_START:
@@ -213,7 +245,24 @@ void LST_Control_Q1(){
 	}
 }
 
+/**
+ * @brief Returns 1 if the line is lost
+ */
+uint8_t LST_Control_Check_Lost_Line(){
+  /* Count lost lines */
+  if(lst_control_line_no == 0){
+    cntr_lost_lines++;
+  }
+  else{
+    cntr_lost_lines = 0;
+  }
+  /* If the car left the line, return 1 */
+  return cntr_lost_lines > LST_CONTROL_LOST_LINES_THRESHOLD;
+}
+
 void LST_Control_Reset_State_Machine(){
+  cntr_lost_lines              = 0;
+  cntr_brake                   = 0;
 	lst_control_motor_float      = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
 	cntr_q1_fast_triple_line     = 0;
 	cntr_q1_start 							 = 0;
@@ -310,7 +359,7 @@ void LST_Control_Select_Mode(){
     lst_control_mode = LST_CONTROL_MODE_Q1;
   }
   if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_Y] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_control_mode = LST_CONTROL_MODE_STOP;
+    lst_control_mode = LST_CONTROL_MODE_NO_CONTROL;
   }
 
   /* Change control parameters with DPad */
