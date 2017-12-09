@@ -80,7 +80,8 @@ void lst_timer1_start(void);
  * 	HAL callback function, signals lst_timer1_start function
  * 	to return.
  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+// DO NOT REDEFINE!
 
 
 #endif /* FUNCTION_LST_FUNCTION_TIMER_H_ */

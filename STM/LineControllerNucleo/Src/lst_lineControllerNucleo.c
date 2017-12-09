@@ -41,6 +41,8 @@ void lst_init_functions()
 
 	lst_readLine_init();
 
+	lst_adc_init();
+
 }
 
 

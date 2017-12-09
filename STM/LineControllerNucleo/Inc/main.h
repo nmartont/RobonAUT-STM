@@ -62,8 +62,6 @@
 #define SPI2_LATCH_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
-#define ADC1_14_Pin GPIO_PIN_4
-#define ADC1_14_GPIO_Port GPIOC
 #define LFB_SCLK_Pin GPIO_PIN_6
 #define LFB_SCLK_GPIO_Port GPIOC
 #define LFB_SOUT_Pin GPIO_PIN_7

@@ -101,8 +101,6 @@ void lst_sendData_fillTxBuffer(void)
 
 	}
 
-	lst_timer1_delay_microSeconds(10);
-
 	// Fill sensor output data
 	for (uint8_t i=LST_SPI_TXBUF_VALUE_START; i<LST_SPI_TXBUF_SIZE; i++)
 	{

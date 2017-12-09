@@ -34,6 +34,11 @@ uint8_t lst_adc_resultCount;
 uint8_t lst_adc_resultReadyFlag;
 uint8_t lst_adc_result[4];
 
+#ifdef LST_NUCLEO_TEST
+ADC_ChannelConfTypeDef adc1_config_A;
+ADC_ChannelConfTypeDef adc1_config_B;
+#endif
+
 // Function declarations
 
 /**
@@ -56,5 +61,9 @@ void lst_adc_start_conversions(void);
  * 	a conversion completes.
  */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* adcHandle);
+
+// TODO:doxy
+void lst_adc_nucleoConversion(void);
+void lst_adc_init(void);
 
 #endif /* FUNCTION_ADC_H_ */
