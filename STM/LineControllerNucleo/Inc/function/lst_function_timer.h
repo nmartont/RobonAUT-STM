@@ -5,10 +5,11 @@
  *      Author: Balazs
  */
 
-#ifndef LST_FUNCTION_TIMER_H_
-#define LST_FUNCTION_TIMER_H_
+#ifndef FUNCTION_LST_FUNCTION_TIMER_H_
+#define FUNCTION_LST_FUNCTION_TIMER_H_
 
 // Includes
+
 #include "lst_constants.h"
 #ifdef LST_NUCLEO_TEST
 	#include "stm32f4xx_hal.h"
@@ -17,9 +18,11 @@
 #endif
 
 // External variables
+
 extern TIM_HandleTypeDef htim1;
 
 // Constants
+
 #define LST_NANOS_PER_TICK (1000000000UL / LST_F_TIM1)
 #define LST_TICKS_PER_MICRO (LST_F_TIM1 / 1000000)
 #define LST_REPETITION_MILLI 99
@@ -31,52 +34,55 @@ extern TIM_HandleTypeDef htim1;
 #endif
 
 // Local variables
+
 uint8_t lst_timer1_flag;
 
 // Function declarations
 
-void lst_timer1_delay_timClk(uint16_t clk);
-/*
- * @Description
+/**
+ * \brief
  * 	Blocking function which causes the CPU to idle for at least
  * 	the specified timer clock periods. Based on dummy calculations
  * 	rather than a timer.
  */
+void lst_timer1_delay_timClk(uint16_t clk);
 
-void lst_timer1_delay_microSeconds(uint16_t micro);
-/*
- * @Description
+
+/**
+ * \brief
  * 	Blocking function which causes the CPU to idle for at least
  * 	the specified time in microseconds. Minimal waiting time is
  * 	around 10us, below that, the function waits for 10us.
  */
+void lst_timer1_delay_microSeconds(uint16_t micro);
 
-void lst_timer1_delay_milliSeconds(uint16_t milli);
-/*
- * @Description
+/**
+ * \brief
  * 	Blocking function which causes the CPU to idle for at least
  * 	the specified time in milliseconds.
  */
+void lst_timer1_delay_milliSeconds(uint16_t milli);
 
-void lst_timer1_init_timing(uint16_t period, uint16_t repetition);
-/*
- * @Description
+/**
+ * \brief
  * 	Initializes TIM1 PERIOD and REPETITION registers
  */
+void lst_timer1_init_timing(uint16_t period, uint16_t repetition);
 
-void lst_timer1_start(void);
-/*
- * @Description
+/**
+ * \brief
  * 	Starts TIM1 and waits until PeriodElapsedCallback event
  */
+void lst_timer1_start(void);
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
-/*
- * @Description
+/**
+ * \brief
  * 	HAL callback function, signals lst_timer1_start function
  * 	to return.
  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
-#endif /* LST_FUNCTION_TIMER_H_ */
+
+#endif /* FUNCTION_LST_FUNCTION_TIMER_H_ */
 
 

@@ -40,7 +40,11 @@ void lst_spiTest()
 	lst_spiCompleted = 0;
 
 	HAL_SPI_TransmitReceive_IT(
+#ifdef LST_NUCLEO_TEST
+				&hspi3,
+#else
 				&hspi1,
+#endif
 				(uint8_t *) &lst_spiData_tx[0],
 				(uint8_t *) &lst_spiData_rx[0],
 				38);
@@ -118,7 +122,11 @@ void lst_sendData_transmitReceive(void)
 
 	// Call TxRx function
 	HAL_SPI_TransmitReceive_IT(
-			&hspi1,
+#ifdef LST_NUCLEO_TEST
+				&hspi3,
+#else
+				&hspi1,
+#endif
 			(uint8_t *) &lst_spiData_tx,
 			(uint8_t *) &lst_spiData_rx,
 			LST_SPI_SIZE);

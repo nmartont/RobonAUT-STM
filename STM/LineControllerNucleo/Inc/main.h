@@ -52,10 +52,26 @@
 #define B1_GPIO_Port GPIOC
 #define TIM1_OUTPUT_Pin GPIO_PIN_0
 #define TIM1_OUTPUT_GPIO_Port GPIOC
+#define ADC1_11_Pin GPIO_PIN_1
+#define ADC1_11_GPIO_Port GPIOC
+#define ADC2_12_Pin GPIO_PIN_2
+#define ADC2_12_GPIO_Port GPIOC
+#define ADC3_13_Pin GPIO_PIN_3
+#define ADC3_13_GPIO_Port GPIOC
 #define SPI2_LATCH_Pin GPIO_PIN_4
 #define SPI2_LATCH_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
+#define ADC1_14_Pin GPIO_PIN_4
+#define ADC1_14_GPIO_Port GPIOC
+#define LFB_SCLK_Pin GPIO_PIN_6
+#define LFB_SCLK_GPIO_Port GPIOC
+#define LFB_SOUT_Pin GPIO_PIN_7
+#define LFB_SOUT_GPIO_Port GPIOC
+#define LFB_LATCH_Pin GPIO_PIN_8
+#define LFB_LATCH_GPIO_Port GPIOC
+#define LFB_SIN_Pin GPIO_PIN_9
+#define LFB_SIN_GPIO_Port GPIOC
 #define ADDR2_Pin GPIO_PIN_9
 #define ADDR2_GPIO_Port GPIOA
 #define ADDR1_Pin GPIO_PIN_10
@@ -66,6 +82,8 @@
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
+#define SPI_STM_DRDY_Pin GPIO_PIN_12
+#define SPI_STM_DRDY_GPIO_Port GPIOC
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 

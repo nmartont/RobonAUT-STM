@@ -10,28 +10,30 @@
 
 // Includes
 
-#include "lst_function_timer.h" // Timer Test
-#include "lst_task_readLine.h"
-#include "lst_task_evaluateLine.h"
-#include "lst_task_sendData.h"
+#include <function/lst_function_timer.h> // Timer Test
+#include <task/lst_task_displayLine.h>
+#include <task/lst_task_evaluateLine.h>
+#include <task/lst_task_readLine.h>
+#include <task/lst_task_sendData.h>
+#include <task/lst_task_testOnly.h>
+#include <task/lst_task_testOnly.h>
 
-void entry_point(void);
-/*
- * @Description
+// Functions
+
+/**
+ * \brief
  * 	Calls the function that needs to be executed on the microcontroller.
  * 	Use it to set a Test or the Main function.
  */
+void lst_entry_point(void);
 
-void main_function(void);
-/*
- * @Description
+/**
+ * \brief
  * 	Executes the RACE FUNCTION.
  */
+void lst_main_function(void);
 
-void test_timer(void);
-/*
- * @Description
- * 	Tests the custom-made timer functions.
- */
+// TODO:doxy
+void lst_init_functions(void);
 
 #endif /* LST_LINECONTROLLERNUCLEO_H_ */

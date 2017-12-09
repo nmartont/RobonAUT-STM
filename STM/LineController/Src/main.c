@@ -486,7 +486,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, LED_FEEDBACK_SCLK_Pin|LED_FEEDBACK_SIN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_FEEDBACK_LATCH_Pin|SPI1_DRDY_Pin|SPI2_LATCH_Pin|ADDR2_Pin 
+  HAL_GPIO_WritePin(GPIOA, LED_FEEDBACK_LATCH_Pin|SPI_STM_DRDY_Pin|SPI2_LATCH_Pin|ADDR2_Pin 
                           |ADDR1_Pin|ADDR0_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : LED_FEEDBACK_SCLK_Pin LED_FEEDBACK_SIN_Pin */
@@ -509,9 +509,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_FEEDBACK_LATCH_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : SPI1_DRDY_Pin SPI2_LATCH_Pin ADDR2_Pin ADDR1_Pin 
+  /*Configure GPIO pins : SPI_STM_DRDY_Pin SPI2_LATCH_Pin ADDR2_Pin ADDR1_Pin 
                            ADDR0_Pin */
-  GPIO_InitStruct.Pin = SPI1_DRDY_Pin|SPI2_LATCH_Pin|ADDR2_Pin|ADDR1_Pin 
+  GPIO_InitStruct.Pin = SPI_STM_DRDY_Pin|SPI2_LATCH_Pin|ADDR2_Pin|ADDR1_Pin 
                           |ADDR0_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

@@ -5,40 +5,42 @@
  *      Author: Balazs
  */
 
-#include "lst_lineControllerNucleo.h"
+#include <lst_lineControllerNucleo.h>
 
-void entry_point(void)
+void lst_entry_point(void)
 {
+
+	lst_main_function();
+
+}
+
+void lst_main_function(void)
+{
+
+	lst_init_functions();
 
 	while (1)
 	{
 
-		test_timer();
+		lst_readLine();
+
+		lst_evaluate_line();
+
+		lst_sendData();
+
+		lst_displayLine(LST_LINEDISPLAY_RAW_THRESHOLD);
 
 	}
 
 }
 
-void main_function(void)
+void lst_init_functions()
 {
 
-	read_line();
+	lst_sendData_init();
 
-	evaluate_line();
-
-	send_data();
+	lst_readLine_init();
 
 }
 
-void test_timer(void)
-{
 
-	lst_timer1_delay_milliSeconds(1);
-
-#ifdef LST_NUCLEO_TEST
-	HAL_GPIO_TogglePin(LST_NUCLEO_TEST_PORT, LST_NUCLEO_TEST_PIN);
-#endif
-
-	//HAL_Delay(1);
-
-}

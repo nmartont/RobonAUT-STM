@@ -5,7 +5,7 @@
  *      Author: Balazs
  */
 
-#include "lst_function_timer.h"
+#include <function/lst_function_timer.h>
 
 void lst_timer1_delay_timClk(uint16_t clk)
 {
@@ -129,5 +129,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	lst_timer1_flag = 1;
 
 }
+
 
 
