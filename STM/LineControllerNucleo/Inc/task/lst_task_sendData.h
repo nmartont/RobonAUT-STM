@@ -14,6 +14,9 @@
 #include <task/lst_task_readLine.h>
 #include <task/lst_task_evaluateLine.h>
 
+// External variables
+UART_HandleTypeDef huart4;
+
 // Variables
 uint8_t data;
 
@@ -21,13 +24,13 @@ uint8_t data;
  * \brief
  *  Contains the data to be sent to the mainController.
  */
-uint8_t lst_spiData_tx[LST_SPI_SIZE];
+uint8_t lst_uartData_tx[LST_SPI_SIZE];
 
 /**
  * \brief
  *  Contains the data received from the mainController.
  */
-uint8_t lst_spiData_rx[LST_SPI_SIZE];
+uint8_t lst_uartData_rx[LST_SPI_SIZE];
 
 /**
  * \brief
@@ -35,7 +38,7 @@ uint8_t lst_spiData_rx[LST_SPI_SIZE];
  *  communication completed. If not set, the main_function execution
  *  skips the SPI TxRx_IT part.
  */
-uint8_t lst_spiCompleted;
+uint8_t lst_uartCompleted;
 
 // Functions
 

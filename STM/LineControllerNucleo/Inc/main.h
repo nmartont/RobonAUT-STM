@@ -80,6 +80,12 @@
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
+#define UART4_RQD_Pin GPIO_PIN_15
+#define UART4_RQD_GPIO_Port GPIOA
+#define UART4_TX_Pin GPIO_PIN_10
+#define UART4_TX_GPIO_Port GPIOC
+#define UART4_RX_Pin GPIO_PIN_11
+#define UART4_RX_GPIO_Port GPIOC
 #define SPI_STM_DRDY_Pin GPIO_PIN_12
 #define SPI_STM_DRDY_GPIO_Port GPIOC
 #define SWO_Pin GPIO_PIN_3
