@@ -30,7 +30,6 @@ void lst_adc_convert(void)
 #ifndef LST_NUCLEO_TEST
 	lst_adc_result[3] = HAL_ADC_GetValue(&hadc4);
 #else
-	lst_adc_result[3] = 254;
 	lst_adc_nucleoConversion();
 #endif
 

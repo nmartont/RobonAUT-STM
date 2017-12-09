@@ -197,7 +197,7 @@ static void MX_ADC1_Init(void)
     */
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV8;
-  hadc1.Init.Resolution = ADC_RESOLUTION_6B;
+  hadc1.Init.Resolution = ADC_RESOLUTION_8B;
   hadc1.Init.ScanConvMode = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
@@ -234,7 +234,7 @@ static void MX_ADC2_Init(void)
     */
   hadc2.Instance = ADC2;
   hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV8;
-  hadc2.Init.Resolution = ADC_RESOLUTION_6B;
+  hadc2.Init.Resolution = ADC_RESOLUTION_8B;
   hadc2.Init.ScanConvMode = DISABLE;
   hadc2.Init.ContinuousConvMode = DISABLE;
   hadc2.Init.DiscontinuousConvMode = DISABLE;
@@ -271,7 +271,7 @@ static void MX_ADC3_Init(void)
     */
   hadc3.Instance = ADC3;
   hadc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV8;
-  hadc3.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc3.Init.Resolution = ADC_RESOLUTION_8B;
   hadc3.Init.ScanConvMode = DISABLE;
   hadc3.Init.ContinuousConvMode = DISABLE;
   hadc3.Init.DiscontinuousConvMode = DISABLE;
