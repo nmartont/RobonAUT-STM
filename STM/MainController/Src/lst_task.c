@@ -48,12 +48,20 @@ void LST_Task_Q1(void const * argument) {
   /* Infinite loop */
   while (1) {
     /* Get line data from LineController */
+#ifdef LST_CONFIG_UART_LINE_COM
     LST_UART_ReceiveLineControllerData();
+#else
+    LST_SPI_ReceiveLineControllerData();
+#endif
 
     /* ToDo ADC conversion, I2C, other sensor data */
 
-    /* Wait for the end of the SPI transaction */
+    /* Wait for the end of the LineController transaction */
+#ifdef LST_CONFIG_UART_LINE_COM
     LST_UART_WaitForLineControllerData();
+#else
+    LST_SPI_WaitForLineControllerData();
+#endif
 
     /* ToDo Check for 0xFF control byte at the first byte of the SPI Rx buffer */
     /* ToDo Handle SPI Rx data in a separate module */

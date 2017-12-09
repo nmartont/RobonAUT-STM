@@ -8,9 +8,10 @@
 #include "lst_uart.h"
 
 /* Private variables ---------------------------------------------------------*/
-// ToDo temp
+#ifdef LST_CONFIG_UART_LINE_COM
 uint8_t lst_uart_uart1_rxcplt = 1;
 extern uint8_t lst_spi_master1_rx[38];
+#endif
 
 uint8_t lst_uart_uart1_txcplt = LST_UART_TX_CPLT;
 uint8_t lst_uart_uart2_txcplt = LST_UART_TX_CPLT;
@@ -32,8 +33,9 @@ uint8_t lst_uart_buffer_tx[LST_UART2_TX_BUFFER_SIZE] = { 0x00 };
  */
 void LST_UART_Init() {
   /* Receive a byte on UART1 */
-  // LST_UART_Receive_Byte_UART1();
-  
+#ifndef LST_CONFIG_UART_LINE_COM
+  LST_UART_Receive_Byte_UART1();
+#endif
   /* Receive a byte on UART2 */
   LST_UART_Receive_Byte_UART2();
 }
@@ -67,11 +69,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
   }
 
   else if (huart->Instance == USART1) {
-    // ToDo temp
+#ifdef LST_CONFIG_UART_LINE_COM
     lst_uart_uart1_rxcplt = 1;
+#else
     /* Receive another byte */
-    // LST_UART_Receive_Byte_UART1();
-    // LST_Radio_Process_Incoming_Byte();  // This function needs to be fast
+    LST_UART_Receive_Byte_UART1();
+    LST_Radio_Process_Incoming_Byte();  // This function needs to be fast
+#endif
   }
 }
 
@@ -111,14 +115,14 @@ void LST_UART_BT_Send_Bytes(uint8_t data_bytes) {
   HAL_UART_Transmit_DMA(&huart2, (uint8_t *) &lst_uart_buffer_tx, data_bytes);
 }
 
-/* ToDo temp */
+#ifdef LST_CONFIG_UART_LINE_COM
 void LST_UART_ReceiveLineControllerData(){
   /* Wait for UART1 to be ready */
   while (huart1.gState != HAL_UART_STATE_READY) {}
 
   /* Check LineCntrl GPIO on PB9 */
-  //GPIO_PinState state = HAL_GPIO_ReadPin(SPI1_DATA_READY_GPIO_Port, SPI1_DATA_READY_Pin);
-  //if(state==GPIO_PIN_RESET) return;
+  // GPIO_PinState state = HAL_GPIO_ReadPin(SPI1_DATA_READY_GPIO_Port, SPI1_DATA_READY_Pin);
+  // if(state==GPIO_PIN_RESET) return;
 
   lst_uart_uart1_rxcplt = 0;
 
@@ -127,7 +131,6 @@ void LST_UART_ReceiveLineControllerData(){
 
   /* Manual Slave Select -> Low */
   HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_RESET);
-
 }
 
 void LST_UART_WaitForLineControllerData(){
@@ -135,3 +138,4 @@ void LST_UART_WaitForLineControllerData(){
   /* Manual Slave Select -> High */
   HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_SET);
 }
+#endif
