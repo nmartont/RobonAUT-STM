@@ -8,10 +8,14 @@
 #include "lst_uart.h"
 
 /* Private variables ---------------------------------------------------------*/
-uint8_t cntr_uart1 = 0;
-uint8_t cntr_uart2 = 0;
+// ToDo temp
+uint8_t lst_uart_uart1_rxcplt = 1;
+extern uint8_t lst_spi_master1_rx[38];
+
 uint8_t lst_uart_uart1_txcplt = LST_UART_TX_CPLT;
 uint8_t lst_uart_uart2_txcplt = LST_UART_TX_CPLT;
+HAL_StatusTypeDef lst_uart_uart1_rx_status = HAL_OK;
+HAL_StatusTypeDef lst_uart_uart2_rx_status = HAL_OK;
 uint8_t lst_uart_buffer_uart1[LST_UART1_RX_BUFFER_SIZE] = { 0x00 };
 uint8_t lst_uart_buffer_uart2[LST_UART2_RX_BUFFER_SIZE] = { 0x00 };
 uint8_t lst_uart_buffer_tx[LST_UART2_TX_BUFFER_SIZE] = { 0x00 };
@@ -28,10 +32,28 @@ uint8_t lst_uart_buffer_tx[LST_UART2_TX_BUFFER_SIZE] = { 0x00 };
  */
 void LST_UART_Init() {
   /* Receive a byte on UART1 */
-  HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_uart_buffer_uart1, 1);
+  // LST_UART_Receive_Byte_UART1();
   
   /* Receive a byte on UART2 */
-  HAL_UART_Receive_IT(&huart2, (uint8_t *) &lst_uart_buffer_uart2, 1);
+  LST_UART_Receive_Byte_UART2();
+}
+
+/**
+ * @brief Receives a byte from UART1
+ */
+void LST_UART_Receive_Byte_UART1(){
+  /* Receive a byte on UART1 */
+  lst_uart_uart1_rx_status =
+    HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_uart_buffer_uart1[0], 1);
+}
+
+/**
+ * @brief Receives a byte from UART2
+ */
+void LST_UART_Receive_Byte_UART2(){
+  /* Receive a byte on UART2 */
+  lst_uart_uart2_rx_status =
+    HAL_UART_Receive_IT(&huart2, (uint8_t *) &lst_uart_buffer_uart2[0], 1);
 }
 
 /**
@@ -40,19 +62,21 @@ void LST_UART_Init() {
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
   if (huart->Instance == USART2) {
     /* Receive another byte */
-    HAL_UART_Receive_IT(&huart2, (uint8_t *) &lst_uart_buffer_uart2[0], 1);
+    LST_UART_Receive_Byte_UART2();
     LST_BT_Process_Incoming_Byte();  // This function needs to be fast
   }
 
   else if (huart->Instance == USART1) {
+    // ToDo temp
+    lst_uart_uart1_rxcplt = 1;
     /* Receive another byte */
-    HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_uart_buffer_uart1[0], 1);
-    LST_Radio_Process_Incoming_Byte();  // This function needs to be fast
+    // LST_UART_Receive_Byte_UART1();
+    // LST_Radio_Process_Incoming_Byte();  // This function needs to be fast
   }
 }
 
 /**
- * @brief This function handles the UART receive complete callback.
+ * @brief This function handles the UART transmit complete callback.
  */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
   if (huart->Instance == USART2) {
@@ -85,4 +109,29 @@ void LST_UART_BT_Send_Bytes(uint8_t data_bytes) {
 
   /* Send UART message */
   HAL_UART_Transmit_DMA(&huart2, (uint8_t *) &lst_uart_buffer_tx, data_bytes);
+}
+
+/* ToDo temp */
+void LST_UART_ReceiveLineControllerData(){
+  /* Wait for UART1 to be ready */
+  while (huart1.gState != HAL_UART_STATE_READY) {}
+
+  /* Check LineCntrl GPIO on PB9 */
+  //GPIO_PinState state = HAL_GPIO_ReadPin(SPI1_DATA_READY_GPIO_Port, SPI1_DATA_READY_Pin);
+  //if(state==GPIO_PIN_RESET) return;
+
+  lst_uart_uart1_rxcplt = 0;
+
+  /* receive data via UART1 */
+  HAL_UART_Receive_IT(&huart1, (uint8_t *) &lst_spi_master1_rx, 38);
+
+  /* Manual Slave Select -> Low */
+  HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_RESET);
+
+}
+
+void LST_UART_WaitForLineControllerData(){
+  while (lst_uart_uart1_rxcplt != 1) {}
+  /* Manual Slave Select -> High */
+  HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_SET);
 }

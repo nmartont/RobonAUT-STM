@@ -16,9 +16,14 @@
 #include "main.h"
 
 /* Defines -------------------------------------------------------------------*/
+#define LST_TIM_RCPWM_MIDDLE 4575
+#define LST_TIM_RCPWM_MIN    -1525
+#define LST_TIM_RCPWM_MAX    1525
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Timer_Init();
+void LST_TIM_SetMotorRcPwm(int16_t motor);
+void LST_TIM_SetServoRcPwm(int16_t servo);
 
 /* Private variables ---------------------------------------------------------*/
 

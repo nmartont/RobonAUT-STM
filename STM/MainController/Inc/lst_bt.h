@@ -125,6 +125,7 @@ void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len);
 void LST_BT_Send_StatusRequest();
 void LST_BT_Send_VarList();
 void LST_BT_Send_VarValues();
+void LST_BT_ErrorHandler();
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -136,5 +137,14 @@ extern uint8_t lst_bt_stm_status;
 extern uint8_t lst_bt_send_status_flag;
 extern uint8_t lst_bt_send_varlist_flag;
 extern uint8_t lst_bt_send_diagdata_flag;
+
+extern uint16_t lst_control_steeringP;
+extern uint16_t lst_control_steeringD;
+
+extern int16_t lst_control_steering;
+extern int16_t lst_control_motor;
+extern int16_t lst_control_steering_offset;
+
+extern uint8_t lst_control_line_no;
 
 #endif /* LST_BT_H_ */

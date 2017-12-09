@@ -9,9 +9,9 @@
 
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
-#define LST_BT_VARLIST_DATALEN 245
+#define LST_BT_VARLIST_DATALEN 189
 #else
-#define LST_BT_VARLIST_DATALEN 24
+#define LST_BT_VARLIST_DATALEN 8
 #endif
 
 #define LST_BT_VARVALUES_DATALEN 14
@@ -35,78 +35,49 @@ uint8_t lst_bt_send_diagdata_flag = 0;
 
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
 uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
-    0x05, 'L', 'i', 'n', 'e', '1', LST_BT_VARTYPE_INT16,
-    0x05, 'L', 'i', 'n', 'e', '2', LST_BT_VARTYPE_INT16,
-    0x05, 'L', 'i', 'n', 'e', '3', LST_BT_VARTYPE_INT16,
-    0x05, 'V', 'a', 'l', '0', '0', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '0', '1', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '0', '2', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '0', '3', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '0', '4', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '0', '5', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '0', '6', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '0', '7', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '0', '8', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '0', '9', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '0', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '1', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '2', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '3', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '4', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '5', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '6', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '7', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '8', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '1', '9', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '0', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '1', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '2', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '3', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '4', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '5', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '6', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '7', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '8', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '2', '9', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '3', '0', LST_BT_VARTYPE_UINT8,
-    0x05, 'V', 'a', 'l', '3', '1', LST_BT_VARTYPE_UINT8,};
+    0x01, 'P', LST_BT_VARTYPE_UINT16,
+    0x01, 'D', LST_BT_VARTYPE_UINT16,
+    0x01, 'S', LST_BT_VARTYPE_INT16,
+    0x01, 'M', LST_BT_VARTYPE_INT16,
+    0x01, 'O', LST_BT_VARTYPE_UINT8,
+    0x01, 'X', LST_BT_VARTYPE_UINT8,
+    0x01, 'Y', LST_BT_VARTYPE_UINT8,
+    0x02, 'L', '1', LST_BT_VARTYPE_UINT16,
+    0x02, 'L', '2', LST_BT_VARTYPE_UINT16,
+    0x03, 'V', '0', '0', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '1', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '2', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '3', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '4', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '5', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '6', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '7', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '8', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '9', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '0', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '1', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '2', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '3', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '4', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '5', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '6', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '7', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '8', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '9', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '0', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '1', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '2', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '3', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '4', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '5', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '6', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '7', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '8', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '9', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '3', '0', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8};
 #else
-uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
-  0x05, 'L', 'i', 'n', 'e', '1', LST_BT_VARTYPE_INT16,
-  0x05, 'L', 'i', 'n', 'e', '2', LST_BT_VARTYPE_INT16,
-  0x05, 'L', 'i', 'n', 'e', '3', LST_BT_VARTYPE_INT16,
-  0x05, 'V', 'a', 'l', '0', '0', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '0', '1', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '0', '2', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '0', '3', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '0', '4', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '0', '5', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '0', '6', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '0', '7', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '0', '8', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '0', '9', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '0', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '1', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '2', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '3', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '4', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '5', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '6', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '7', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '8', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '1', '9', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '0', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '1', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '2', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '3', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '4', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '5', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '6', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '7', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '8', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '2', '9', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '3', '0', LST_BT_VARTYPE_UINT8,
-  0x05, 'V', 'a', 'l', '3', '1', LST_BT_VARTYPE_UINT8,};
+uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {0x00};
 #endif
 
 /* Function prototypes ------------------------------------------------------ */
@@ -185,50 +156,43 @@ inline void process_bt_message() {
   switch (buffer_rx[0]) {
   case LST_BT_MSGTYPE_STATUSREQ:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_send_status_flag = 1;
     break;
   case LST_BT_MSGTYPE_STATUSOK:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_pc_status = LST_BT_STATUS_OK;
     break;
   case LST_BT_MSGTYPE_STATUSERROR:
     /* Message counter value should greater than 2 */
-    if (buffer_rx_cntr < 2)
-      return;
+    if (buffer_rx_cntr < 2) return;
     /* Do stuff */
     lst_bt_pc_status = LST_BT_STATUS_ERROR;
     break;
   case LST_BT_MSGTYPE_VARLISTREQ:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_send_varlist_flag = 1;
     break;
   case LST_BT_MSGTYPE_MONITORSTART:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_send_diagdata_flag = 1;
     break;
   case LST_BT_MSGTYPE_MONITORSTOP:
     /* Message counter value should be 1 */
-    if (buffer_rx_cntr != 1)
-      return;
+    if (buffer_rx_cntr != 1) return;
     /* Do stuff */
     lst_bt_send_diagdata_flag = 0;
     break;
   case LST_BT_MSGTYPE_BTINPUT:
     /* Message counter value should be 4 */
-    if (buffer_rx_cntr != 4)
-      return;
+    if (buffer_rx_cntr != 4) return;
     /* We cannot get 0xFF: replace 0xFE for 0xFF so that the max value can be properly set */
     if (buffer_rx[3] == 0xFE)
       buffer_rx[3] = 0xFF;
@@ -251,44 +215,28 @@ inline void process_config_message() {
     return;
   
   /* Check if the start of the message is the appropriate characters */
-  if (buffer_rx[0] != LST_BT_CONF_MSG_START1)
-    return;
-  if (buffer_rx[1] != LST_BT_CONF_MSG_START2)
-    return;
-  if (buffer_rx[2] != LST_BT_CONF_MSG_START3)
-    return;
-  if (buffer_rx[3] != LST_BT_CONF_MSG_START4)
-    return;
-  if (buffer_rx[4] != LST_BT_CONF_MSG_START5)
-    return;
-  if (buffer_rx[5] != LST_BT_CONF_MSG_START6)
-    return;
+  if (buffer_rx[0] != LST_BT_CONF_MSG_START1) return;
+  if (buffer_rx[1] != LST_BT_CONF_MSG_START2) return;
+  if (buffer_rx[2] != LST_BT_CONF_MSG_START3) return;
+  if (buffer_rx[3] != LST_BT_CONF_MSG_START4) return;
+  if (buffer_rx[4] != LST_BT_CONF_MSG_START5) return;
+  if (buffer_rx[5] != LST_BT_CONF_MSG_START6) return;
   
   /* Do the processing */
   /* Messages we care about:
    * ConnectionUp[...]
    * ConnectionDown[...]
    * */
-  if (buffer_rx[6] != LST_BT_CONF_MSG_CONNECTION1)
-    return;
-  if (buffer_rx[7] != LST_BT_CONF_MSG_CONNECTION2)
-    return;
-  if (buffer_rx[8] != LST_BT_CONF_MSG_CONNECTION3)
-    return;
-  if (buffer_rx[9] != LST_BT_CONF_MSG_CONNECTION4)
-    return;
-  if (buffer_rx[10] != LST_BT_CONF_MSG_CONNECTION5)
-    return;
-  if (buffer_rx[11] != LST_BT_CONF_MSG_CONNECTION6)
-    return;
-  if (buffer_rx[12] != LST_BT_CONF_MSG_CONNECTION7)
-    return;
-  if (buffer_rx[13] != LST_BT_CONF_MSG_CONNECTION8)
-    return;
-  if (buffer_rx[14] != LST_BT_CONF_MSG_CONNECTION9)
-    return;
-  if (buffer_rx[15] != LST_BT_CONF_MSG_CONNECTION10)
-    return;
+  if (buffer_rx[6] != LST_BT_CONF_MSG_CONNECTION1)   return;
+  if (buffer_rx[7] != LST_BT_CONF_MSG_CONNECTION2)   return;
+  if (buffer_rx[8] != LST_BT_CONF_MSG_CONNECTION3)   return;
+  if (buffer_rx[9] != LST_BT_CONF_MSG_CONNECTION4)   return;
+  if (buffer_rx[10] != LST_BT_CONF_MSG_CONNECTION5)  return;
+  if (buffer_rx[11] != LST_BT_CONF_MSG_CONNECTION6)  return;
+  if (buffer_rx[12] != LST_BT_CONF_MSG_CONNECTION7)  return;
+  if (buffer_rx[13] != LST_BT_CONF_MSG_CONNECTION8)  return;
+  if (buffer_rx[14] != LST_BT_CONF_MSG_CONNECTION9)  return;
+  if (buffer_rx[15] != LST_BT_CONF_MSG_CONNECTION10) return;
   
   /* Determine if Up or Down */
   if (buffer_rx[16] == LST_BT_CONF_MSG_CONNECTIONUP1
@@ -414,13 +362,34 @@ void LST_BT_Send_VarValues() {
   /* Put message type at the start of the message */
   lst_uart_buffer_tx[0] = LST_BT_MSGTYPE_VARVALUES;
   
+  /* Send P, D, Motor, Steering */
+  lst_uart_buffer_tx[1]=lst_control_steeringP & 0xff;
+  lst_uart_buffer_tx[2]=(lst_control_steeringP >> 8);
+  lst_uart_buffer_tx[3]=lst_control_steeringD & 0xff;
+  lst_uart_buffer_tx[4]=(lst_control_steeringD >> 8);
+  lst_uart_buffer_tx[5]=lst_control_steering & 0xff;
+  lst_uart_buffer_tx[6]=(lst_control_steering >> 8);
+  lst_uart_buffer_tx[7]=lst_control_motor & 0xff;
+  lst_uart_buffer_tx[8]=(lst_control_motor >> 8);
+  lst_uart_buffer_tx[9]=lst_control_line_no;
+
   /* Copy source buffer to TX buffer */
-  memoryCopy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &lst_spi_master1_rx,
+  memoryCopy((uint8_t *) &lst_uart_buffer_tx[10], (uint8_t *) &lst_spi_master1_rx,
       LST_SPI_BUFFER1_SIZE);
   
   /* Put message end character at the end of the message */
-  lst_uart_buffer_tx[1 + LST_SPI_BUFFER1_SIZE] = LST_BT_MESSAGE_END;
+  lst_uart_buffer_tx[10 + LST_SPI_BUFFER1_SIZE] = LST_BT_MESSAGE_END;
   
   /* Send UART message */
-  LST_UART_BT_Send_Bytes(2 + LST_SPI_BUFFER1_SIZE);
+  LST_UART_BT_Send_Bytes(11 + LST_SPI_BUFFER1_SIZE);
+}
+
+/**
+ * @brief Error handler for the BT module
+ */
+void LST_BT_ErrorHandler(){
+  /* If the UART2 Rx request didn't return HAL_OK, repeat request */
+  if(lst_uart_uart2_rx_status != HAL_OK){
+    LST_UART_Receive_Byte_UART2();
+  }
 }

@@ -20,6 +20,11 @@
 #define LST_SPI_BUFFER1_SIZE  38
 #define LST_SPI_BUFFER3_SIZE  8
 
+#define LST_SPI_TXRX_NOT_COMPLETE 1
+#define LST_SPI_TXRX_COMPLETE     1
+
+#define LST_SPI_SS_DELAY_TICKS 1000
+
 /* Function prototypes -------------------------------------------------------*/
 void LST_SPI_Init();
 void LST_SPI_ReceiveLineControllerData();

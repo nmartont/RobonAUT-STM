@@ -13,6 +13,8 @@ uint8_t lst_spi_master1_rx[LST_SPI_BUFFER1_SIZE] = { 0x00 };
 uint8_t lst_spi_master3_tx[LST_SPI_BUFFER3_SIZE] = { 0x00 };
 uint8_t lst_spi_master3_rx[LST_SPI_BUFFER3_SIZE] = { 0x00 };
 
+uint8_t lst_spi_master1_txrx_cmplt = LST_SPI_TXRX_NOT_COMPLETE;
+
 /* External variables --------------------------------------------------------*/
 
 /******************************************************************************/
@@ -37,11 +39,13 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
  * @brief This function handles the SPI Transfer/Receive complete callback.
  */
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
-  // manual SS
+
   if (hspi->Instance == SPI1)
   {
-    // Pull slave select high when completed
-    HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, 1);
+    /* Flag to signal completion of SPI1 TxRx complete */
+    lst_spi_master1_txrx_cmplt = LST_SPI_TXRX_COMPLETE;
+    /* Manual Slave Select -> High */
+    HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_SET);
   }
 }
 
@@ -60,14 +64,17 @@ void LST_SPI_ReceiveLineControllerData(){
   /* Put SPI command into the first byte */
   lst_spi_master1_tx[0] = LST_SPI_MODE_DEBUG;
 
-  // manual SS
-  HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, 0);
+  /* Manual Slave Select -> Low */
+  HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, GPIO_PIN_RESET);
 
-  // Counter delay for the SlaveSelect
+  /* 1000 ticks delay for the SlaveSelect */
   volatile uint16_t vol_cntr = 0;
   for(vol_cntr=0; vol_cntr<1000; ){
     vol_cntr++;
   }
+
+  /* Reset TxRx complete flag */
+  lst_spi_master1_txrx_cmplt = LST_SPI_TXRX_NOT_COMPLETE;
 
   /* Send and receive data via SPI3 */
   HAL_SPI_TransmitReceive_IT(&hspi1, (uint8_t *) &lst_spi_master1_tx,
@@ -78,6 +85,7 @@ void LST_SPI_ReceiveLineControllerData(){
  * @brief This function waits for data from the LineController
  */
 void LST_SPI_WaitForLineControllerData(){
-  while (hspi1.State != HAL_SPI_STATE_READY) {
+  while (hspi1.State != HAL_SPI_STATE_READY &&
+      lst_spi_master1_txrx_cmplt != LST_SPI_TXRX_NOT_COMPLETE) {
   }
 }

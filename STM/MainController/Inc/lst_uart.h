@@ -26,8 +26,13 @@
 /* Function prototypes -------------------------------------------------------*/
 void LST_UART_Init();
 void LST_UART_BT_Send_Bytes(uint8_t data_bytes);
+void LST_UART_Receive_Byte_UART1();
+void LST_UART_Receive_Byte_UART2();
 extern void LST_BT_Process_Incoming_Byte();
 extern void LST_Radio_Process_Incoming_Byte();
+/* ToDo Temp */
+void LST_UART_ReceiveLineControllerData();
+void LST_UART_WaitForLineControllerData();
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -41,5 +46,8 @@ extern uint8_t lst_uart_buffer_tx[LST_UART2_TX_BUFFER_SIZE];
 
 extern uint8_t lst_uart_uart1_txcplt;
 extern uint8_t lst_uart_uart2_txcplt;
+
+extern HAL_StatusTypeDef lst_uart_uart1_rx_status;
+extern HAL_StatusTypeDef lst_uart_uart2_rx_status;
 
 #endif /* LST_UART_H_ */
