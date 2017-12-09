@@ -32,7 +32,7 @@ uint8_t lst_uart_buffer_tx[LST_UART2_TX_BUFFER_SIZE] = { 0x00 };
  */
 void LST_UART_Init() {
   /* Receive a byte on UART1 */
-  LST_UART_Receive_Byte_UART1();
+  // LST_UART_Receive_Byte_UART1();
   
   /* Receive a byte on UART2 */
   LST_UART_Receive_Byte_UART2();
