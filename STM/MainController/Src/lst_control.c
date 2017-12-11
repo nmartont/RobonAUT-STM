@@ -269,7 +269,6 @@ void LST_Control_Reset_State_Machine(){
 	cntr_q1_brake 							 = 0;
 	cntr_q1_accel								 = 0;
 	flag_q1_slow_triple_search   = 1;
-  lst_control_line_no          = 0;
   lst_control_line_no_input    = 0;
   cntr_q1_slow_triple 			   = 0;
 	cntr_q1_slow_single 				 = 0;
