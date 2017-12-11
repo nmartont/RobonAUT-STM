@@ -22,7 +22,8 @@ void lst_adc_convert(void)
 	}
 
 	// Store measured data
-
+	volatile uint16_t temp1 = 0;
+	while(temp1 < 500){temp1++;}
 	lst_adc_result[0] = HAL_ADC_GetValue(&hadc1);
 	lst_adc_result[1] = HAL_ADC_GetValue(&hadc2);
 	lst_adc_result[2] = HAL_ADC_GetValue(&hadc3);
@@ -46,9 +47,13 @@ void lst_adc_nucleoConversion(void)
 
 	HAL_ADC_Start(&hadc1);
 
+	volatile uint16_t temp1 = 0;
+	while(temp1 < 500){temp1++;}
+
 	lst_adc_result[3] = HAL_ADC_GetValue(&hadc1);
 
 	HAL_ADC_ConfigChannel(&hadc1, &adc1_config_A);
+
 #endif
 
 }
