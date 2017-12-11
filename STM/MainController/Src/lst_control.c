@@ -285,17 +285,16 @@ void LST_Control_Resolve_Line(){
 
   // Line values array
   uint8_t cccntr = 0;
-  for(cccntr=0; cccntr<4; cccntr++){
+  for(cccntr=LST_CONTROL_NEW_LINE_FILTER_THRESHOLD - 1; cccntr>=0; cccntr--){
     lst_control_line_no_array[cccntr+1] = lst_control_line_no_array[cccntr];
   }
   lst_control_line_no_array[0] = lst_control_line_no_input;
 
 
-  // Check if all values are the same
-  // ToDo Doesn't work as expected but good enough
+  // Filter: Check if all values are the same
   uint8_t temp1 = lst_control_line_no_array[0];
   uint8_t flag1 = 1;
-  for(cccntr=1; cccntr<4; cccntr++){
+  for(cccntr=1; cccntr<LST_CONTROL_NEW_LINE_FILTER_THRESHOLD; cccntr++){
     if(lst_control_line_no_array[cccntr] != temp1){
       flag1 = 0;
     }

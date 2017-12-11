@@ -67,7 +67,8 @@
 #define LST_CONTROL_BRAKE_DELAY	5
 #define LST_CONTROL_BRAKE_TIME  40
 
-#define LST_CONTROL_LOST_LINES_THRESHOLD 20
+#define LST_CONTROL_LOST_LINES_THRESHOLD       20
+#define LST_CONTROL_NEW_LINE_FILTER_THRESHOLD  4
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Control_Init();
