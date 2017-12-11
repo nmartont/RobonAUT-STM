@@ -23,11 +23,11 @@
  */
 void LST_Task_Start(void const * argument) {
   /* Start BT request handler */
-  osThreadDef(LST_Task_BT_Request_Handler, LST_Task_BT_Request_Handler, osPriorityLow, 0, 128);
+  osThreadDef(LST_Task_BT_Request_Handler, LST_Task_BT_Request_Handler, osPriorityLow, 0, 256);
   lst_task_BTRequestHandlerTaskHandle = osThreadCreate(osThread(LST_Task_BT_Request_Handler), NULL);
 
   /* Start Q1 */
-  osThreadDef(LST_Task_Q1, LST_Task_Q1, osPriorityNormal, 0, 128);
+  osThreadDef(LST_Task_Q1, LST_Task_Q1, osPriorityNormal, 0, 512);
   lst_task_Q1TaskHandle = osThreadCreate(osThread(LST_Task_Q1), NULL);
 
   /* Exit starter task */

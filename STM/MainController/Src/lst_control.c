@@ -234,10 +234,16 @@ void LST_Control_Q1(){
 		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY){
 			lst_control_motor = 0;
 			cntr_q1_brake++;
-		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + LST_CONTROL_BRAKE_TIME){
+		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 3*LST_CONTROL_BRAKE_DELAY){
 			lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
 			cntr_q1_brake++;
-		}else{
+		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 6*LST_CONTROL_BRAKE_DELAY){
+      lst_control_motor = 0;
+      cntr_q1_brake++;
+	  }else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 9*LST_CONTROL_BRAKE_DELAY){
+	      lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
+	      cntr_q1_brake++;
+    }else{
 			lst_control_q1_mode = LST_CONTROL_MODE_Q1_SLOW;
 			cntr_q1_brake = 0;
 		}
@@ -269,7 +275,6 @@ void LST_Control_Reset_State_Machine(){
 	cntr_q1_brake 							 = 0;
 	cntr_q1_accel								 = 0;
 	flag_q1_slow_triple_search   = 1;
-  lst_control_line_no          = 0;
   lst_control_line_no_input    = 0;
   cntr_q1_slow_triple 			   = 0;
 	cntr_q1_slow_single 				 = 0;
