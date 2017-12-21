@@ -16,6 +16,7 @@
 // #define LST_CONFIG_TEST
 // #define LST_CONFIG_CHANGE_BT_BAUD
 #define LST_CONFIG_LINECONTROLLER_DEBUG_DATA
+#define LST_CONFIG_UART_LINE_COM
 
 /* Function prototypes -------------------------------------------------------*/
 

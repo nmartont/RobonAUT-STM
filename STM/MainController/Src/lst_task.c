@@ -23,11 +23,11 @@
  */
 void LST_Task_Start(void const * argument) {
   /* Start BT request handler */
-  osThreadDef(LST_Task_BT_Request_Handler, LST_Task_BT_Request_Handler, osPriorityLow, 0, 128);
+  osThreadDef(LST_Task_BT_Request_Handler, LST_Task_BT_Request_Handler, osPriorityLow, 0, 256);
   lst_task_BTRequestHandlerTaskHandle = osThreadCreate(osThread(LST_Task_BT_Request_Handler), NULL);
 
   /* Start Q1 */
-  osThreadDef(LST_Task_Q1, LST_Task_Q1, osPriorityNormal, 0, 128);
+  osThreadDef(LST_Task_Q1, LST_Task_Q1, osPriorityNormal, 0, 512);
   lst_task_Q1TaskHandle = osThreadCreate(osThread(LST_Task_Q1), NULL);
 
   /* Exit starter task */
@@ -48,12 +48,20 @@ void LST_Task_Q1(void const * argument) {
   /* Infinite loop */
   while (1) {
     /* Get line data from LineController */
+#ifdef LST_CONFIG_UART_LINE_COM
     LST_UART_ReceiveLineControllerData();
+#else
+    LST_SPI_ReceiveLineControllerData();
+#endif
 
     /* ToDo ADC conversion, I2C, other sensor data */
 
-    /* Wait for the end of the SPI transaction */
+    /* Wait for the end of the LineController transaction */
+#ifdef LST_CONFIG_UART_LINE_COM
     LST_UART_WaitForLineControllerData();
+#else
+    LST_SPI_WaitForLineControllerData();
+#endif
 
     /* ToDo Check for 0xFF control byte at the first byte of the SPI Rx buffer */
     /* ToDo Handle SPI Rx data in a separate module */
