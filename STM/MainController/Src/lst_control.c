@@ -95,9 +95,9 @@ void LST_Control(){
     break;
   case LST_CONTROL_MODE_Q1:
     /* Check for lost line */
-    if(LST_Control_Check_Lost_Line()){
-      lst_control_mode = LST_CONTROL_MODE_STOP;
-    }
+    // if(LST_Control_Check_Lost_Line()){
+    //   lst_control_mode = LST_CONTROL_MODE_STOP;
+    // }
     /* Q1 logic */
   	LST_Control_Q1();
   	/*Controlled steering*/
@@ -165,8 +165,8 @@ void LST_Control_Q1(){
 		/* Check for dotted lines */
 		// Check for triple lines
 		if(flag_q1_slow_triple_search == 1){
-			if (lst_control_line_no < 3) cntr_q1_slow_triple = 0;
-			if (lst_control_line_no == 3) cntr_q1_slow_triple++;
+			if (lst_control_line_no < 2) cntr_q1_slow_triple = 0;
+			if (lst_control_line_no >= 2) cntr_q1_slow_triple++;
 			if(cntr_q1_slow_triple > LST_CONTROL_Q1_SLOW_FILTER_THRESHOLD){
 				flag_q1_slow_triple_search = 0;
 				cntr_q1_slow_triple = 0;
@@ -214,8 +214,8 @@ void LST_Control_Q1(){
 		lst_control_motor = LST_CONTROL_Q1_FAST_MOTOR_SPEED;
 
 		/* Check for triple lines */
-		if (lst_control_line_no < 3) cntr_q1_fast_triple_line = 0;
-		if (lst_control_line_no == 3) cntr_q1_fast_triple_line++;
+		if (lst_control_line_no < 2) cntr_q1_fast_triple_line = 0;
+		if (lst_control_line_no >= 2) cntr_q1_fast_triple_line++;
 		if(cntr_q1_fast_triple_line>LST_CONTROL_Q1_FAST_TRIPLE_LINES){
 			/* Switch to braking */
 			lst_control_q1_mode = LST_CONTROL_MODE_Q1_BRAKE;
@@ -234,15 +234,28 @@ void LST_Control_Q1(){
 		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY){
 			lst_control_motor = 0;
 			cntr_q1_brake++;
-		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 3*LST_CONTROL_BRAKE_DELAY){
+		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 5*LST_CONTROL_BRAKE_DELAY){
 			lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
 			cntr_q1_brake++;
 		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 6*LST_CONTROL_BRAKE_DELAY){
       lst_control_motor = 0;
       cntr_q1_brake++;
 	  }else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 9*LST_CONTROL_BRAKE_DELAY){
+      lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
+      cntr_q1_brake++;
+    }else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 10*LST_CONTROL_BRAKE_DELAY){
+      lst_control_motor = 0;
+      cntr_q1_brake++;
+    }else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 11*LST_CONTROL_BRAKE_DELAY){
 	      lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
 	      cntr_q1_brake++;
+//    }
+//    else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 14*LST_CONTROL_BRAKE_DELAY){
+//      lst_control_motor = 0;
+//      cntr_q1_brake++;
+//    }else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 16*LST_CONTROL_BRAKE_DELAY){
+//        lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
+//        cntr_q1_brake++;
     }else{
 			lst_control_q1_mode = LST_CONTROL_MODE_Q1_SLOW;
 			cntr_q1_brake = 0;
@@ -286,8 +299,19 @@ void LST_Control_Reset_State_Machine(){
  * @brief Resolves line mode
  */
 void LST_Control_Resolve_Line(){
+  // Get line data
+  lst_control_linePosOld = lst_control_linePos;
+  // lst_control_linePosSum += lst_control_linePos;
+  uint16_t line = (lst_spi_master1_rx[3] << 8) | (lst_spi_master1_rx[2]);
+  lst_control_linePos = (line - 0x8000);
+
   // Get lumber of lines from Line Controller
   lst_control_line_no_input = lst_spi_master1_rx[1] >> 1;
+
+  // remember line position if line is lost
+  if(lst_control_line_no_input == 0){
+    lst_control_linePos = lst_control_linePosOld;
+  }
 
   // Line values array
   uint8_t cccntr = 0;
@@ -390,11 +414,6 @@ void LST_Control_Select_Mode(){
  */
 int32_t LST_Control_SteeringController(){
   int32_t str_cntrl_result = 0;
-
-  lst_control_linePosOld = lst_control_linePos;
-  // lst_control_linePosSum += lst_control_linePos;
-  uint16_t line = (lst_spi_master1_rx[3] << 8) | (lst_spi_master1_rx[2]);
-  lst_control_linePos = (line - 0x8000);
 
   /*    PD Controller    */
   /* Divide PD parameters into float */
