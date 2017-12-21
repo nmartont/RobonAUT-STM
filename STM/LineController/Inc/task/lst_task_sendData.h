@@ -78,7 +78,6 @@ void lst_sendData_transmitReceive(void);
  *  next package by setting lst_spiCompleted.
  */
 void lst_sendData_TxRxComplete(void);
-//void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
 
 //TODO:TEST
 void lst_spiTest(void);

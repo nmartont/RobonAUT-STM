@@ -26,8 +26,6 @@ void lst_spi_write_ledSegment(uint8_t segment_id)
 			4,
 			LST_SPI_TXRX_TIMEOUT);
 
-	// TODO where to handle received LED error data?
-
 }
 
 void lst_spi_clear_ledSegment()
@@ -49,18 +47,22 @@ void lst_spi_clear_ledSegment()
 }
 
 // TODO inter-STM send/receive functions
-
-void spi_interStm_callback(void)
+void lst_spi_transmit_interSTM(uint8_t *txData)
 {
 
-	lst_sendData_TxRxComplete();
-	lst_spi_interStm_writeCompleteFlag = 1;
+	HAL_SPI_Transmit_IT(
+				&hspi1,
+				txData,
+				LST_SPI_SIZE
+				);
 
 }
+
 
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
 
+	// inter-STM communication callback
 #ifdef LST_NUCLEO_TEST
 	if (hspi->Instance == SPI3)
 #else
@@ -68,23 +70,8 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 #endif
 	{
 
-		spi_interStm_callback();
+		lst_sendData_TxRxComplete();
 
 	}
 
 }
-
-/*
-// TODO:temp TEST
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-
-	if (hspi->Instance == SPI1)
-	{
-
-		spi_interStm_callback();
-
-	}
-
-}
-*/

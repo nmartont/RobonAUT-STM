@@ -34,8 +34,8 @@
 
 // Constants
 
-#define LFB_RESET_HOLD_CLK 6
-#define LFB_SET_HOLD_CLK 2
+#define LED_FEEDBACK_RESET_HOLD_CLK 6
+#define LED_FEEDBACK_SET_HOLD_CLK 2
 
 // Function declarations
 

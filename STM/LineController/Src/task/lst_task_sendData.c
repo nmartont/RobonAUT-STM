@@ -7,57 +7,25 @@
 
 #include <task/lst_task_sendData.h>
 
-// TODO:move functions to function source files
+// TODO:test communication w/ mainController again
+
+// TODO:refactor -> update send buffer whenever SS is high
+// (there is no ongoing communication)
 
 void lst_sendData(void)
 {
 
+	// Send only if previous has completed
 	if (lst_spiCompleted)
 	{
 
-		lst_sendData_initValues();
+			lst_sendData_initValues();
 
-		lst_sendData_fillTxBuffer();
+			lst_sendData_fillTxBuffer();
 
-		lst_sendData_transmitReceive();
-
-	}
-
-}
-
-void lst_spiTest()
-{
-
-	// Fill data
-
-	for (int i=0; i<38; i++)
-	{
-
-		lst_spiData_tx[i] = i;
+			lst_sendData_transmitReceive();
 
 	}
-
-	lst_spiCompleted = 0;
-
-	HAL_SPI_TransmitReceive_IT(
-				&hspi1,
-				(uint8_t *) &lst_spiData_tx[0],
-				(uint8_t *) &lst_spiData_rx[0],
-				38);
-
-	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 1);
-
-}
-
-void lst_sendData_TxRxComplete(void)
-{
-
-	// Signal the mainController - busy (pull DRDY low)
-	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
-
-	// Signal sendData that the next packet can be sent in
-	// the following sensor read cycle
-	lst_spiCompleted = 1;
 
 }
 
@@ -97,8 +65,6 @@ void lst_sendData_fillTxBuffer(void)
 
 	}
 
-	lst_timer1_delay_microSeconds(10);
-
 	// Fill sensor output data
 	for (uint8_t i=LST_SPI_TXBUF_VALUE_START; i<LST_SPI_TXBUF_SIZE; i++)
 	{
@@ -117,15 +83,15 @@ void lst_sendData_transmitReceive(void)
 	lst_spiCompleted = 0;
 
 	// Call TxRx function
-	HAL_SPI_TransmitReceive_IT(
-			&hspi1,
-			(uint8_t *) &lst_spiData_tx,
-			(uint8_t *) &lst_spiData_rx,
-			LST_SPI_SIZE);
+	lst_spi_transmit_interSTM(&lst_spiData_tx);
 
-	// Signal the mainController - ready to transmit/receive
-	// (pull DRDY high)
-	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 1);
+
+}
+
+void lst_sendData_TxRxComplete()
+{
+
+	lst_spiCompleted = 1;
 
 }
 
@@ -135,7 +101,5 @@ void lst_sendData_init()
 	// Set spiCompleted to 1 to enter data transfer function at start
 	lst_spiCompleted = 1;
 
-	// Pull DRDY low to signal that LineController is busy
-	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
-
 }
+

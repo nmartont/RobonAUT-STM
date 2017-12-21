@@ -7,7 +7,7 @@
 
 #include <task/lst_task_evaluateLine.h>
 
-void lst_eval_line_simple2()
+void lst_eval_line()
 {
 
 	// Step 0 - Initialize values
@@ -158,7 +158,7 @@ void lst_eval_line_simple2()
 
 		}
 
-		lst_eval_line_simple_countLines();
+		lst_eval_line_countLines();
 
 	}
 	else // Send middle position if no line found
@@ -178,13 +178,13 @@ void lst_eval_line_simple2()
 
 }
 
-void lst_eval_line_simple_countLines()
+void lst_eval_line_countLines()
 {
 
 	lst_eval_lineCount = 0;
 	lst_eval_wasLarge = 0;
 
-	for (uint8_t i=0/*lst_simpleEval_firstSumPos*/; i<31; i++)
+	for (uint8_t i=0; i<31; i++)
 	{
 
 		if (lst_tcrt_values[i] > LST_SIMPLEEVAL_HIGH_THRESHOLD)
@@ -202,6 +202,36 @@ void lst_eval_line_simple_countLines()
 			lst_eval_wasLarge = 0;
 
 		}
+
+	}
+
+}
+
+void lst_evaluate_line(void)
+{
+
+#ifdef LST_LINEEVAL_ADVANCED
+	lst_eval_line_advanced();
+#else
+	//lst_eval_line_simple();
+	lst_eval_line();
+#endif
+
+}
+
+
+/*
+
+void lst_eval_init_values(void)
+{
+
+	lst_eval_largeValues_size = 0;
+	lst_eval_previousPosition = -1;
+
+	for (uint8_t i=0; i<32; i++)
+	{
+
+		lst_eval_largeValues[i] = 0;
 
 	}
 
@@ -269,33 +299,6 @@ void lst_eval_line_simple()
 
 }
 
-void lst_evaluate_line(void)
-{
-
-#ifdef LST_LINEEVAL_ADVANCED
-	lst_eval_line_advanced();
-#else
-	//lst_eval_line_simple();
-	lst_eval_line_simple2();
-#endif
-
-}
-
-void lst_eval_init_values(void)
-{
-
-	lst_eval_largeValues_size = 0;
-	lst_eval_previousPosition = -1;
-
-	for (uint8_t i=0; i<32; i++)
-	{
-
-		lst_eval_largeValues[i] = 0;
-
-	}
-
-}
-
 void lst_eval_line_advanced()
 {
 
@@ -342,7 +345,7 @@ void lst_eval_algorithm_findMaxima(void)
 	}
 
 
-	/*
+
 
 	// Find global maximum
 
@@ -468,7 +471,7 @@ void lst_eval_algorithm_findMaxima(void)
 
 	}
 
-	*/
+
 
 }
 
@@ -480,3 +483,5 @@ void lst_eval_calculate_subSensor_positions()
 
 
 }
+
+*/

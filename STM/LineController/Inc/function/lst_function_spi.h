@@ -32,10 +32,11 @@
  */
 extern SPI_HandleTypeDef hspi2;
 
+// TODO:refactor -> change function to get it as reference
+extern uint8_t lst_spiData_tx[LST_SPI_SIZE];
+
 
 // Variables
-
-uint8_t lst_spi_interStm_writeCompleteFlag;
 
 uint8_t lst_spi_ledDriver_txBuf[4];
 uint8_t lst_spi_ledDriver_rxBuf[4];
@@ -52,13 +53,10 @@ uint8_t lst_spi_ledDriver_rxBuf[4];
  */
 void lst_spi_write_ledSegment(uint8_t segment_id);
 
-/**
- * \brief
- *	TODO doxy
- */
-void spi_interStm_callback(void);
-
 // TODO:doxy
 void lst_spi_clear_ledSegment(void);
+
+// TODO:doxy
+void lst_spi_transmit_interSTM(uint8_t *txData);
 
 #endif /* FUNCTION_SPI_H_ */

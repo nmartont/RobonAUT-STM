@@ -35,24 +35,24 @@ void lst_gpio_write_feedbackLeds(uint32_t data)
 {
 
 	// Reset SCLK, lATCH
-	HAL_GPIO_WritePin(LFB_SCLK_PORT, LFB_SCLK, 0);
-	HAL_GPIO_WritePin(LFB_LATCH_PORT, LFB_LATCH, 0);
+	HAL_GPIO_WritePin(LED_FEEDBACK_SCLK_GPIO_Port, LED_FEEDBACK_SCLK_Pin, 0);
+	HAL_GPIO_WritePin(LED_FEEDBACK_LATCH_GPIO_Port, LED_FEEDBACK_LATCH_Pin, 0);
 
 	// Latch hold time
-	lst_timer1_delay_timClk(LFB_RESET_HOLD_CLK);
+	lst_timer1_delay_timClk(LED_FEEDBACK_RESET_HOLD_CLK);
 
 	// Shift bits
 	for (uint8_t i=0; i<32; i++)
 	{
 
 		// Data out
-		HAL_GPIO_WritePin(LFB_SIN_PORT, LFB_SIN, ((data >> (31 -i)) & 1));
-		lst_timer1_delay_timClk(LFB_SET_HOLD_CLK);
+		HAL_GPIO_WritePin(LED_FEEDBACK_SIN_GPIO_Port, LED_FEEDBACK_SIN_Pin, ((data >> (31 -i)) & 1));
+		lst_timer1_delay_timClk(LED_FEEDBACK_SET_HOLD_CLK);
 
 		// Clock
-		HAL_GPIO_WritePin(LFB_SCLK_PORT, LFB_SCLK, 1);
-		lst_timer1_delay_timClk(LFB_SET_HOLD_CLK);
-		HAL_GPIO_WritePin(LFB_SCLK_PORT, LFB_SCLK, 0);
+		HAL_GPIO_WritePin(LED_FEEDBACK_SCLK_GPIO_Port, LED_FEEDBACK_SCLK_Pin, 1);
+		lst_timer1_delay_timClk(LED_FEEDBACK_SET_HOLD_CLK);
+		HAL_GPIO_WritePin(LED_FEEDBACK_SCLK_GPIO_Port, LED_FEEDBACK_SCLK_Pin, 0);
 
 
 	}
@@ -63,13 +63,13 @@ void lst_gpio_latch_feedbackLeds(void)
 {
 
 	// Pre-latch hold
-	//lst_timer1_delay_timClk(LFB_RESET_HOLD_CLK);
+	//lst_timer1_delay_timClk(LED_FEEDBACK_RESET_HOLD_CLK);
 	lst_timer1_delay_microSeconds(10);
 
 	// Latch
-	HAL_GPIO_WritePin(LFB_LATCH_PORT, LFB_LATCH, 1);
-	//lst_timer1_delay_timClk(LFB_RESET_HOLD_CLK);
+	HAL_GPIO_WritePin(LED_FEEDBACK_LATCH_GPIO_Port, LED_FEEDBACK_LATCH_Pin, 1);
+	//lst_timer1_delay_timClk(LED_FEEDBACK_RESET_HOLD_CLK);
 	lst_timer1_delay_microSeconds(10);
-	HAL_GPIO_WritePin(LFB_LATCH_PORT, LFB_LATCH, 0);
+	HAL_GPIO_WritePin(LED_FEEDBACK_LATCH_GPIO_Port, LED_FEEDBACK_LATCH_Pin, 0);
 
 }
