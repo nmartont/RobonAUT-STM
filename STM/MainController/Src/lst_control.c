@@ -47,6 +47,7 @@ int16_t lst_control_errorSignalOld = 0;
 int16_t lst_control_steering = 0;
 int16_t lst_control_motor = 0;
 int16_t lst_control_steering_offset = 0; // -150
+int16_t lst_control_speed = 0;
 
 uint16_t mode_cntr = 0;
 
@@ -315,7 +316,7 @@ void LST_Control_Resolve_Line(){
 
   // Line values array
   uint8_t cccntr = 0;
-  for(cccntr=LST_CONTROL_NEW_LINE_FILTER_THRESHOLD - 1; cccntr>=0; cccntr--){
+  for(cccntr=LST_CONTROL_NEW_LINE_FILTER_THRESHOLD - 1; cccntr!=255; cccntr--){
     lst_control_line_no_array[cccntr+1] = lst_control_line_no_array[cccntr];
   }
   lst_control_line_no_array[0] = lst_control_line_no_input;

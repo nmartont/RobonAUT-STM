@@ -24,6 +24,7 @@
 void LST_Timer_Init();
 void LST_TIM_SetMotorRcPwm(int16_t motor);
 void LST_TIM_SetServoRcPwm(int16_t servo);
+void LST_TIM_CalculateSpeed();
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -33,5 +34,7 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim5;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim8;
+
+extern int16_t lst_control_speed;
 
 #endif /* LST_TIMER_H_ */

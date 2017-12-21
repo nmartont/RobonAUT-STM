@@ -28,7 +28,7 @@
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Task_Start(void const * argument);
-void LST_Task_Q1(void const * argument);
+void LST_Task_FastLap(void const * argument);
 void LST_Task_BT_Request_Handler(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/

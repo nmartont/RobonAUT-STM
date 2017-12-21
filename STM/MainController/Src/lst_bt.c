@@ -9,7 +9,7 @@
 
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
-#define LST_BT_VARLIST_DATALEN 198
+#define LST_BT_VARLIST_DATALEN 202
 #else
 #define LST_BT_VARLIST_DATALEN 8
 #endif
@@ -41,6 +41,7 @@ uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
     0x01, 'M', LST_BT_VARTYPE_INT16,
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8,
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8,
+    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8,
     0x01, 'L', LST_BT_VARTYPE_UINT8,
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,
@@ -374,16 +375,18 @@ void LST_BT_Send_VarValues() {
   lst_uart_buffer_tx[8]=(lst_control_motor >> 8);
   lst_uart_buffer_tx[9]=lst_control_line_no;
   lst_uart_buffer_tx[10]=lst_control_q1_mode;
+  lst_uart_buffer_tx[11]=lst_control_speed & 0xff;
+  lst_uart_buffer_tx[12]=(lst_control_speed >> 8);
 
   /* Copy source buffer to TX buffer */
-  memoryCopy((uint8_t *) &lst_uart_buffer_tx[11], (uint8_t *) &lst_spi_master1_rx,
+  memoryCopy((uint8_t *) &lst_uart_buffer_tx[13], (uint8_t *) &lst_spi_master1_rx,
       LST_SPI_BUFFER1_SIZE);
   
   /* Put message end character at the end of the message */
-  lst_uart_buffer_tx[11 + LST_SPI_BUFFER1_SIZE] = LST_BT_MESSAGE_END;
+  lst_uart_buffer_tx[13 + LST_SPI_BUFFER1_SIZE] = LST_BT_MESSAGE_END;
   
   /* Send UART message */
-  LST_UART_BT_Send_Bytes(12 + LST_SPI_BUFFER1_SIZE);
+  LST_UART_BT_Send_Bytes(14 + LST_SPI_BUFFER1_SIZE);
 }
 
 /**

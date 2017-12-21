@@ -27,8 +27,8 @@ void LST_Task_Start(void const * argument) {
   lst_task_BTRequestHandlerTaskHandle = osThreadCreate(osThread(LST_Task_BT_Request_Handler), NULL);
 
   /* Start Q1 */
-  osThreadDef(LST_Task_Q1, LST_Task_Q1, osPriorityNormal, 0, 512);
-  lst_task_Q1TaskHandle = osThreadCreate(osThread(LST_Task_Q1), NULL);
+  osThreadDef(LST_Task_FastLap, LST_Task_FastLap, osPriorityNormal, 0, 1024);
+  lst_task_Q1TaskHandle = osThreadCreate(osThread(LST_Task_FastLap), NULL);
 
   /* Exit starter task */
   osThreadTerminate(lst_task_TaskStartHandle);
@@ -37,7 +37,7 @@ void LST_Task_Start(void const * argument) {
 /**
  * @brief Task for Q1
  */
-void LST_Task_Q1(void const * argument) {
+void LST_Task_FastLap(void const * argument) {
   /* Send Status and VarList to the PC */
   LST_BT_Send_StatusOk();
   LST_BT_Send_VarList();
@@ -55,6 +55,8 @@ void LST_Task_Q1(void const * argument) {
 #endif
 
     /* ToDo ADC conversion, I2C, other sensor data */
+    /* Calculate speed from encoder */
+    LST_TIM_CalculateSpeed();
 
     /* Wait for the end of the LineController transaction */
 #ifdef LST_CONFIG_UART_LINE_COM

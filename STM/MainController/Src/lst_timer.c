@@ -9,6 +9,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 uint8_t cntr = 0;
+uint16_t enc_cnt      = 0;
+uint16_t enc_cnt_last = 0;
 
 /******************************************************************************/
 /*                   Timer handling for RobonAUT 2018 Team LST                */
@@ -24,6 +26,9 @@ void LST_Timer_Init() {
   
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
   LST_TIM_SetServoRcPwm(0);
+
+  /* Start Encoder */
+  HAL_TIM_Encoder_Start_IT(&htim3, TIM_CHANNEL_ALL);
 }
 
 /**
@@ -48,6 +53,16 @@ void LST_TIM_SetServoRcPwm(int16_t servo){
 
   /* Set timer value */
   __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, LST_TIM_RCPWM_MIDDLE + servo);
+}
+
+/**
+ * @brief Function calculates vehicle speed
+ */
+void LST_TIM_CalculateSpeed(){
+  uint16_t temp = htim3.Instance->CNT;
+  lst_control_speed = temp - enc_cnt_last;
+  // ToDo what if overflow
+  enc_cnt_last = temp;
 }
 
 /**
