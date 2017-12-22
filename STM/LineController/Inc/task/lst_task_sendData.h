@@ -79,9 +79,6 @@ void lst_sendData_transmitReceive(void);
  */
 void lst_sendData_TxRxComplete(void);
 
-//TODO:TEST
-void lst_spiTest(void);
-
 // TODO:doxy
 void lst_sendData_init(void);
 

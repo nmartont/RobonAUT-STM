@@ -46,7 +46,6 @@ void lst_spi_clear_ledSegment()
 
 }
 
-// TODO inter-STM send/receive functions
 void lst_spi_transmit_interSTM(uint8_t *txData)
 {
 
@@ -57,7 +56,6 @@ void lst_spi_transmit_interSTM(uint8_t *txData)
 				);
 
 }
-
 
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {

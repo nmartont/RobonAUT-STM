@@ -9,7 +9,7 @@
 
 // TODO:test communication w/ mainController again
 
-// TODO:refactor -> update send buffer whenever SS is high
+// TODO:upgrade -> update send buffer whenever SS is high
 // (there is no ongoing communication)
 
 void lst_sendData(void)
@@ -51,9 +51,11 @@ void lst_sendData_initValues(void)
 void lst_sendData_fillTxBuffer(void)
 {
 
-	// Write 0xff and line count into first two bytes TODO
+	// TODO:temporary solution
+	// Write 0xff and line count into first two bytes
 	lst_spiData_tx[0] = 255;
-	lst_spiData_tx[1] = lst_eval_lineCount << 1; // TODO:FIRST BIT SHIT
+	lst_spiData_tx[1] = lst_eval_lineCount << 1;
+	// FIRST BIT SHIFT
 	// random SPI error first bit always 1
 
 	// Fill line position data into bytes 2,3 and 4,5
@@ -85,18 +87,29 @@ void lst_sendData_transmitReceive(void)
 	// Call TxRx function
 	lst_spi_transmit_interSTM(&lst_spiData_tx);
 
+	// Signal the mainController - ready to transmit/receive
+	// (pull DRDY high)
+	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 1);
 
 }
 
 void lst_sendData_TxRxComplete()
 {
 
+	// Signal the mainController - busy (pull DRDY low)
+	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
+
+	// Signal sendData that the next packet can be sent in
+	// the following sensor read cycle
 	lst_spiCompleted = 1;
 
 }
 
 void lst_sendData_init()
 {
+
+	// Pull DRDY low to signal that LineController is busy
+	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
 
 	// Set spiCompleted to 1 to enter data transfer function at start
 	lst_spiCompleted = 1;

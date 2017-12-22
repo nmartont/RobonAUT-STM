@@ -45,14 +45,6 @@
  */
 #define LST_LINEEVAL_BASIC_MULTIPLIER 2048
 
-
-/**
- * \brief
- * 	TODO
- */
-#define LST_LINEEVAL_ADVANCED_THR_HIGH 100
-#define LST_LINEEVAL_ADVANCED_THR_LOW 40
-
 /**
  * \brief
  * 	If line sensing is displayed based on raw sensor input data
@@ -86,7 +78,9 @@
  * \brief
  * 	TODO doxy
  */
-#define LST_CD74HC4051_OUTRISE_HOLD_CLK 100 // TODO check w\ measurement
+#define LST_CD74HC4051_OUTRISE_HOLD_CLK 100
+
+// Other constants
 
 /**
  * \brief
@@ -119,5 +113,8 @@
 
 // TODO:doxy
 #define LST_SENDDATA_MAX 65534
+
+// TODO:doxy
+#define LST_SPI_TXRX_TIMEOUT 50 // msec
 
 #endif /* LST_CONSTANTS_H_ */

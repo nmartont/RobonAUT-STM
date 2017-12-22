@@ -16,47 +16,53 @@
 
 // External variables
 
-/**
- * \brief
- * 	SPI slave connected to mainController
- */
 #ifdef LST_NUCLEO_TEST
+	/**
+	 * \var hspi3 SPI slave connected to mainController
+	 */
 	extern SPI_HandleTypeDef hspi3;
 #else
+	/**
+	 * \var hspi1 SPI slave connected to mainController
+	 */
 	extern SPI_HandleTypeDef hspi1;
 #endif
 
 /**
- * \brief
- * 	SPI master connected to series TLC5928 LED drivers
+ * \var hspi2 SPI master connected to series TLC5928 LED drivers
  */
 extern SPI_HandleTypeDef hspi2;
 
-// TODO:refactor -> change function to get it as reference
-extern uint8_t lst_spiData_tx[LST_SPI_SIZE];
-
-
 // Variables
 
+/**
+ * \var lst_spi_ledDriver_txBuf Stores the data to be transmitted to
+ * 	the feedback LED drivers.
+ * \var lst_spi_ledDriver_rxBuf Stores the data received from the
+ * 	feedback LED drivers. Currently unused.
+ */
 uint8_t lst_spi_ledDriver_txBuf[4];
 uint8_t lst_spi_ledDriver_rxBuf[4];
-
-// Constants
-
-#define LST_SPI_TXRX_TIMEOUT 50 // msec
 
 // Function declarations
 
 /**
- * \brief
- *	TODO doxy
+ * \brief Writes the contents of lst_ledDriver_control[segment_id]
+ * 	on the SPI master line.
  */
 void lst_spi_write_ledSegment(uint8_t segment_id);
 
-// TODO:doxy
+/**
+ * \brief Writes 0x0000 on the SPI master line. All TCRT LEDs are
+ * 	turned off.
+ */
 void lst_spi_clear_ledSegment(void);
 
-// TODO:doxy
-void lst_spi_transmit_interSTM(uint8_t *txData);
+/**
+ * @brief Transmits the line sensor data over the SPI slave line to
+ *  the mainController.
+ * @param txData The 38-byte data package being transmitted.
+ */
+void lst_spi_transmit_interSTM(uint8_t *txData); // TODO:syntax check
 
 #endif /* FUNCTION_SPI_H_ */
