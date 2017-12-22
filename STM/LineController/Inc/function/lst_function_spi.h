@@ -37,9 +37,9 @@ extern SPI_HandleTypeDef hspi2;
 
 /**
  * \var lst_spi_ledDriver_txBuf Stores the data to be transmitted to
- * 	the feedback LED drivers.
+ * 	the TCRT LED drivers.
  * \var lst_spi_ledDriver_rxBuf Stores the data received from the
- * 	feedback LED drivers. Currently unused.
+ * 	TCRT LED drivers. Currently unused.
  */
 uint8_t lst_spi_ledDriver_txBuf[4];
 uint8_t lst_spi_ledDriver_rxBuf[4];

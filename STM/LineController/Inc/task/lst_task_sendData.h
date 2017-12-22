@@ -40,8 +40,7 @@ uint8_t lst_spiCompleted;
 // Functions
 
 /**
- * \brief
- *	TODO doxy
+ * \brief Handles sending the line data to the mainController.
  */
 void lst_sendData(void);
 
@@ -79,7 +78,9 @@ void lst_sendData_transmitReceive(void);
  */
 void lst_sendData_TxRxComplete(void);
 
-// TODO:doxy
+/**
+ * \brief Initializes DRDY GPIO output and busy flag.
+ */
 void lst_sendData_init(void);
 
 #endif /* TASK_LST_TASK_SENDDATA_H_ */

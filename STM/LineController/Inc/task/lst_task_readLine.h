@@ -17,8 +17,7 @@
 // Constants
 
 /**
- * \brief
- * 	Stores the bytes to be shifted to the Led Driver in
+ * \brief	Stores the bytes to be shifted to the Led Driver in
  * 	the eight consecutive TCRT read cycles. In each cycle,
  * 	four bytes are shifted to control all 32 LEDs.
  */
@@ -35,8 +34,7 @@ static const uint8_t lst_ledDriver_control[8][4] =
 		};
 
 /**
- * \brief
- * 	Stores the TCRT position data; shows where the ADC values
+ * \brief	Stores the TCRT position data; shows where the ADC values
  * 	have to be read into in the consecutive TCRT read cycles.
  */
 static const uint8_t lst_result_control[8][4] =
@@ -52,8 +50,7 @@ static const uint8_t lst_result_control[8][4] =
 	};
 
 /**
- * \brief
- * 	Stores the MUX addresses applied in the eight consecutive
+ * \brief	Stores the MUX addresses applied in the eight consecutive
  * 	TCRT read cycles.
  */
 static const uint8_t lst_mux_control[8] =
@@ -62,8 +59,7 @@ static const uint8_t lst_mux_control[8] =
 // Local variables
 
 /**
- * \brief
- * 	Stores the sensor output values converted by the ADCs.
+ * \brief	Stores the sensor output values converted by the ADCs.
  */
 uint8_t lst_tcrt_values[32];
 
@@ -71,19 +67,19 @@ uint8_t lst_tcrt_values[32];
 // Function declarations
 
 /**
- * \brief
- *	Calls read_segment on the 8 LED segments. Acquired values
- *	are stored in values[32].
+ * \brief	Calls read_segment on the 8 LED segments. Acquired values
+ *	are stored in lst_tcrt_values[32].
  */
 void lst_readLine(void);
 
 /**
- * \brief
- *	Acquires the 4 output values of a LED segment.
+ * \brief Acquires the 4 output values of a LED segment.
  */
 void lst_read_segment(uint8_t segment_id);
 
-// TODO:doxy
+/**
+ * \brief Clears all TCRT LED drive lines.
+ */
 void lst_readLine_init(void);
 
 #endif /* LST_TASK_READLINE_H_ */
