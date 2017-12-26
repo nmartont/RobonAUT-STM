@@ -11,6 +11,7 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
+uint8_t lst_task_mode = LST_TASK_MODE_FASTLAP;
 
 /* External variables --------------------------------------------------------*/
 
@@ -22,24 +23,35 @@
  * @brief This task starts the MainController tasks.
  */
 void LST_Task_Start(void const * argument) {
-  /* Start BT request handler */
-  osThreadDef(LST_Task_BT_Request_Handler, LST_Task_BT_Request_Handler, osPriorityLow, 0, 256);
-  lst_task_BTRequestHandlerTaskHandle = osThreadCreate(osThread(LST_Task_BT_Request_Handler), NULL);
+  /* Send Status to the PC */
+  LST_BT_Send_StatusOk();
 
-  /* Start Q1 */
-  osThreadDef(LST_Task_FastLap, LST_Task_FastLap, osPriorityNormal, 0, 1024);
-  lst_task_Q1TaskHandle = osThreadCreate(osThread(LST_Task_FastLap), NULL);
+  /* Start BT request handler */
+  osThreadDef(LST_Task_BT_RequestHandler, LST_Task_BT_RequestHandler, osPriorityLow, 0, 256);
+  lst_task_BTRequestHandlerTaskHandle = osThreadCreate(osThread(LST_Task_BT_RequestHandler), NULL);
+
+  /* ToDo Determine which mode to start based on the switches on the car */
+  lst_bt_diag_mode = LST_BT_DIAG_MODE_FASTLAP;
+  if (lst_task_mode == LST_TASK_MODE_FASTLAP){
+    /* Start Fast Lap mode */
+    osThreadDef(LST_Task_FastLap, LST_Task_FastLap, osPriorityNormal, 0, 1024);
+    lst_task_MainTaskHandle = osThreadCreate(osThread(LST_Task_FastLap), NULL);
+  }
+  else if (lst_task_mode == LST_TASK_MODE_OBSTACLE){
+    /* Start Obstacle Lap mode */
+    osThreadDef(LST_Task_Obstacle, LST_Task_Obstacle, osPriorityNormal, 0, 1024);
+    lst_task_MainTaskHandle = osThreadCreate(osThread(LST_Task_Obstacle), NULL);
+  }
 
   /* Exit starter task */
   osThreadTerminate(lst_task_TaskStartHandle);
 }
 
 /**
- * @brief Task for Q1
+ * @brief Task for Fast Lap
  */
 void LST_Task_FastLap(void const * argument) {
-  /* Send Status and VarList to the PC */
-  LST_BT_Send_StatusOk();
+  /* Send VarList to the PC */
   LST_BT_Send_VarList();
 
   /* Record starting timestamp */
@@ -47,55 +59,50 @@ void LST_Task_FastLap(void const * argument) {
 
   /* Infinite loop */
   while (1) {
-    /* Get line data from LineController */
-#ifdef LST_CONFIG_UART_LINE_COM
-    LST_UART_ReceiveLineControllerData();
-#else
-    LST_SPI_ReceiveLineControllerData();
-#endif
+    LST_Fast_Logic();
 
-    /* ToDo ADC conversion, I2C, other sensor data */
-    /* Calculate speed from encoder */
-    LST_TIM_CalculateSpeed();
-
-    /* Wait for the end of the LineController transaction */
-#ifdef LST_CONFIG_UART_LINE_COM
-    LST_UART_WaitForLineControllerData();
-#else
-    LST_SPI_WaitForLineControllerData();
-#endif
-
-    /* ToDo Check for 0xFF control byte at the first byte of the SPI Rx buffer */
-    /* ToDo Handle SPI Rx data in a separate module */
-
-    /* Hand over control to the Controls module */
-    LST_Control();
-
-    /* Send diag data via BT */
+    /* Send diagnostic data via BT */
     if (lst_bt_send_diagdata_flag)
       LST_BT_Send_VarValues();
 
     /* Wait for the next cycle */
-    vTaskDelayUntil(&xLastWakeTime, LST_TASK_Q1_TASK_REPEAT_TICKS);
+    vTaskDelayUntil(&xLastWakeTime, LST_TASK_CONTROL_REPEAT_TICKS);
+  }
+}
+
+/**
+ * @brief Task for Obstacle Lap
+ */
+void LST_Task_Obstacle(void const * argument) {
+  /* Send VarList to the PC */
+  LST_BT_Send_VarList();
+
+  /* Record starting timestamp */
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+
+  /* Infinite loop */
+  while (1) {
+    LST_Obs_Logic();
+
+    /* Send diagnostic data via BT */
+    if (lst_bt_send_diagdata_flag)
+      LST_BT_Send_VarValues();
+
+    /* Wait for the next cycle */
+    vTaskDelayUntil(&xLastWakeTime, LST_TASK_CONTROL_REPEAT_TICKS);
   }
 }
 
 /**
  * @brief This task handles the BT requests
  */
-void LST_Task_BT_Request_Handler(void const * argument) {
+void LST_Task_BT_RequestHandler(void const * argument) {
   /* Record starting timestamp */
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   /* Infinite loop */
   while (1) {
-    /* Error handling for the BT module */
-    LST_BT_ErrorHandler();
-
-    if (lst_bt_send_status_flag)
-      LST_BT_Send_StatusOk(); // ToDo send Error status as well?
-    if (lst_bt_send_varlist_flag)
-      LST_BT_Send_VarList();
+    LST_BT_RequestHandler();
 
     /* Wait for the next cycle */
     vTaskDelayUntil(&xLastWakeTime, LST_TASK_BT_TASK_REPEAT_TICKS);

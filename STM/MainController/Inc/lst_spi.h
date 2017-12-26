@@ -16,8 +16,14 @@
 #include "main.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_SPI_MODE_DEBUG    1
+#ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
 #define LST_SPI_BUFFER1_SIZE  38
+#define LST_SPI_MODE_DEBUG    1
+#else
+#define LST_SPI_BUFFER1_SIZE  6
+#define LST_SPI_MODE_DEBUG    0
+#endif
+
 #define LST_SPI_BUFFER3_SIZE  8
 
 #define LST_SPI_TXRX_NOT_COMPLETE 1

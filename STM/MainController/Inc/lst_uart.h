@@ -30,9 +30,11 @@ void LST_UART_Receive_Byte_UART1();
 void LST_UART_Receive_Byte_UART2();
 extern void LST_BT_Process_Incoming_Byte();
 extern void LST_Radio_Process_Incoming_Byte();
-/* ToDo Temp */
+
+#ifdef LST_CONFIG_UART_LINE_COM
 void LST_UART_ReceiveLineControllerData();
 void LST_UART_WaitForLineControllerData();
+#endif
 
 /* Private variables ---------------------------------------------------------*/
 

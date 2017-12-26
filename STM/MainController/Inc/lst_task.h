@@ -21,20 +21,26 @@
 #include "lst_bt.h"
 #include "lst_radio.h"
 #include "lst_control.h"
+#include "lst_obstacle.h"
+#include "lst_fastlap.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_TASK_Q1_TASK_REPEAT_TICKS 10  // 100Hz
+#define LST_TASK_CONTROL_REPEAT_TICKS 10  // 100Hz
 #define LST_TASK_BT_TASK_REPEAT_TICKS 200 // 5Hz
+
+#define LST_TASK_MODE_FASTLAP  0
+#define LST_TASK_MODE_OBSTACLE 1
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Task_Start(void const * argument);
 void LST_Task_FastLap(void const * argument);
-void LST_Task_BT_Request_Handler(void const * argument);
+void LST_Task_Obstacle(void const * argument);
+void LST_Task_BT_RequestHandler(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/
 osThreadId lst_task_StartTaskHandle;
 osThreadId lst_task_TaskStartHandle;
-osThreadId lst_task_Q1TaskHandle;
+osThreadId lst_task_MainTaskHandle;
 osThreadId lst_task_BTRequestHandlerTaskHandle;
 
 #endif /* LST_TASK_H_ */

@@ -1,27 +1,28 @@
 /*
- * lst_config.h
+ * lst_obstacle.h
  *
- *  Created on: 2017. nov. 17.
+ *  Created on: 2017. dec. 26.
  *      Author: nmartont
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef LST_CONFIG_H_
-#define LST_CONFIG_H_
+#ifndef LST_OBSTACLE_H_
+#define LST_OBSTACLE_H_
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx.h"
+#include "stm32f4xx_it.h"
+#include "cmsis_os.h"
+#include "main.h"
 
 /* Defines -------------------------------------------------------------------*/
-
-/* Defines -------------------------------------------------------------------*/
-// #define LST_CONFIG_TEST
-// #define LST_CONFIG_CHANGE_BT_BAUD
-#define LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
-// #define LST_CONFIG_UART_LINE_COM
 
 /* Function prototypes -------------------------------------------------------*/
+void LST_Obs_Init();
+void LST_Obs_Logic();
 
 /* Private variables ---------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
 
-#endif /* LST_CONFIG_H_ */
+#endif /* LST_OBSTACLE_H_ */

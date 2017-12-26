@@ -22,6 +22,10 @@
 /* Buffer defines */
 #define LST_BT_RX_BUFFER_SIZE 128
 
+/* BT diagnostic mode defines */
+#define LST_BT_DIAG_MODE_FASTLAP  0
+#define LST_BT_DIAG_MODE_OBSTACLE 1
+
 /* BT Defines ----------------------------------------------------------------*/
 #define LST_BT_MESSAGE_END 0xFF
 #define LST_BT_CONF_MSG_END1 '\r'
@@ -126,28 +130,26 @@ void LST_BT_Send_StatusRequest();
 void LST_BT_Send_VarList();
 void LST_BT_Send_VarValues();
 void LST_BT_ErrorHandler();
+void LST_BT_RequestHandler();
 
 /* Private variables ---------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
+extern uint8_t lst_bt_diag_mode;
 extern uint16_t lst_bt_gamepad_values[LST_GAMEPAD_ARRAY_SIZE];
 extern uint8_t lst_bt_connection_status;
 extern uint8_t lst_bt_pc_status;
 extern uint8_t lst_bt_stm_status;
-extern uint8_t lst_bt_send_status_flag;
-extern uint8_t lst_bt_send_varlist_flag;
 extern uint8_t lst_bt_send_diagdata_flag;
 
+// Data needed to send as diagnostics
 extern uint16_t lst_control_steeringP;
 extern uint16_t lst_control_steeringD;
-
 extern int16_t lst_control_steering;
 extern int16_t lst_control_motor;
 extern int16_t lst_control_steering_offset;
-
 extern uint8_t lst_control_line_no;
 extern uint8_t lst_control_q1_mode;
-
 extern int16_t lst_control_speed;
 
 #endif /* LST_BT_H_ */

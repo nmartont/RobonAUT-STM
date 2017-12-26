@@ -8,10 +8,12 @@
 #include "lst_bt.h"
 
 /* Defines -------------------------------------------------------------------*/
-#ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
-#define LST_BT_VARLIST_DATALEN 202
+#ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
+#define LST_BT_VARLIST_FASTLAP_DATALEN  202
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 196
 #else
-#define LST_BT_VARLIST_DATALEN 8
+#define LST_BT_VARLIST_FASTLAP_DATALEN  42
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 36
 #endif
 
 #define LST_BT_VARVALUES_DATALEN 14
@@ -33,19 +35,22 @@ uint8_t lst_bt_send_status_flag = 0;
 uint8_t lst_bt_send_varlist_flag = 0;
 uint8_t lst_bt_send_diagdata_flag = 0;
 
-#ifdef LST_CONFIG_LINECONTROLLER_DEBUG_DATA
-uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
-    0x01, 'P', LST_BT_VARTYPE_UINT16,
-    0x01, 'D', LST_BT_VARTYPE_UINT16,
-    0x01, 'S', LST_BT_VARTYPE_INT16,
-    0x01, 'M', LST_BT_VARTYPE_INT16,
-    0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8,
-    0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8,
-    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,
-    0x02, 'F', 'F', LST_BT_VARTYPE_UINT8,
-    0x01, 'L', LST_BT_VARTYPE_UINT8,
-    0x02, 'L', '1', LST_BT_VARTYPE_UINT16,
-    0x02, 'L', '2', LST_BT_VARTYPE_UINT16,
+/* Diagnostic control variables */
+uint8_t lst_bt_diag_mode = LST_BT_DIAG_MODE_FASTLAP;
+
+#ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
+uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
+    0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
+    0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
+    0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
+    0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
+    0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
+    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
+    0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Fast lap mode
+    0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
+    0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
+    0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
+    0x02, 'L', '2', LST_BT_VARTYPE_UINT16,// Line position repeated
     0x03, 'V', '0', '0', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '0', '1', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '0', '2', LST_BT_VARTYPE_UINT8,
@@ -78,8 +83,77 @@ uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {
     0x03, 'V', '2', '9', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '3', '0', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8};
+
+uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
+    0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
+    0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
+    0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
+    0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
+    0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
+    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
+    0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
+    0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
+    0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
+    0x02, 'L', '2', LST_BT_VARTYPE_UINT16,// Line position repeated
+    0x03, 'V', '0', '0', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '1', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '2', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '3', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '4', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '5', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '6', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '7', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '8', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '0', '9', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '0', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '1', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '2', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '3', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '4', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '5', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '6', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '7', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '8', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '1', '9', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '0', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '1', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '2', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '3', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '4', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '5', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '6', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '7', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '8', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '2', '9', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '3', '0', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8
+};
 #else
-uint8_t buffer_varlist[LST_BT_VARLIST_DATALEN] = {0x00};
+uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
+    0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
+    0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
+    0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
+    0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
+    0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
+    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
+    0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Fast lap mode
+    0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
+    0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
+    0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
+    0x02, 'L', '2', LST_BT_VARTYPE_UINT16,// Line position repeated
+    };
+uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
+    0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
+    0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
+    0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
+    0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
+    0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
+    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
+    0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
+    0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
+    0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
+    0x02, 'L', '2', LST_BT_VARTYPE_UINT16,// Line position repeated
+    };
 #endif
 
 /* Function prototypes ------------------------------------------------------ */
@@ -340,15 +414,28 @@ void LST_BT_Send_VarList() {
   /* Put message type at the start of the message */
   lst_uart_buffer_tx[0] = LST_BT_MSGTYPE_VARLIST;
   
-  /* Copy source buffer to TX buffer */
-  memoryCopy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist,
-      LST_BT_VARLIST_DATALEN);
-  
-  /* Put message end character at the end of the message */
-  lst_uart_buffer_tx[1 + LST_BT_VARLIST_DATALEN] = LST_BT_MESSAGE_END;
-  
-  /* Send UART message */
-  LST_UART_BT_Send_Bytes(2 + LST_BT_VARLIST_DATALEN);
+  /* Handle FASTLAP/OBSTACLE modes */
+  if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
+    /* Copy source buffer to TX buffer */
+    memoryCopy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_fastlap,
+        LST_BT_VARLIST_FASTLAP_DATALEN);
+
+    /* Put message end character at the end of the message */
+    lst_uart_buffer_tx[1 + LST_BT_VARLIST_FASTLAP_DATALEN] = LST_BT_MESSAGE_END;
+
+    /* Send UART message */
+    LST_UART_BT_Send_Bytes(2 + LST_BT_VARLIST_FASTLAP_DATALEN);
+  }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
+    /* Copy source buffer to TX buffer */
+    memoryCopy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_obstacle,
+        LST_BT_VARLIST_OBSTACLE_DATALEN);
+
+    /* Put message end character at the end of the message */
+    lst_uart_buffer_tx[1 + LST_BT_VARLIST_OBSTACLE_DATALEN] = LST_BT_MESSAGE_END;
+
+    /* Send UART message */
+    LST_UART_BT_Send_Bytes(2 + LST_BT_VARLIST_OBSTACLE_DATALEN);
+  }
 }
 
 /**
@@ -374,19 +461,40 @@ void LST_BT_Send_VarValues() {
   lst_uart_buffer_tx[7]=lst_control_motor & 0xff;
   lst_uart_buffer_tx[8]=(lst_control_motor >> 8);
   lst_uart_buffer_tx[9]=lst_control_line_no;
-  lst_uart_buffer_tx[10]=lst_control_q1_mode;
-  lst_uart_buffer_tx[11]=lst_control_speed & 0xff;
-  lst_uart_buffer_tx[12]=(lst_control_speed >> 8);
+  lst_uart_buffer_tx[10]=lst_control_speed & 0xff;
+  lst_uart_buffer_tx[11]=(lst_control_speed >> 8);
+  /* Handle FASTLAP/OBSTACLE modes */
+  uint8_t extra_bytes = 0;
+  if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
+    extra_bytes = 1;
+    lst_uart_buffer_tx[12]=lst_control_q1_mode;
+  }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
+    extra_bytes = 0;
+  }
 
   /* Copy source buffer to TX buffer */
-  memoryCopy((uint8_t *) &lst_uart_buffer_tx[13], (uint8_t *) &lst_spi_master1_rx,
+  memoryCopy((uint8_t *) &lst_uart_buffer_tx[12 + extra_bytes], (uint8_t *) &lst_spi_master1_rx,
       LST_SPI_BUFFER1_SIZE);
   
   /* Put message end character at the end of the message */
-  lst_uart_buffer_tx[13 + LST_SPI_BUFFER1_SIZE] = LST_BT_MESSAGE_END;
+  lst_uart_buffer_tx[12 + extra_bytes + LST_SPI_BUFFER1_SIZE] = LST_BT_MESSAGE_END;
   
   /* Send UART message */
-  LST_UART_BT_Send_Bytes(14 + LST_SPI_BUFFER1_SIZE);
+  LST_UART_BT_Send_Bytes(13 + extra_bytes + LST_SPI_BUFFER1_SIZE);
+}
+
+/**
+ * @brief BT request handler task
+ */
+void LST_BT_RequestHandler(){
+  /* Error handling for the BT module */
+  LST_BT_ErrorHandler();
+
+  /* Send computer responses if there is a request */
+  if (lst_bt_send_status_flag)
+    LST_BT_Send_StatusOk();
+  if (lst_bt_send_varlist_flag)
+    LST_BT_Send_VarList();
 }
 
 /**
