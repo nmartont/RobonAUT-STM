@@ -78,9 +78,6 @@ void LST_Control_Commons(){
   LST_SPI_WaitForLineControllerData();
 #endif
 
-  /* ToDo Check for 0xFF control byte at the first byte of the SPI Rx buffer */
-  /* ToDo Handle SPI Rx data in a separate module */
-
   /* Number of lines */
   LST_Control_Resolve_Line();
 
@@ -111,6 +108,14 @@ uint8_t LST_Control_Check_Lost_Line(){
  * @brief Resolves line mode
  */
 void LST_Control_Resolve_Line(){
+  /* Check for 0xFF control byte at the first byte of the SPI Rx buffer */
+  // ToDo change control byte so that it's not FF, but say 0F
+  if(lst_spi_master1_rx[0] != LST_SPI_LINECNTR_CONTROL_BYTE){
+    lst_spi_linecontroller_lost = 1;
+    return;
+  }
+  lst_spi_linecontroller_lost = 0;
+
   // Get line data
   lst_control_linePosOld = lst_control_linePos;
   // lst_control_linePosSum += lst_control_linePos;

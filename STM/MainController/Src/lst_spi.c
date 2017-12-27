@@ -15,6 +15,8 @@ uint8_t lst_spi_master3_rx[LST_SPI_BUFFER3_SIZE] = { 0x00 };
 
 uint8_t lst_spi_master1_txrx_cmplt = LST_SPI_TXRX_NOT_COMPLETE;
 
+uint8_t lst_spi_linecontroller_lost = 0;
+
 /* External variables --------------------------------------------------------*/
 
 /******************************************************************************/

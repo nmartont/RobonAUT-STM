@@ -16,6 +16,8 @@
 #include "main.h"
 
 /* Defines -------------------------------------------------------------------*/
+#define LST_SPI_LINECNTR_CONTROL_BYTE 0xFF
+
 #ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
 #define LST_SPI_BUFFER1_SIZE  38
 #define LST_SPI_MODE_DEBUG    1
@@ -46,5 +48,7 @@ extern uint8_t lst_spi_master1_tx[LST_SPI_BUFFER1_SIZE];
 extern uint8_t lst_spi_master1_rx[LST_SPI_BUFFER1_SIZE];
 extern uint8_t lst_spi_master3_tx[LST_SPI_BUFFER3_SIZE];
 extern uint8_t lst_spi_master3_rx[LST_SPI_BUFFER3_SIZE];
+
+extern uint8_t lst_spi_linecontroller_lost;
 
 #endif /* LST_SPI_H_ */
