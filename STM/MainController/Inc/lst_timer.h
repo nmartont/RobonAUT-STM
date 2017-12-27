@@ -24,7 +24,7 @@
 void LST_Timer_Init();
 void LST_TIM_SetMotorRcPwm(int16_t motor);
 void LST_TIM_SetServoRcPwm(int16_t servo);
-void LST_TIM_CalculateSpeed();
+uint16_t LST_TIM_CalculateSpeed();
 
 /* Private variables ---------------------------------------------------------*/
 

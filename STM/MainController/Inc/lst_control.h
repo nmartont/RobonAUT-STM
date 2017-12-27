@@ -19,77 +19,33 @@
 #include "lst_timer.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_CONTROL_MODE_BT             0
-#define LST_CONTROL_MODE_STOP           1
-#define LST_CONTROL_MODE_LINE_FOLLOW    2
-#define LST_CONTROL_MODE_Q1             3
-#define LST_CONTROL_MODE_Q1_SLOW        4
-#define LST_CONTROL_MODE_Q1_FAST        5
-#define LST_CONTROL_MODE_Q1_START       6
-#define LST_CONTROL_MODE_Q1_ACCEL       7
-#define LST_CONTROL_MODE_Q1_BRAKE       8
-#define LST_CONTROL_MODE_Q1_LOST_LINE   9
-#define LST_CONTROL_MODE_NO_CONTROL     10
-
-#define LST_CONTROL_MODE_LINE_SLOW      10
-#define LST_CONTROL_MODE_LINE_FAST      11
-
-#define LST_CONTROL_LINESENSOR_THRESHOLD 130
+/* Default P and D values for the steering */
 #define LST_CONTROL_STEERING_P           1540
 #define LST_CONTROL_STEERING_D           18400
 
+/* Float denums for dividing steering and servo control values */
 #define LST_CONTROL_BT_STEERING_DENUM -21.487f
 #define LST_CONTROL_BT_MOTOR_DENUM    -60.0f
-
 #define LST_CONTROL_STEERING_DENUM    21.487f
 
-#define LST_CONTROL_Q1_START_MOTOR_SPEED  500
-#define LST_CONTROL_Q1_START_STEERING_P   20000
-#define LST_CONTROL_Q1_START_STEERING_D   10000
-#define LST_CONTROL_Q1_START_TIME         20
-
-#define LST_CONTROL_Q1_SLOW_MOTOR_SPEED      295
-#define LST_CONTROL_Q1_SLOW_STEERING_P    	 17000
-#define LST_CONTROL_Q1_SLOW_STEERING_D    	 4000
-#define LST_CONTROL_Q1_SLOW_FILTER_THRESHOLD 5
-#define LST_CONTROL_Q1_SLOW_LINES_THRESHOLD  2
-
-#define LST_CONTROL_Q1_ACCEL_PLUS_P				-85
-#define LST_CONTROL_Q1_ACCEL_PLUS_D				13
-#define LST_CONTROL_Q1_ACCEL_PLUS_MOTOR		1
-#define LST_CONTROL_Q1_ACCEL_TIME					25
-
-#define LST_CONTROL_Q1_FAST_MOTOR_SPEED  460
-#define LST_CONTROL_Q1_FAST_STEERING_P   1750
-#define LST_CONTROL_Q1_FAST_STEERING_D   8000
-#define LST_CONTROL_Q1_FAST_TRIPLE_LINES 15
-
-#define LST_CONTROL_Q1_BRAKE_STEERING_P  20000
-#define LST_CONTROL_Q1_BRAKE_STEERING_D  10000
-#define LST_CONTROL_Q1_BRAKE_MOTOR		   -700
-
-#define LST_CONTROL_BRAKE_DELAY	5
-#define LST_CONTROL_BRAKE_TIME  40
-
+/* Defines for lost line detection */
 #define LST_CONTROL_LOST_LINES_THRESHOLD       20
 #define LST_CONTROL_NEW_LINE_FILTER_THRESHOLD  4
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Control_Init();
-void LST_Control();
+void LST_Control_Commons();
 void LST_Control_Resolve_Line();
-void LST_Control_Select_Mode();
-void LST_Control_Q1();
 uint8_t LST_Control_Check_Lost_Line();
 int16_t LST_Control_Motor_BT();
 int16_t LST_Control_Servo_BT();
 float LST_Control_GetLinePosition();
 int32_t LST_Control_SteeringController();
-void LST_Control_Reset_State_Machine();
+void LST_Control_ServoAndMotor();
 
 /* Private variables ---------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
-extern uint8_t lst_control_mode;
+extern uint8_t lst_control_line_lost_flag;
 
 #endif /* LST_CONTROL_H_ */

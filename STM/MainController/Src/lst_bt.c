@@ -467,7 +467,7 @@ void LST_BT_Send_VarValues() {
   uint8_t extra_bytes = 0;
   if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
     extra_bytes = 1;
-    lst_uart_buffer_tx[12]=lst_control_q1_mode;
+    lst_uart_buffer_tx[12]=lst_fast_q1_mode;
   }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
     extra_bytes = 0;
   }

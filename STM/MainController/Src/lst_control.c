@@ -9,34 +9,21 @@
 #include "lst_control.h"
 
 /* Private variables ---------------------------------------------------------*/
-uint8_t lst_control_mode = LST_CONTROL_MODE_BT;
+/* Variables for the lost line detection */
+uint8_t lst_control_line_lost_flag = 0;
+uint8_t cntr_lost_lines            = 0;
 
-uint8_t cntr_brake                   = 0;
-uint8_t cntr_lost_lines              = 0;
-
-float lst_control_q1_accel_plus_p    = 0.0f;
-float lst_control_q1_accel_plus_d    = 0.0f;
-float lst_control_q1_accel_plus_motor= 0.0f;
-float lst_control_motor_float 		   = 0.0f;
-uint8_t cntr_q1_accel								 = 0;
-uint8_t cntr_q1_start         			 = 0;
-uint8_t cntr_q1_brake								 = 0;
-uint8_t cntr_q1_fast_triple_line     = 0;
-uint8_t flag_q1_slow_triple_search   = 1;
-uint8_t cntr_q1_slow_triple          = 0;
-uint8_t cntr_q1_slow_single          = 0;
-uint8_t cntr_q1_slow_dotted_lines 	 = 0;
+/* Variables for the line number calculation */
+uint8_t lst_control_line_no_array[8] = { 0x00 };
 uint8_t lst_control_line_no          = 0;
 uint8_t lst_control_line_no_input    = 0;
-uint8_t lst_control_q1_mode          = LST_CONTROL_MODE_Q1_START;
-uint8_t lst_control_line_no_array[8] = { 0x00 };
 
-/* Line positions for PID controller */
+/* Line positions for steering PID controller */
 float lst_control_linePos =     0.0f;
 float lst_control_linePosOld =  0.0f;
 // float lst_control_linePosSum =  0.0f;
 
-/* Controller parameters */
+/* Steering controller parameters */
 uint16_t lst_control_steeringP = LST_CONTROL_STEERING_P;
 uint16_t lst_control_steeringD = LST_CONTROL_STEERING_D;
 
@@ -44,12 +31,11 @@ uint16_t lst_control_steeringD = LST_CONTROL_STEERING_D;
 int16_t lst_control_errorSignal = 0;
 int16_t lst_control_errorSignalOld = 0;
 
+/*  */
 int16_t lst_control_steering = 0;
 int16_t lst_control_motor = 0;
 int16_t lst_control_steering_offset = 0; // -150
 int16_t lst_control_speed = 0;
-
-uint16_t mode_cntr = 0;
 
 /******************************************************************************/
 /*                Controller handling for RobonAUT 2018 Team LST              */
@@ -59,210 +45,46 @@ uint16_t mode_cntr = 0;
  * @brief Initializes the Control part of the software
  */
 void LST_Control_Init() {
-	/* Calculate values to add to the parameters during acceleration */
-	lst_control_q1_accel_plus_p     = (float)(LST_CONTROL_Q1_FAST_STEERING_P  - LST_CONTROL_Q1_SLOW_STEERING_P) /(float)(LST_CONTROL_Q1_ACCEL_TIME);
-	lst_control_q1_accel_plus_d     = (float)(LST_CONTROL_Q1_FAST_STEERING_D  - LST_CONTROL_Q1_SLOW_STEERING_D) /(float)(LST_CONTROL_Q1_ACCEL_TIME);
-	lst_control_q1_accel_plus_motor = (float)(LST_CONTROL_Q1_FAST_MOTOR_SPEED - LST_CONTROL_Q1_SLOW_MOTOR_SPEED)/(float)(LST_CONTROL_Q1_ACCEL_TIME);
+
 }
 
 /**
- * @brief Handles control of the car
+ * @brief Runs the common functions of the controls, gets SPI data from
+ *        line controller, gets ADC values, gets speed from encoder, etc.
  */
-void LST_Control(){
-  /* Switch between control modes based on the GamePad */
-  LST_Control_Select_Mode();
+void LST_Control_Commons(){
+  /* Get line data from LineController */
+#ifdef LST_CONFIG_UART_LINE_COM
+  LST_UART_ReceiveLineControllerData();
+#else
+  LST_SPI_ReceiveLineControllerData();
+#endif
+
+  /* ToDo ADC conversion, I2C, other sensor data */
+
+  // ToDo normalize speed by LST_TASK_FASTLAP_REPEAT_TICKS
+  /* Calculate speed from encoder */
+  lst_control_speed = LST_TIM_CalculateSpeed();
+
+  /* Wait for the end of the LineController transaction */
+#ifdef LST_CONFIG_UART_LINE_COM
+  LST_UART_WaitForLineControllerData();
+#else
+  LST_SPI_WaitForLineControllerData();
+#endif
+
+  /* ToDo Check for 0xFF control byte at the first byte of the SPI Rx buffer */
+  /* ToDo Handle SPI Rx data in a separate module */
 
   /* Number of lines */
   LST_Control_Resolve_Line();
 
-  /* Handle PWM controls */
+  /* Check for lost line */
+  lst_control_line_lost_flag = LST_Control_Check_Lost_Line();
+
+  /* Reset the steering and motor control values */
   lst_control_steering = 0;
   lst_control_motor = 0;
-
-  switch(lst_control_mode){
-  case LST_CONTROL_MODE_BT:
-    LST_Control_Reset_State_Machine();
-
-    lst_control_steering = LST_Control_Servo_BT();
-    lst_control_motor = LST_Control_Motor_BT();
-    break;
-  case LST_CONTROL_MODE_LINE_FOLLOW:
-    LST_Control_Reset_State_Machine();
-
-    /* Set acceleration from GamePad */
-    lst_control_motor = LST_Control_Motor_BT();
-    /* Get line position from the data */
-    lst_control_steering = LST_Control_SteeringController();
-    break;
-  case LST_CONTROL_MODE_Q1:
-    /* Check for lost line */
-    // if(LST_Control_Check_Lost_Line()){
-    //   lst_control_mode = LST_CONTROL_MODE_STOP;
-    // }
-    /* Q1 logic */
-  	LST_Control_Q1();
-  	/*Controlled steering*/
-    lst_control_steering = LST_Control_SteeringController();
-    break;
-  case LST_CONTROL_MODE_STOP:
-    /* Set steering to 0 */
-    lst_control_steering = 0;
-
-    /* Satufék */
-    if(cntr_brake<LST_CONTROL_BRAKE_DELAY){
-      lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
-      cntr_brake++;
-    }else if(cntr_brake < 2*LST_CONTROL_BRAKE_DELAY){
-      lst_control_motor = 0;
-      cntr_brake++;
-    }else if(cntr_brake < 2*LST_CONTROL_BRAKE_DELAY + LST_CONTROL_BRAKE_TIME){
-      lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
-      cntr_brake++;
-    }else{
-      // Wait for reset...
-      lst_control_motor = 0;
-    }
-    break;
-  case LST_CONTROL_MODE_NO_CONTROL:
-    /* Leave values on default */
-  default:
-    /* Leave values at default */
-    LST_Control_Reset_State_Machine();
-    break;
-  }
-
-  LST_TIM_SetServoRcPwm(lst_control_steering + lst_control_steering_offset);
-  LST_TIM_SetMotorRcPwm(lst_control_motor);
-}
-
-/**
- * @brief Handles Q1 logic
- */
-void LST_Control_Q1(){
-	switch(lst_control_q1_mode){
-	case LST_CONTROL_MODE_Q1_START:
-		/* Set controller values */
-		lst_control_steeringP = LST_CONTROL_Q1_START_STEERING_P;
-		lst_control_steeringD = LST_CONTROL_Q1_START_STEERING_D;
-
-		/* Accelerate to the desired starting speed */
-		if(cntr_q1_start < LST_CONTROL_Q1_START_TIME){
-			lst_control_motor = LST_CONTROL_Q1_START_MOTOR_SPEED;
-			cntr_q1_start++;
-		}
-		else{
-			lst_control_q1_mode = LST_CONTROL_MODE_Q1_SLOW;
-			cntr_q1_start = 0;
-		}
-		break;
-	case LST_CONTROL_MODE_Q1_SLOW:
-		/* Set controller values */
-		lst_control_steeringP = LST_CONTROL_Q1_SLOW_STEERING_P;
-		lst_control_steeringD = LST_CONTROL_Q1_SLOW_STEERING_D;
-
-		/* Set motor value */
-		lst_control_motor = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
-
-		/* Check for dotted lines */
-		// Check for triple lines
-		if(flag_q1_slow_triple_search == 1){
-			if (lst_control_line_no < 2) cntr_q1_slow_triple = 0;
-			if (lst_control_line_no >= 2) cntr_q1_slow_triple++;
-			if(cntr_q1_slow_triple > LST_CONTROL_Q1_SLOW_FILTER_THRESHOLD){
-				flag_q1_slow_triple_search = 0;
-				cntr_q1_slow_triple = 0;
-			}
-		}
-		// Check for single lines
-		else{
-			if (lst_control_line_no > 1) cntr_q1_slow_single = 0;
-			if (lst_control_line_no == 1) cntr_q1_slow_single++;
-			if (cntr_q1_slow_single > LST_CONTROL_Q1_SLOW_FILTER_THRESHOLD){
-				flag_q1_slow_triple_search = 1;
-				cntr_q1_slow_single = 0;
-				cntr_q1_slow_dotted_lines++;
-			}
-		}
-
-		/* Check for total number of dotted lines */
-		if(cntr_q1_slow_dotted_lines > LST_CONTROL_Q1_SLOW_LINES_THRESHOLD){
-			lst_control_q1_mode = LST_CONTROL_MODE_Q1_ACCEL;
-			cntr_q1_slow_dotted_lines = 0;
-		}
-		break;
-	case LST_CONTROL_MODE_Q1_ACCEL:
-		/* Linearly increase everything from slow to fast */
-		if(cntr_q1_accel < LST_CONTROL_Q1_ACCEL_TIME){
-			lst_control_steeringP  += lst_control_q1_accel_plus_p;
-			lst_control_steeringD  += lst_control_q1_accel_plus_d;
-			lst_control_motor_float+= lst_control_q1_accel_plus_motor;
-			lst_control_motor       = lst_control_motor_float;
-
-			cntr_q1_accel++;
-		}
-		else{
-			lst_control_motor_float = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
-			lst_control_q1_mode = LST_CONTROL_MODE_Q1_FAST;
-			cntr_q1_accel = 0;
-		}
-		break;
-	case LST_CONTROL_MODE_Q1_FAST:
-		/* Set controller values */
-		lst_control_steeringP = LST_CONTROL_Q1_FAST_STEERING_P;
-		lst_control_steeringD = LST_CONTROL_Q1_FAST_STEERING_D;
-
-		/* Set motor value */
-		lst_control_motor = LST_CONTROL_Q1_FAST_MOTOR_SPEED;
-
-		/* Check for triple lines */
-		if (lst_control_line_no < 2) cntr_q1_fast_triple_line = 0;
-		if (lst_control_line_no >= 2) cntr_q1_fast_triple_line++;
-		if(cntr_q1_fast_triple_line>LST_CONTROL_Q1_FAST_TRIPLE_LINES){
-			/* Switch to braking */
-			lst_control_q1_mode = LST_CONTROL_MODE_Q1_BRAKE;
-			cntr_q1_fast_triple_line = 0;
-		}
-		break;
-	case LST_CONTROL_MODE_Q1_BRAKE:
-		/* Set controller values */
-		lst_control_steeringP = LST_CONTROL_Q1_BRAKE_STEERING_P;
-		lst_control_steeringD = LST_CONTROL_Q1_BRAKE_STEERING_D;
-
-		/* Satufék */
-		if(cntr_q1_brake<LST_CONTROL_BRAKE_DELAY){
-			lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
-			cntr_q1_brake++;
-		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY){
-			lst_control_motor = 0;
-			cntr_q1_brake++;
-		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 5*LST_CONTROL_BRAKE_DELAY){
-			lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
-			cntr_q1_brake++;
-		}else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 6*LST_CONTROL_BRAKE_DELAY){
-      lst_control_motor = 0;
-      cntr_q1_brake++;
-	  }else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 9*LST_CONTROL_BRAKE_DELAY){
-      lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
-      cntr_q1_brake++;
-    }else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 10*LST_CONTROL_BRAKE_DELAY){
-      lst_control_motor = 0;
-      cntr_q1_brake++;
-    }else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 11*LST_CONTROL_BRAKE_DELAY){
-	      lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
-	      cntr_q1_brake++;
-//    }
-//    else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 14*LST_CONTROL_BRAKE_DELAY){
-//      lst_control_motor = 0;
-//      cntr_q1_brake++;
-//    }else if(cntr_q1_brake < 2*LST_CONTROL_BRAKE_DELAY + 16*LST_CONTROL_BRAKE_DELAY){
-//        lst_control_motor = LST_CONTROL_Q1_BRAKE_MOTOR;
-//        cntr_q1_brake++;
-    }else{
-			lst_control_q1_mode = LST_CONTROL_MODE_Q1_SLOW;
-			cntr_q1_brake = 0;
-		}
-		break;
-	}
 }
 
 /**
@@ -278,22 +100,6 @@ uint8_t LST_Control_Check_Lost_Line(){
   }
   /* If the car left the line, return 1 */
   return cntr_lost_lines > LST_CONTROL_LOST_LINES_THRESHOLD;
-}
-
-void LST_Control_Reset_State_Machine(){
-  cntr_lost_lines              = 0;
-  cntr_brake                   = 0;
-	lst_control_motor_float      = LST_CONTROL_Q1_SLOW_MOTOR_SPEED;
-	cntr_q1_fast_triple_line     = 0;
-	cntr_q1_start 							 = 0;
-	cntr_q1_brake 							 = 0;
-	cntr_q1_accel								 = 0;
-	flag_q1_slow_triple_search   = 1;
-  lst_control_line_no_input    = 0;
-  cntr_q1_slow_triple 			   = 0;
-	cntr_q1_slow_single 				 = 0;
-	cntr_q1_slow_dotted_lines 	 = 0;
-  lst_control_q1_mode          = LST_CONTROL_MODE_Q1_START;
 }
 
 /**
@@ -320,7 +126,6 @@ void LST_Control_Resolve_Line(){
     lst_control_line_no_array[cccntr+1] = lst_control_line_no_array[cccntr];
   }
   lst_control_line_no_array[0] = lst_control_line_no_input;
-
 
   // Filter: Check if all values are the same
   uint8_t temp1 = lst_control_line_no_array[0];
@@ -368,48 +173,6 @@ int16_t LST_Control_Motor_BT(){
 }
 
 /**
- * @brief Switches between different modes of control
- */
-void LST_Control_Select_Mode(){
-  /* Switch between BT/automatic mode */
-  if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_A] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_control_mode = LST_CONTROL_MODE_BT;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_B] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_control_mode = LST_CONTROL_MODE_LINE_FOLLOW;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L1] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_control_mode = LST_CONTROL_MODE_Q1_SLOW;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_R1] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_control_mode = LST_CONTROL_MODE_Q1_FAST;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L2] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_control_mode = LST_CONTROL_MODE_Q1;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_Y] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_control_mode = LST_CONTROL_MODE_NO_CONTROL;
-  }
-
-  /* Change control parameters with DPad */
-  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_NORTH){
-    lst_control_steeringD += 20;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_SOUTH){
-    lst_control_steeringD -= 20;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_WEST){
-    lst_control_steeringP -= 20;
-  }
-  if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_EAST){
-    lst_control_steeringP += 20;
-  }
-
-  if(lst_control_steeringP<0) lst_control_steeringP = 0;
-  if(lst_control_steeringD<0) lst_control_steeringD = 0;
-}
-
-/**
  * @brief PI controller for the steering
  */
 int32_t LST_Control_SteeringController(){
@@ -437,4 +200,12 @@ int32_t LST_Control_SteeringController(){
   if (str_cntrl_result > LST_TIM_RCPWM_MAX) str_cntrl_result = LST_TIM_RCPWM_MAX;
 
   return str_cntrl_result;
+}
+
+/**
+ * @brief Sets the control for the servo and the motor
+ */
+void LST_Control_ServoAndMotor(){
+  LST_TIM_SetServoRcPwm(lst_control_steering + lst_control_steering_offset);
+  LST_TIM_SetMotorRcPwm(lst_control_motor);
 }

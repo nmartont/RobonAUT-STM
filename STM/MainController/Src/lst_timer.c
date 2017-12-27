@@ -58,11 +58,13 @@ void LST_TIM_SetServoRcPwm(int16_t servo){
 /**
  * @brief Function calculates vehicle speed
  */
-void LST_TIM_CalculateSpeed(){
+uint16_t LST_TIM_CalculateSpeed(){
   uint16_t temp = htim3.Instance->CNT;
-  lst_control_speed = temp - enc_cnt_last;
+  uint16_t speed = temp - enc_cnt_last;
   // ToDo what if overflow
   enc_cnt_last = temp;
+
+  return speed;
 }
 
 /**

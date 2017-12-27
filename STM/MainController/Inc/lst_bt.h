@@ -149,7 +149,9 @@ extern int16_t lst_control_steering;
 extern int16_t lst_control_motor;
 extern int16_t lst_control_steering_offset;
 extern uint8_t lst_control_line_no;
-extern uint8_t lst_control_q1_mode;
 extern int16_t lst_control_speed;
+
+// Fast lap variables as diag data
+extern uint8_t lst_fast_q1_mode;
 
 #endif /* LST_BT_H_ */
