@@ -17,8 +17,12 @@
 #include "lst_spi.h"
 #include "lst_bt.h"
 #include "lst_timer.h"
+#include "lst_adc.h"
 
 /* Defines -------------------------------------------------------------------*/
+/* Control frequency for the FreeRTOS tasks */
+#define LST_CONTROL_REPEAT_TICKS 10  // 100Hz
+
 /* Default P and D values for the steering */
 #define LST_CONTROL_STEERING_P           1540
 #define LST_CONTROL_STEERING_D           18400

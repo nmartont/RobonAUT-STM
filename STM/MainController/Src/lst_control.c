@@ -31,11 +31,11 @@ uint16_t lst_control_steeringD = LST_CONTROL_STEERING_D;
 int16_t lst_control_errorSignal = 0;
 int16_t lst_control_errorSignalOld = 0;
 
-/*  */
+/* Motor and steering variables */
 int16_t lst_control_steering = 0;
 int16_t lst_control_motor = 0;
 int16_t lst_control_steering_offset = 0; // -150
-int16_t lst_control_speed = 0;
+float lst_control_speed = 0.0f;
 
 /******************************************************************************/
 /*                Controller handling for RobonAUT 2018 Team LST              */
@@ -60,11 +60,16 @@ void LST_Control_Commons(){
   LST_SPI_ReceiveLineControllerData();
 #endif
 
-  /* ToDo ADC conversion, I2C, other sensor data */
+  /* ADC conversions */
+  LST_ADC_StartSharpADC();
 
-  // ToDo normalize speed by LST_TASK_FASTLAP_REPEAT_TICKS
-  /* Calculate speed from encoder */
-  lst_control_speed = LST_TIM_CalculateSpeed();
+  /* ToDo I2C, other sensor data */
+
+  /* Calculate and normalize speed from encoder */
+  lst_control_speed = (float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
+
+  /* Wait for ADC */
+  LST_ADC_WaitForSharpADC();
 
   /* Wait for the end of the LineController transaction */
 #ifdef LST_CONFIG_UART_LINE_COM

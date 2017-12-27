@@ -25,7 +25,6 @@
 #include "lst_fastlap.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_TASK_CONTROL_REPEAT_TICKS 10  // 100Hz
 #define LST_TASK_BT_TASK_REPEAT_TICKS 200 // 5Hz
 
 #define LST_TASK_MODE_FASTLAP  0

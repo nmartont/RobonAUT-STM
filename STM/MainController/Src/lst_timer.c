@@ -8,9 +8,7 @@
 #include "lst_timer.h"
 
 /* Private variables ---------------------------------------------------------*/
-uint8_t cntr = 0;
-uint16_t enc_cnt      = 0;
-uint16_t enc_cnt_last = 0;
+uint32_t enc_cnt_last = 0;
 
 /******************************************************************************/
 /*                   Timer handling for RobonAUT 2018 Team LST                */
@@ -59,10 +57,15 @@ void LST_TIM_SetServoRcPwm(int16_t servo){
  * @brief Function calculates vehicle speed
  */
 uint16_t LST_TIM_CalculateSpeed(){
-  uint16_t temp = htim3.Instance->CNT;
-  uint16_t speed = temp - enc_cnt_last;
-  // ToDo what if overflow
+  uint32_t temp = htim3.Instance->CNT;
+  int32_t speed = temp - enc_cnt_last;
   enc_cnt_last = temp;
+
+  if(speed <- LST_TIM_ENCODER_OVERFLOW_THRESHOLD){
+    speed = speed + LST_TIM_ENCODER_MAX;
+  }else if(speed > LST_TIM_ENCODER_OVERFLOW_THRESHOLD){
+    speed = speed - LST_TIM_ENCODER_MAX;
+  }
 
   return speed;
 }
@@ -71,5 +74,5 @@ uint16_t LST_TIM_CalculateSpeed(){
  * @brief Function that handles the timer elapsed callback
  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-  cntr++;
+
 }

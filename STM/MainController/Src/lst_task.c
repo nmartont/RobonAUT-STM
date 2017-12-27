@@ -66,7 +66,7 @@ void LST_Task_FastLap(void const * argument) {
       LST_BT_Send_VarValues();
 
     /* Wait for the next cycle */
-    vTaskDelayUntil(&xLastWakeTime, LST_TASK_CONTROL_REPEAT_TICKS);
+    vTaskDelayUntil(&xLastWakeTime, LST_CONTROL_REPEAT_TICKS);
   }
 }
 
@@ -89,7 +89,7 @@ void LST_Task_Obstacle(void const * argument) {
       LST_BT_Send_VarValues();
 
     /* Wait for the next cycle */
-    vTaskDelayUntil(&xLastWakeTime, LST_TASK_CONTROL_REPEAT_TICKS);
+    vTaskDelayUntil(&xLastWakeTime, LST_CONTROL_REPEAT_TICKS);
   }
 }
 

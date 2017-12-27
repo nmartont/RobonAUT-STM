@@ -145,11 +145,11 @@ extern uint8_t lst_bt_send_diagdata_flag;
 // Data needed to send as diagnostics
 extern uint16_t lst_control_steeringP;
 extern uint16_t lst_control_steeringD;
-extern int16_t lst_control_steering;
-extern int16_t lst_control_motor;
-extern int16_t lst_control_steering_offset;
-extern uint8_t lst_control_line_no;
-extern int16_t lst_control_speed;
+extern int16_t  lst_control_steering;
+extern int16_t  lst_control_motor;
+extern int16_t  lst_control_steering_offset;
+extern uint8_t  lst_control_line_no;
+extern float    lst_control_speed;
 
 // Fast lap variables as diag data
 extern uint8_t lst_fast_q1_mode;

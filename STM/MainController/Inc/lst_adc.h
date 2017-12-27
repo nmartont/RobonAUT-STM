@@ -19,6 +19,8 @@
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_ADC_Init();
+void LST_ADC_StartSharpADC();
+void LST_ADC_WaitForSharpADC();
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -26,5 +28,7 @@ void LST_ADC_Init();
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern ADC_HandleTypeDef hadc3;
+
+extern uint16_t lst_adc_sharp_result[3];
 
 #endif /* LST_ADC_H_ */
