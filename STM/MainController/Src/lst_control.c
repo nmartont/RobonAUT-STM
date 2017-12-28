@@ -27,15 +27,24 @@ float lst_control_linePosOld =  0.0f;
 uint16_t lst_control_steeringP = LST_CONTROL_STEERING_P;
 uint16_t lst_control_steeringD = LST_CONTROL_STEERING_D;
 
+/* Speed controller parameters */
+uint16_t lst_control_speedP = LST_CONTROL_SPEED_P;
+uint16_t lst_control_speedD = LST_CONTROL_SPEED_D;
+uint16_t lst_control_speedI = LST_CONTROL_SPEED_I;
+
 /* Other controller variables */
-int16_t lst_control_errorSignal = 0;
-int16_t lst_control_errorSignalOld = 0;
+int16_t lst_control_errorSignal_steering = 0;
+int16_t lst_control_errorSignalOld_steering = 0;
+
+int16_t lst_control_errorSignal_speed =     0;
+int16_t lst_control_errorSignalOld_speed =  0;
+int32_t lst_control_errorSignalSum_speed =  0;
 
 /* Motor and steering variables */
 int16_t lst_control_steering = 0;
 int16_t lst_control_motor = 0;
 int16_t lst_control_steering_offset = 0; // -150
-float lst_control_speed = 0.0f;
+float lst_control_speed_encoder = 0.0f;
 
 /******************************************************************************/
 /*                Controller handling for RobonAUT 2018 Team LST              */
@@ -66,7 +75,7 @@ void LST_Control_Commons(){
   /* ToDo I2C, other sensor data */
 
   /* Calculate and normalize speed from encoder */
-  lst_control_speed = (float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
+  lst_control_speed_encoder = (float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
 
   /* Wait for ADC */
   LST_ADC_WaitForSharpADC();
@@ -183,33 +192,96 @@ int16_t LST_Control_Motor_BT(){
 }
 
 /**
- * @brief PI controller for the steering
+ * @brief PD controller for the steering
  */
 int32_t LST_Control_SteeringController(){
   int32_t str_cntrl_result = 0;
 
   /*    PD Controller    */
   /* Divide PD parameters into float */
-  float floatP = lst_control_steeringP / 16384.0f;
-  float floatD = lst_control_steeringD / 1630.0f;
+  float floatP = lst_control_steeringP / LST_CONTROL_STEERING_P_DIVIDER;
+  float floatD = lst_control_steeringD / LST_CONTROL_STEERING_D_DIVIDER;
   /* Reference is always 0 (middle of line sensor) */
   int16_t reference = 0;
 
   /* Error signal */
-  lst_control_errorSignalOld = lst_control_errorSignal;
-  lst_control_errorSignal = lst_control_linePos - reference;
+  lst_control_errorSignalOld_steering = lst_control_errorSignal_steering;
+  lst_control_errorSignal_steering = reference - lst_control_linePos;
 
   /* System input */
-  int32_t system_input = floatP*lst_control_errorSignal +
-      floatD*(lst_control_errorSignal - lst_control_errorSignalOld);
+  int32_t system_input =
+      floatP*lst_control_errorSignal_steering +
+      floatD*(lst_control_errorSignal_steering - lst_control_errorSignalOld_steering);
 
-  str_cntrl_result = -system_input / LST_CONTROL_STEERING_DENUM;
+  str_cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
 
   /* Max/Min */
   if (str_cntrl_result < LST_TIM_RCPWM_MIN) str_cntrl_result = LST_TIM_RCPWM_MIN;
   if (str_cntrl_result > LST_TIM_RCPWM_MAX) str_cntrl_result = LST_TIM_RCPWM_MAX;
 
   return str_cntrl_result;
+}
+
+/**
+ * @brief PID controller for the speed
+ */
+int32_t LST_Control_SpeedController(int16_t reference){
+  int32_t speed_cntrl_result = 0;
+
+  /*    PID Controller    */
+  /* Divide PID parameters into float */
+  float floatP = lst_control_speedP / LST_CONTROL_SPEED_P_DIVIDER;
+  float floatD = lst_control_speedD / LST_CONTROL_SPEED_D_DIVIDER;
+  float floatI = lst_control_speedI / LST_CONTROL_SPEED_I_DIVIDER;
+
+  /* Error signal */
+  lst_control_errorSignalOld_speed = lst_control_errorSignal_speed;
+  lst_control_errorSignal_speed = reference - lst_control_speed_encoder;
+
+  /* Integrator */
+  uint32_t new_i = lst_control_errorSignalSum_speed + lst_control_errorSignal_speed;
+
+  /* System input */
+  int32_t system_input =
+      floatP*lst_control_errorSignal_speed +
+      floatD*(lst_control_errorSignal_speed - lst_control_errorSignalOld_speed) +
+      floatI*new_i;
+
+  speed_cntrl_result = system_input / LST_CONTROL_SPEED_DENUM;
+
+  /* Anti wind-up, handle saturation */
+  uint8_t int_ok = 1;
+
+  /* Positive saturation? */
+  if (speed_cntrl_result > LST_TIM_RCPWM_MAX)
+  {
+    /* Clamp the output */
+    speed_cntrl_result = LST_TIM_RCPWM_MAX;
+
+    /* Error is the same sign? Inhibit integration. */
+    if (lst_control_errorSignal_speed > 0)
+    {
+      int_ok = 0;
+    }
+  }
+  /* Repeat for negative sign */
+  else if (speed_cntrl_result < LST_TIM_RCPWM_MIN)
+  {
+    speed_cntrl_result = LST_TIM_RCPWM_MIN;
+
+    if (lst_control_errorSignal_speed < 0)
+    {
+      int_ok = 0;
+    }
+  }
+
+  /* Update the integrator if allowed. */
+  if (int_ok == 1)
+  {
+    lst_control_errorSignalSum_speed = new_i;
+  }
+
+  return speed_cntrl_result;
 }
 
 /**

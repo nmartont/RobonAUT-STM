@@ -25,12 +25,23 @@
 
 /* Default P and D values for the steering */
 #define LST_CONTROL_STEERING_P           1540
+#define LST_CONTROL_STEERING_P_DIVIDER   16384.0f
 #define LST_CONTROL_STEERING_D           18400
+#define LST_CONTROL_STEERING_D_DIVIDER   1630.0f
+
+/* Default values for the speed PID controller */
+#define LST_CONTROL_SPEED_P           32768
+#define LST_CONTROL_SPEED_P_DIVIDER   16384.0f
+#define LST_CONTROL_SPEED_D           0
+#define LST_CONTROL_SPEED_D_DIVIDER   16384.0f
+#define LST_CONTROL_SPEED_I           0
+#define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
 
 /* Float denums for dividing steering and servo control values */
 #define LST_CONTROL_BT_STEERING_DENUM -21.487f
 #define LST_CONTROL_BT_MOTOR_DENUM    -60.0f
 #define LST_CONTROL_STEERING_DENUM    21.487f
+#define LST_CONTROL_SPEED_DENUM       1.0f
 
 /* Defines for lost line detection */
 #define LST_CONTROL_LOST_LINES_THRESHOLD       20
@@ -50,6 +61,16 @@ void LST_Control_ServoAndMotor();
 /* Private variables ---------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
-extern uint8_t lst_control_line_lost_flag;
+extern uint8_t  lst_control_line_lost_flag;
+extern uint16_t lst_control_steeringP;
+extern uint16_t lst_control_steeringD;
+extern int16_t  lst_control_steering;
+extern uint16_t lst_control_speedP;
+extern uint16_t lst_control_speedD;
+extern uint16_t lst_control_speedI;
+extern int16_t  lst_control_motor;
+extern float    lst_control_speed_encoder;
+extern int16_t  lst_control_steering_offset;
+extern uint8_t  lst_control_line_no;
 
 #endif /* LST_CONTROL_H_ */

@@ -461,7 +461,7 @@ void LST_BT_Send_VarValues() {
   lst_uart_buffer_tx[7]=lst_control_motor & 0xff;
   lst_uart_buffer_tx[8]=(lst_control_motor >> 8);
   lst_uart_buffer_tx[9]=lst_control_line_no;
-  int16_t temp = lst_control_speed;
+  int16_t temp = lst_control_speed_encoder;
   lst_uart_buffer_tx[10]=temp & 0xff;
   lst_uart_buffer_tx[11]=(temp >> 8);
   /* Handle FASTLAP/OBSTACLE modes */
