@@ -153,5 +153,6 @@ extern float    lst_control_speed_encoder;
 
 // Fast lap variables as diag data
 extern uint8_t lst_fast_q1_mode;
+extern uint8_t lst_obs_lap_mode;
 
 #endif /* LST_BT_H_ */

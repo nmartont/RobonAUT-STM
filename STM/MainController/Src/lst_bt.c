@@ -10,10 +10,10 @@
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
 #define LST_BT_VARLIST_FASTLAP_DATALEN  202
-#define LST_BT_VARLIST_OBSTACLE_DATALEN 196
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 202
 #else
 #define LST_BT_VARLIST_FASTLAP_DATALEN  42
-#define LST_BT_VARLIST_OBSTACLE_DATALEN 36
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 42
 #endif
 
 #define LST_BT_VARVALUES_DATALEN 14
@@ -91,6 +91,7 @@ uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
     0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
+    0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Obstacle lap mode
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -149,6 +150,7 @@ uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
     0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
+    0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Obstacle lap mode
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -470,7 +472,8 @@ void LST_BT_Send_VarValues() {
     extra_bytes = 1;
     lst_uart_buffer_tx[12]=lst_fast_q1_mode;
   }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
-    extra_bytes = 0;
+    extra_bytes = 1;
+    lst_uart_buffer_tx[12]=lst_obs_lap_mode;
   }
 
   /* Copy source buffer to TX buffer */

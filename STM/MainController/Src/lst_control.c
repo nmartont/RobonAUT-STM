@@ -135,7 +135,7 @@ void LST_Control_Resolve_Line(){
   // Get lumber of lines from Line Controller
   lst_control_line_no_input = lst_spi_master1_rx[1] >> 1;
 
-  // remember line position if line is lost
+  // Remember line position if line is lost
   if(lst_control_line_no_input == 0){
     lst_control_linePos = lst_control_linePosOld;
   }

@@ -62,7 +62,9 @@ void LST_Fast_Logic(){
   LST_Control_ServoAndMotor();
 }
 
-
+/**
+ * @brief Resets the state machine
+ */
 void LST_Fast_ResetStateMachine(){
 //  cntr_lost_lines              = 0;
   cntr_brake                   = 0;
@@ -99,13 +101,9 @@ void LST_Fast_StateMachine(){
     lst_control_steering = LST_Control_SteeringController();
     break;
   case LST_FAST_MODE_Q1:
-    /* Check for lost line */
-    // if(LST_Control_Check_Lost_Line()){
-    //   lst_fast_mode = LST_FAST_MODE_STOP;
-    // }
     /* Q1 logic */
     LST_Fast_Q1();
-    /*Controlled steering*/
+    /* Controlled steering*/
     lst_control_steering = LST_Control_SteeringController();
     break;
   case LST_FAST_MODE_STOP:
@@ -140,6 +138,7 @@ void LST_Fast_StateMachine(){
  * @brief Handles Q1 logic
  */
 void LST_Fast_Q1(){
+  // ToDo Érzéketlenségi idõsáv a triplavonal kereséshez, pl 200 ticks
   switch(lst_fast_q1_mode){
   case LST_FAST_MODE_Q1_START:
     /* Set controller values */
@@ -265,7 +264,6 @@ void LST_Fast_Q1(){
     break;
   }
 }
-
 
 /**
  * @brief Switches between different modes of control based on the GamePad

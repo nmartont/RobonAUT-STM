@@ -51,6 +51,9 @@ void LST_Task_Start(void const * argument) {
  * @brief Task for Fast Lap
  */
 void LST_Task_FastLap(void const * argument) {
+  /* Init Fast mode */
+  LST_Fast_Init();
+
   /* Send VarList to the PC */
   LST_BT_Send_VarList();
 
@@ -74,6 +77,9 @@ void LST_Task_FastLap(void const * argument) {
  * @brief Task for Obstacle Lap
  */
 void LST_Task_Obstacle(void const * argument) {
+  /* Init Obstacle mode */
+  LST_Obs_Init();
+
   /* Send VarList to the PC */
   LST_BT_Send_VarList();
 
