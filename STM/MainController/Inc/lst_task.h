@@ -21,6 +21,8 @@
 #include "lst_bt.h"
 #include "lst_radio.h"
 #include "lst_control.h"
+#include "lst_i2c.h"
+#include "lst_inertial.h"
 #include "lst_obstacle.h"
 #include "lst_fastlap.h"
 

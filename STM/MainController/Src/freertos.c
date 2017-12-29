@@ -99,6 +99,8 @@ void LST_Init() {
   LST_BT_Init();
   LST_UART_Init();
   LST_Control_Init();
+  LST_I2C_Init();
+  LST_Inertial_Init();
   LST_Fast_Init();
   LST_Obs_Init();
 }

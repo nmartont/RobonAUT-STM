@@ -72,7 +72,8 @@ void LST_Control_Commons(){
   /* ADC conversions */
   LST_ADC_StartSharpADC();
 
-  /* ToDo I2C, other sensor data */
+  /* I2C Inertial sensor data */
+  LST_Inertial_GetSensorData();
 
   /* Calculate and normalize speed from encoder */
   lst_control_speed_encoder = (float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;

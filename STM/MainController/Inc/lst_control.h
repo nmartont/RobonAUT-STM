@@ -18,6 +18,7 @@
 #include "lst_bt.h"
 #include "lst_timer.h"
 #include "lst_adc.h"
+#include "lst_inertial.h"
 
 /* Defines -------------------------------------------------------------------*/
 /* Control frequency for the FreeRTOS tasks */
