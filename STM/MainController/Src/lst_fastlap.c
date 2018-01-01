@@ -98,13 +98,13 @@ void LST_Fast_StateMachine(){
     /* Set acceleration from GamePad */
     lst_control_motor = LST_Control_Motor_BT();
     /* Get line position from the data */
-    lst_control_steering = LST_Control_SteeringController();
+    lst_control_steering = LST_Control_SteeringController(0);
     break;
   case LST_FAST_MODE_Q1:
     /* Q1 logic */
     LST_Fast_Q1();
     /* Controlled steering*/
-    lst_control_steering = LST_Control_SteeringController();
+    lst_control_steering = LST_Control_SteeringController(0);
     break;
   case LST_FAST_MODE_STOP:
     /* Set steering to 0 */

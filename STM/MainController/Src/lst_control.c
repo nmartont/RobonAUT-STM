@@ -9,6 +9,9 @@
 #include "lst_control.h"
 
 /* Private variables ---------------------------------------------------------*/
+/* Counter for time progression */
+uint32_t lst_control_time_cntr = 0;
+
 /* Variables for the lost line detection */
 uint8_t lst_control_line_lost_flag = 0;
 uint8_t cntr_lost_lines            = 0;
@@ -46,6 +49,18 @@ int16_t lst_control_motor = 0;
 int16_t lst_control_steering_offset = 0; // -150
 float lst_control_speed_encoder = 0.0f;
 
+/* Declare variable for steering controller interpolation */
+static float interpol_Speed[LST_CONTROL_PD_INTERPOL_POINTS] = {0.0, 100.0, 200.0, 300.0, 400.0};
+static float interpol_P[LST_CONTROL_PD_INTERPOL_POINTS]     = {5.0, 2.0,     0.5,  0.25,  0.05};
+static float interpol_D[LST_CONTROL_PD_INTERPOL_POINTS]     = {0.1, 1.0,     2.0,   3.0,   4.0};
+
+static struct table_pd_interpol steering_pd_table = {
+    LST_CONTROL_PD_INTERPOL_POINTS,      /* Number of data points */
+    interpol_Speed,                      /* Array of x-coordinates */
+    interpol_P,                          /* Array of y-coordinates */
+    interpol_D                           /* Array of y-coordinates */
+};
+
 /******************************************************************************/
 /*                Controller handling for RobonAUT 2018 Team LST              */
 /******************************************************************************/
@@ -62,6 +77,9 @@ void LST_Control_Init() {
  *        line controller, gets ADC values, gets speed from encoder, etc.
  */
 void LST_Control_Commons(){
+  /* Increment time counter for time-dependent operations */
+  lst_control_time_cntr++;
+
   /* Get line data from LineController */
 #ifdef LST_CONFIG_UART_LINE_COM
   LST_UART_ReceiveLineControllerData();
@@ -195,13 +213,23 @@ int16_t LST_Control_Motor_BT(){
 /**
  * @brief PD controller for the steering
  */
-int32_t LST_Control_SteeringController(){
+int32_t LST_Control_SteeringController(uint8_t use_interpolation){
   int32_t str_cntrl_result = 0;
+  float floatP;
+  float floatD;
 
   /*    PD Controller    */
-  /* Divide PD parameters into float */
-  float floatP = lst_control_steeringP / LST_CONTROL_STEERING_P_DIVIDER;
-  float floatD = lst_control_steeringD / LST_CONTROL_STEERING_D_DIVIDER;
+  if(!use_interpolation){
+    /* Divide PD parameters into float */
+    floatP = lst_control_steeringP / LST_CONTROL_STEERING_P_DIVIDER;
+    floatD = lst_control_steeringD / LST_CONTROL_STEERING_D_DIVIDER;
+  }else{
+    float* interpol_result;
+    interpol_result = LST_Utils_Interpolate_Table_PD(&steering_pd_table, lst_control_speed_encoder);
+    floatP = *(interpol_result);
+    floatD = *(interpol_result + 1);
+  }
+
   /* Reference is always 0 (middle of line sensor) */
   int16_t reference = 0;
 

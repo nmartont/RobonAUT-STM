@@ -75,6 +75,11 @@ void LST_Obs_StateMachine(){
 void LST_Obs_Lap(){
   switch(lst_obs_lap_mode){
   case LST_OBS_LAP_MODE_START:
+    /* Return if the radio hasn't received the start message */
+    if(lst_radio_msg_0_received != LST_RADIO_MSG_RECEIVED) return;
+
+    /* Switch to SEARCH mode */
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
     break;
   case LST_OBS_LAP_MODE_SEARCH:
     break;

@@ -15,6 +15,7 @@
 #include "cmsis_os.h"
 #include "main.h"
 #include "lst_control.h"
+#include "lst_radio.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_OBS_STEERING_P 17000

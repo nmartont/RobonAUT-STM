@@ -39,7 +39,7 @@ uint8_t lst_bt_send_diagdata_flag = 0;
 uint8_t lst_bt_diag_mode = LST_BT_DIAG_MODE_FASTLAP;
 
 #ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
-uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
+static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
     0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
     0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
@@ -84,7 +84,7 @@ uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x03, 'V', '3', '0', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8};
 
-uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
+static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
     0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
     0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
     0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
@@ -130,7 +130,7 @@ uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
     0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8
 };
 #else
-uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
+static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
     0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
     0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
@@ -143,7 +143,7 @@ uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
     0x02, 'L', '2', LST_BT_VARTYPE_UINT16,// Line position repeated
     };
-uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
+static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
     0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
     0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
     0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
@@ -372,7 +372,7 @@ void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len) {
   
   /* Copy source buffer to TX buffer */
   if (error_msg_len > 0) {
-    memoryCopy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &error_msg[0],
+    LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &error_msg[0],
         error_msg_len);
   }
   
@@ -419,7 +419,7 @@ void LST_BT_Send_VarList() {
   /* Handle FASTLAP/OBSTACLE modes */
   if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
     /* Copy source buffer to TX buffer */
-    memoryCopy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_fastlap,
+    LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_fastlap,
         LST_BT_VARLIST_FASTLAP_DATALEN);
 
     /* Put message end character at the end of the message */
@@ -429,7 +429,7 @@ void LST_BT_Send_VarList() {
     LST_UART_BT_Send_Bytes(2 + LST_BT_VARLIST_FASTLAP_DATALEN);
   }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
     /* Copy source buffer to TX buffer */
-    memoryCopy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_obstacle,
+    LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_obstacle,
         LST_BT_VARLIST_OBSTACLE_DATALEN);
 
     /* Put message end character at the end of the message */
@@ -477,7 +477,7 @@ void LST_BT_Send_VarValues() {
   }
 
   /* Copy source buffer to TX buffer */
-  memoryCopy((uint8_t *) &lst_uart_buffer_tx[12 + extra_bytes], (uint8_t *) &lst_spi_master1_rx,
+  LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[12 + extra_bytes], (uint8_t *) &lst_spi_master1_rx,
       LST_SPI_BUFFER1_SIZE);
   
   /* Put message end character at the end of the message */

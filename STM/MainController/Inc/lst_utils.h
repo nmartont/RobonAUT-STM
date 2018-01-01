@@ -17,10 +17,19 @@
 
 /* Defines -------------------------------------------------------------------*/
 
-/* Function prototypes -------------------------------------------------------*/
-void memoryCopy(uint8_t *pDest, uint8_t *pSrc, uint8_t len);
-
 /* Private variables ---------------------------------------------------------*/
+/* 1D interpolation structure definition */
+struct table_pd_interpol {
+    uint8_t speed_length;
+
+    float *speed_values;
+    float *p_values;
+    float *d_values;
+};
+
+/* Function prototypes -------------------------------------------------------*/
+void LST_Utils_Memory_Copy(uint8_t *pDest, uint8_t *pSrc, uint8_t len);
+float* LST_Utils_Interpolate_Table_PD(struct table_pd_interpol *table, float x);
 
 /* External variables --------------------------------------------------------*/
 
