@@ -28,8 +28,6 @@
 /* Function prototypes -------------------------------------------------------*/
 void LST_Inertial_Init();
 void LST_Inertial_GetSensorData();
-float LST_Inertial_CalcAccel(int16_t input);
-float LST_Inertial_CalcGyro(int16_t input);
 
 /* Private variables ---------------------------------------------------------*/
 

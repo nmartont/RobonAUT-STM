@@ -31,6 +31,12 @@ uint8_t lst_fast_q1_mode             = LST_FAST_MODE_Q1_START;
 
 /* External variables --------------------------------------------------------*/
 
+/* Private functions ---------------------------------------------------------*/
+static void LST_Fast_Reset_State_Machine();
+static void LST_Fast_Q1_Logic();
+static void LST_Fast_Gamepad_Handler();
+static void LST_Fast_State_Machine();
+
 /******************************************************************************/
 /*                  Fast lap handler for RobonAUT 2018 Team LST               */
 /******************************************************************************/
@@ -53,10 +59,10 @@ void LST_Fast_Logic(){
   LST_Control_Commons();
 
   /* Switch between control modes based on the GamePad */
-  LST_Fast_GamePadHandler();
+  LST_Fast_Gamepad_Handler();
 
   /* Main state machine for the Fast Lap mode (eg. BT control, lap mode, etc) */
-  LST_Fast_StateMachine();
+  LST_Fast_State_Machine();
 
   /* Set the control of the servo and motor */
   LST_Control_ServoAndMotor();
@@ -65,7 +71,7 @@ void LST_Fast_Logic(){
 /**
  * @brief Resets the state machine
  */
-void LST_Fast_ResetStateMachine(){
+static void LST_Fast_Reset_State_Machine(){
 //  cntr_lost_lines              = 0;
   cntr_brake                   = 0;
   lst_fast_motor_float         = LST_FAST_Q1_SLOW_MOTOR_SPEED;
@@ -84,16 +90,16 @@ void LST_Fast_ResetStateMachine(){
 /**
  * @brief Main state machine of the fast lap mode
  */
-void LST_Fast_StateMachine(){
+static void LST_Fast_State_Machine(){
   switch(lst_fast_mode){
   case LST_FAST_MODE_BT:
-    LST_Fast_ResetStateMachine();
+    LST_Fast_Reset_State_Machine();
 
     lst_control_steering = LST_Control_Servo_BT();
     lst_control_motor = LST_Control_Motor_BT();
     break;
   case LST_FAST_MODE_LINE_FOLLOW:
-    LST_Fast_ResetStateMachine();
+    LST_Fast_Reset_State_Machine();
 
     /* Set acceleration from GamePad */
     lst_control_motor = LST_Control_Motor_BT();
@@ -102,7 +108,7 @@ void LST_Fast_StateMachine(){
     break;
   case LST_FAST_MODE_Q1:
     /* Q1 logic */
-    LST_Fast_Q1();
+    LST_Fast_Q1_Logic();
     /* Controlled steering*/
     lst_control_steering = LST_Control_SteeringController(0);
     break;
@@ -129,7 +135,7 @@ void LST_Fast_StateMachine(){
     /* Leave values on default */
   default:
     /* Leave values at default */
-    LST_Fast_ResetStateMachine();
+    LST_Fast_Reset_State_Machine();
     break;
   }
 }
@@ -137,7 +143,7 @@ void LST_Fast_StateMachine(){
 /**
  * @brief Handles Q1 logic
  */
-void LST_Fast_Q1(){
+static void LST_Fast_Q1_Logic(){
   // ToDo Érzéketlenségi idõsáv a triplavonal kereséshez, pl 200 ticks
   switch(lst_fast_q1_mode){
   case LST_FAST_MODE_Q1_START:
@@ -268,7 +274,7 @@ void LST_Fast_Q1(){
 /**
  * @brief Switches between different modes of control based on the GamePad
  */
-void LST_Fast_GamePadHandler(){
+static void LST_Fast_Gamepad_Handler(){
   /* Switch between BT/automatic mode */
   if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_A] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
     lst_fast_mode = LST_FAST_MODE_BT;

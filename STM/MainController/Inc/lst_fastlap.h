@@ -61,11 +61,7 @@
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Fast_Init();
-void LST_Fast_ResetStateMachine();
 void LST_Fast_Logic();
-void LST_Fast_Q1();
-void LST_Fast_GamePadHandler();
-void LST_Fast_StateMachine();
 
 /* Private variables ---------------------------------------------------------*/
 

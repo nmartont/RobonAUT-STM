@@ -55,12 +55,10 @@
 /* Function prototypes -------------------------------------------------------*/
 void LST_Control_Init();
 void LST_Control_Commons();
-void LST_Control_Resolve_Line();
-uint8_t LST_Control_Check_Lost_Line();
 int16_t LST_Control_Motor_BT();
 int16_t LST_Control_Servo_BT();
-float LST_Control_GetLinePosition();
 int32_t LST_Control_SteeringController(uint8_t use_interpolation);
+int32_t LST_Control_SpeedController(int16_t reference);
 void LST_Control_ServoAndMotor();
 
 /* Private variables ---------------------------------------------------------*/

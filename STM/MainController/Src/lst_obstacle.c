@@ -16,6 +16,12 @@ uint8_t lst_obs_lap_mode = LST_OBS_LAP_MODE_START;
 
 /* External variables --------------------------------------------------------*/
 
+/* Private functions ---------------------------------------------------------*/
+static void LST_Obs_ResetStateMachine();
+static void LST_Obs_GamePadHandler();
+static void LST_Obs_StateMachine();
+static void LST_Obs_Lap();
+
 /******************************************************************************/
 /*                Obstacle lap handler for RobonAUT 2018 Team LST             */
 /******************************************************************************/

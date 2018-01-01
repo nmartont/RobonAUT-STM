@@ -37,10 +37,6 @@
 /* Function prototypes -------------------------------------------------------*/
 void LST_Obs_Init();
 void LST_Obs_Logic();
-void LST_Obs_ResetStateMachine();
-void LST_Obs_GamePadHandler();
-void LST_Obs_StateMachine();
-void LST_Obs_Lap();
 
 /* Private variables ---------------------------------------------------------*/
 

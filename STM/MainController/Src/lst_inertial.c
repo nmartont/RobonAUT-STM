@@ -16,6 +16,10 @@ float lst_inertial_sensor_data[6] = { 0.0f };
 
 /* External variables --------------------------------------------------------*/
 
+/* Private functions ---------------------------------------------------------*/
+static float calc_accel(int16_t input);
+static float calc_gyro(int16_t input);
+
 /******************************************************************************/
 /*            Inertial sensor handler for RobonAUT 2018 Team LST              */
 /******************************************************************************/
@@ -65,20 +69,20 @@ void LST_Inertial_GetSensorData(){
   int16_t raw_val = 0;
   for(uint8_t i = 0; i<3; i++){
     raw_val = (lst_i2c_master1_rx[2*i + 1] << 8) | (lst_i2c_master1_rx[2*i]);
-    lst_inertial_sensor_data[i] = LST_Inertial_CalcAccel(raw_val);
+    lst_inertial_sensor_data[i] = calc_accel(raw_val);
   }
 
   /* Convert gyroscope data to SI floats */
   for(uint8_t i = 3; i<6; i++){
     raw_val = (lst_i2c_master1_rx[2*i + 1] << 8) | (lst_i2c_master1_rx[2*i]);
-    lst_inertial_sensor_data[i] = LST_Inertial_CalcGyro(raw_val);
+    lst_inertial_sensor_data[i] = calc_gyro(raw_val);
   }
 }
 
 /**
  * @brief Calculates the acceleration SI value from the raw input.
  */
-float LST_Inertial_CalcAccel(int16_t input){
+static float calc_accel(int16_t input){
   float output = (float)input * 0.061f * (LST_INERTIAL_ACCEL_RANGE >> 1) / 1000;
   return output;
 }
@@ -86,7 +90,7 @@ float LST_Inertial_CalcAccel(int16_t input){
 /**
  * @brief Calculates the gyroscope SI value from the raw input.
  */
-float LST_Inertial_CalcGyro(int16_t input){
+static float calc_gyro(int16_t input){
   uint8_t gyroRangeDivisor = LST_INERTIAL_GYRO_RANGE / 125;
   if ( LST_INERTIAL_GYRO_RANGE == 245 ) {
     gyroRangeDivisor = 2;

@@ -66,7 +66,7 @@
 /* Function prototypes -------------------------------------------------------*/
 
 /* USER CODE BEGIN FunctionPrototypes */
-void LST_Init();
+static void LST_Init();
 void LST_Start(void const * argument);
 /* USER CODE END FunctionPrototypes */
 
@@ -91,7 +91,7 @@ void LST_Start(void const * argument) {
   osThreadTerminate(lst_task_StartTaskHandle);
 }
 
-void LST_Init() {
+static void LST_Init() {
   LST_Timer_Init();
   LST_SPI_Init();
   LST_ADC_Init();

@@ -16,7 +16,6 @@
 #define LST_BT_VARLIST_OBSTACLE_DATALEN 42
 #endif
 
-#define LST_BT_VARVALUES_DATALEN 14
 /* Private variables ---------------------------------------------------------*/
 /* Buffer for receiving bytes */
 uint8_t buffer_rx[LST_BT_RX_BUFFER_SIZE] = { 0x00 };
@@ -159,9 +158,10 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
 #endif
 
 /* Function prototypes ------------------------------------------------------ */
-inline void gamepad_default_values();
-inline void process_bt_message();
-inline void process_config_message();
+inline static void LST_BT_Gamepad_Default_Values();
+inline static void LST_BT_Process_BT_Message();
+inline static void LST_BT_Process_Config_Message();
+static void LST_BT_Error_Handler();
 
 /******************************************************************************/
 /*                 BlueTooth handling for RobonAUT 2018 Team LST              */
@@ -171,10 +171,10 @@ inline void process_config_message();
  * @brief Initializes the BT part of the software
  */
 void LST_BT_Init() {
-  gamepad_default_values();
+  LST_BT_Gamepad_Default_Values();
 }
 
-inline void gamepad_default_values() {
+inline static void LST_BT_Gamepad_Default_Values() {
   uint8_t cntr = 0;
   for (cntr = 0; cntr < LST_GAMEPAD_ARRAY_SIZE; cntr++) {
     lst_bt_gamepad_values[cntr] = LST_GAMEPAD_BUTTON_STATE_RELEASED;
@@ -197,7 +197,7 @@ void LST_BT_Process_Incoming_Byte() {
   /* Check for message end byte */
   if (lst_uart_buffer_uart2[0] == LST_BT_MESSAGE_END) {
     /* Process message */
-    process_bt_message();
+    LST_BT_Process_BT_Message();
     /* Reset counter */
     buffer_rx_cntr = 0;
   }
@@ -205,7 +205,7 @@ void LST_BT_Process_Incoming_Byte() {
   else if (lst_uart_buffer_uart2[0] == LST_BT_CONF_MSG_END2) { // Last byte of the message is '\n'
     if (buffer_rx_cntr > 0) {
       if (buffer_rx[buffer_rx_cntr - 1] == LST_BT_CONF_MSG_END1) { // Second to last byte of the message is '\r'
-        process_config_message();
+        LST_BT_Process_Config_Message();
         /* Reset counter */
         buffer_rx_cntr = 0;
       }
@@ -225,7 +225,7 @@ void LST_BT_Process_Incoming_Byte() {
 /**
  * @brief Processes a BT message from the computer
  */
-inline void process_bt_message() {
+inline static void LST_BT_Process_BT_Message() {
   /* Check if counter is greater than zero */
   if (buffer_rx_cntr == 0)
     return;
@@ -287,7 +287,7 @@ inline void process_bt_message() {
 /**
  * @brief Processes a BT config message from the BT module
  */
-inline void process_config_message() {
+inline static void LST_BT_Process_Config_Message() {
   /* Check if counter is greater than 8 */
   if (buffer_rx_cntr < 8)
     return;
@@ -329,7 +329,7 @@ inline void process_config_message() {
       && buffer_rx[19] == LST_BT_CONF_MSG_CONNECTIONDOWN4) {
     /* Do the thing */
     lst_bt_connection_status = LST_BT_CONNECTION_DOWN;
-    gamepad_default_values();
+    LST_BT_Gamepad_Default_Values();
     return;
   }
 }
@@ -492,7 +492,7 @@ void LST_BT_Send_VarValues() {
  */
 void LST_BT_RequestHandler(){
   /* Error handling for the BT module */
-  LST_BT_ErrorHandler();
+  LST_BT_Error_Handler();
 
   /* Send computer responses if there is a request */
   if (lst_bt_send_status_flag)
@@ -504,7 +504,7 @@ void LST_BT_RequestHandler(){
 /**
  * @brief Error handler for the BT module
  */
-void LST_BT_ErrorHandler(){
+static void LST_BT_Error_Handler(){
   /* If the UART2 Rx request didn't return HAL_OK, repeat request */
   if(lst_uart_uart2_rx_status != HAL_OK){
     LST_UART_Receive_Byte_UART2();

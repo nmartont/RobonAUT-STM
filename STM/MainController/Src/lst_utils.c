@@ -8,7 +8,7 @@
 #include "lst_utils.h"
 
 /* Private functions ---------------------------------------------------------*/
-float interpolate_segment(float x0, float y0, float x1, float y1, float x);
+static float interpolate_segment(float x0, float y0, float x1, float y1, float x);
 
 /* Private variables ---------------------------------------------------------*/
 float interpolate_return[2];
@@ -33,7 +33,7 @@ void LST_Utils_Memory_Copy(uint8_t *pDest, uint8_t *pSrc, uint8_t len) {
 * Returns the interpolated y-value.
 * Saturates to y0 or y1 if x outside interval [x0, x1].
 */
-float interpolate_segment(float x0, float y0, float x1, float y1, float x)
+static float interpolate_segment(float x0, float y0, float x1, float y1, float x)
 {
     float t;
 

@@ -61,6 +61,10 @@ static struct table_pd_interpol steering_pd_table = {
     interpol_D                           /* Array of y-coordinates */
 };
 
+/* Private functions ---------------------------------------------------------*/
+static void LST_Control_Resolve_Line();
+static uint8_t LST_Control_Check_Lost_Line();
+
 /******************************************************************************/
 /*                Controller handling for RobonAUT 2018 Team LST              */
 /******************************************************************************/
@@ -120,7 +124,7 @@ void LST_Control_Commons(){
 /**
  * @brief Returns 1 if the line is lost
  */
-uint8_t LST_Control_Check_Lost_Line(){
+static uint8_t LST_Control_Check_Lost_Line(){
   /* Count lost lines */
   if(lst_control_line_no == 0){
     cntr_lost_lines++;
@@ -135,7 +139,7 @@ uint8_t LST_Control_Check_Lost_Line(){
 /**
  * @brief Resolves line mode
  */
-void LST_Control_Resolve_Line(){
+static void LST_Control_Resolve_Line(){
   /* Check for 0xFF control byte at the first byte of the SPI Rx buffer */
   // ToDo change control byte so that it's not FF, but say 0F
   if(lst_spi_master1_rx[0] != LST_SPI_LINECNTR_CONTROL_BYTE){
