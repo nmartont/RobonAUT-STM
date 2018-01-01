@@ -49,7 +49,8 @@ int16_t lst_control_motor = 0;
 int16_t lst_control_steering_offset = 0; // -150
 float lst_control_speed_encoder = 0.0f;
 
-/* Declare variable for steering controller interpolation */
+/* Declare variables for steering controller interpolation */
+// ToDo calibrate interpolation for steering controller parameters
 static float interpol_Speed[LST_CONTROL_PD_INTERPOL_POINTS] = {0.0, 100.0, 200.0, 300.0, 400.0};
 static float interpol_P[LST_CONTROL_PD_INTERPOL_POINTS]     = {5.0, 2.0,     0.5,  0.25,  0.05};
 static float interpol_D[LST_CONTROL_PD_INTERPOL_POINTS]     = {0.1, 1.0,     2.0,   3.0,   4.0};
@@ -98,7 +99,7 @@ void LST_Control_Commons(){
   LST_Inertial_GetSensorData();
 
   /* Calculate and normalize speed from encoder */
-  lst_control_speed_encoder = (float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
+  lst_control_speed_encoder = 10.0f*(float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
 
   /* Wait for ADC */
   LST_ADC_WaitForSharpADC();

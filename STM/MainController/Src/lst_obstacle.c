@@ -21,6 +21,13 @@ static void LST_Obs_ResetStateMachine();
 static void LST_Obs_GamePadHandler();
 static void LST_Obs_StateMachine();
 static void LST_Obs_Lap();
+static void LST_Obs_Search();
+static void LST_Obs_Drone();
+static void LST_Obs_Corner();
+static void LST_Obs_Convoy();
+static void LST_Obs_Barrel();
+static void LST_Obs_Roundabout();
+static void LST_Obs_Trainstop();
 
 /******************************************************************************/
 /*                Obstacle lap handler for RobonAUT 2018 Team LST             */
@@ -54,7 +61,7 @@ void LST_Obs_Logic(){
 /**
  * @brief Main state machine of the obstacle lap mode
  */
-void LST_Obs_StateMachine(){
+static void LST_Obs_StateMachine(){
   switch(lst_obs_mode){
   case LST_OBS_MODE_BT:
     LST_Obs_ResetStateMachine();
@@ -78,7 +85,7 @@ void LST_Obs_StateMachine(){
 /**
  * @brief The state machine of the lap mode
  */
-void LST_Obs_Lap(){
+static void LST_Obs_Lap(){
   switch(lst_obs_lap_mode){
   case LST_OBS_LAP_MODE_START:
     /* Return if the radio hasn't received the start message */
@@ -88,18 +95,25 @@ void LST_Obs_Lap(){
     lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
     break;
   case LST_OBS_LAP_MODE_SEARCH:
+    LST_Obs_Search();
     break;
   case LST_OBS_LAP_MODE_DRONE:
+    LST_Obs_Drone();
     break;
   case LST_OBS_LAP_MODE_CORNER:
+    LST_Obs_Corner();
     break;
   case LST_OBS_LAP_MODE_CONVOY:
+    LST_Obs_Convoy();
     break;
   case LST_OBS_LAP_MODE_BARREL:
+    LST_Obs_Barrel();
     break;
   case LST_OBS_LAP_MODE_ROUNDABOUT:
+    LST_Obs_Roundabout();
     break;
   case LST_OBS_LAP_MODE_TRAINSTOP:
+    LST_Obs_Trainstop();
     break;
   default:
     break;
@@ -107,9 +121,58 @@ void LST_Obs_Lap(){
 }
 
 /**
+ * @brief Mode for searching obstacles
+ */
+static void LST_Obs_Search(){
+  // ToDo
+}
+
+/**
+ * @brief Mode for the drone
+ */
+static void LST_Obs_Drone(){
+  // ToDo
+}
+
+/**
+ * @brief Mode for the corner
+ */
+static void LST_Obs_Corner(){
+  // ToDo
+}
+
+/**
+ * @brief Mode for the convoy
+ */
+static void LST_Obs_Convoy(){
+  // ToDo
+}
+
+/**
+ * @brief Mode for the barrel
+ */
+static void LST_Obs_Barrel(){
+  // ToDo
+}
+
+/**
+ * @brief Mode for the roundabout
+ */
+static void LST_Obs_Roundabout(){
+  // ToDo
+}
+
+/**
+ * @brief Mode for the train stop
+ */
+static void LST_Obs_Trainstop(){
+  // ToDo
+}
+
+/**
  * @brief Resets the state machine
  */
-void LST_Obs_ResetStateMachine(){
+static void LST_Obs_ResetStateMachine(){
   lst_obs_lap_mode             = LST_OBS_LAP_MODE_START;
   // ToDo reset other variables
 }
@@ -117,7 +180,7 @@ void LST_Obs_ResetStateMachine(){
 /**
  * @brief Switches between different modes of control based on the GamePad
  */
-void LST_Obs_GamePadHandler(){
+static void LST_Obs_GamePadHandler(){
   /* Switch between BT/automatic mode */
   if(lst_bt_gamepad_values[LST_GAMEPAD_BUTTON_A] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
     lst_obs_mode = LST_OBS_MODE_BT;
