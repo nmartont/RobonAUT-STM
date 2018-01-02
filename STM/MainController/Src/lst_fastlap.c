@@ -102,7 +102,7 @@ static void LST_Fast_State_Machine(){
     LST_Fast_Reset_State_Machine();
 
     lst_control_steering = LST_Control_Servo_BT();
-    lst_control_motor = LST_Control_SpeedController(550);
+    lst_control_motor = LST_Control_SpeedController(100);
     break;
   case LST_FAST_MODE_LINE_FOLLOW:
     LST_Fast_Reset_State_Machine();
