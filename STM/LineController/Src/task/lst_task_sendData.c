@@ -85,7 +85,21 @@ void lst_sendData_transmitReceive(void)
 	lst_spiCompleted = 0;
 
 	// Call TxRx function
-	lst_spi_transmit_interSTM(&lst_spiData_tx);
+	//lst_spi_transmit_interSTM(&lst_spiData_tx);
+
+	/*
+	// TODO:TEST 2018. 01. 02.
+	for (uint8_t i=0; i<LST_SPI_SIZE; i++)
+	{
+		lst_spiData_tx[i] = 5;
+	}
+	*/
+
+	HAL_SPI_Transmit_IT(
+					&hspi1,
+					(uint8_t *) &lst_spiData_tx,
+					LST_SPI_SIZE
+					);
 
 	// Signal the mainController - ready to transmit/receive
 	// (pull DRDY high)

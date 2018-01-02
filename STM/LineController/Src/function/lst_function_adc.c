@@ -21,6 +21,9 @@ void lst_adc_convert(void)
 
 	}
 
+	// TODO:TEST 2017.01.02
+	lst_timer1_delay_milliSeconds(1);
+
 	// Store measured data
 	lst_adc_result[0] = HAL_ADC_GetValue(&hadc1);
 	lst_adc_result[1] = HAL_ADC_GetValue(&hadc2);
@@ -32,8 +35,8 @@ void lst_adc_convert(void)
 	lst_adc_nucleoConversion();
 #endif
 
-
-
+	// TODO:TEST 2017.01.02
+		lst_timer1_delay_milliSeconds(1);
 
 }
 
@@ -65,6 +68,9 @@ void lst_adc_nucleoConversion(void)
 void lst_adc_start_conversions(void)
 {
 
+	// TODO:TEST 2017.01.02
+		lst_timer1_delay_milliSeconds(1);
+
 	lst_adc_resultCount = 0;
 
 	HAL_ADC_Start_IT(&hadc1);
@@ -75,6 +81,9 @@ void lst_adc_start_conversions(void)
 #else
 	HAL_ADC_Start_IT(&hadc4);
 #endif
+
+	// TODO:TEST 2017.01.02
+		lst_timer1_delay_milliSeconds(1);
 
 }
 

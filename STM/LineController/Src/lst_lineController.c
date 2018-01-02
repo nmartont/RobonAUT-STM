@@ -26,6 +26,7 @@ void lst_main_function(void)
 
 		lst_evaluate_line();
 
+		// TODO:TEST 2017.01.02
 		lst_sendData();
 
 		lst_displayLine(LST_LINEDISPLAY_RAW_THRESHOLD);
