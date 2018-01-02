@@ -57,13 +57,20 @@ void LST_Inertial_Init() {
  * @brief Gets all sensor data from accelerometer and gyroscope, converts to SI.
  */
 void LST_Inertial_GetSensorData(){
+  volatile uint16_t cntr = 0;
+
   /* Get 6DoF inertial sensor data */
-  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTX_L_XL, (uint8_t *) &lst_i2c_master1_rx[0], 2);
-  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTY_L_XL, (uint8_t *) &lst_i2c_master1_rx[2], 2);
-  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTZ_L_XL, (uint8_t *) &lst_i2c_master1_rx[4], 2);
-  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTX_L_G, (uint8_t *) &lst_i2c_master1_rx[6], 2);
-  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTY_L_G, (uint8_t *) &lst_i2c_master1_rx[8], 2);
-  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTZ_L_G, (uint8_t *) &lst_i2c_master1_rx[10], 2);
+  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTX_H_XL, (uint8_t *) &lst_i2c_master1_rx[0], 2);
+  for(cntr = 0; cntr < 200; cntr++){}
+  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTY_H_XL, (uint8_t *) &lst_i2c_master1_rx[2], 2);
+  for(cntr = 0; cntr < 200; cntr++){}
+  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTZ_H_XL, (uint8_t *) &lst_i2c_master1_rx[4], 2);
+  for(cntr = 0; cntr < 200; cntr++){}
+  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTX_H_G, (uint8_t *) &lst_i2c_master1_rx[6], 2);
+  for(cntr = 0; cntr < 200; cntr++){}
+  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTY_H_G, (uint8_t *) &lst_i2c_master1_rx[8], 2);
+  for(cntr = 0; cntr < 200; cntr++){}
+  LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTZ_H_G, (uint8_t *) &lst_i2c_master1_rx[10], 2);
 
   /* Convert acceleration data to SI floats */
   int16_t raw_val = 0;

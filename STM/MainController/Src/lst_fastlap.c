@@ -98,6 +98,12 @@ static void LST_Fast_State_Machine(){
     lst_control_steering = LST_Control_Servo_BT();
     lst_control_motor = LST_Control_Motor_BT();
     break;
+  case LST_FAST_MODE_SPEED_CONTROL:
+    LST_Fast_Reset_State_Machine();
+
+    lst_control_steering = LST_Control_Servo_BT();
+    lst_control_motor = LST_Control_SpeedController(550);
+    break;
   case LST_FAST_MODE_LINE_FOLLOW:
     LST_Fast_Reset_State_Machine();
 
@@ -283,7 +289,7 @@ static void LST_Fast_Gamepad_Handler(){
     lst_fast_mode = LST_FAST_MODE_LINE_FOLLOW;
   }
   if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_L1] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
-    lst_fast_mode = LST_FAST_MODE_Q1_SLOW;
+    lst_fast_mode = LST_FAST_MODE_SPEED_CONTROL;
   }
   if(lst_bt_gamepad_values[LST_GAMEPAD_TRIGGER_R1] == LST_GAMEPAD_BUTTON_STATE_PRESSED){
     lst_fast_mode = LST_FAST_MODE_Q1_FAST;

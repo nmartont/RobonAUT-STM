@@ -17,7 +17,7 @@
 #include "LSM6DS3.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_I2C_LSM6DS3_ADDRESS 0x6A  // ToDo Jumper?? 0x6B
+#define LST_I2C_LSM6DS3_ADDRESS 0xD6  // ToDo Jumper?? 0x6B
 #define LST_I2C_BUFFER1_SIZE    16
 
 /* Function prototypes -------------------------------------------------------*/

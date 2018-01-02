@@ -95,11 +95,8 @@ void LST_Control_Commons(){
   /* ADC conversions */
   LST_ADC_StartSharpADC();
 
-  /* I2C Inertial sensor data */
-  LST_Inertial_GetSensorData();
-
   /* Calculate and normalize speed from encoder */
-  lst_control_speed_encoder = 10.0f*(float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
+  lst_control_speed_encoder = -10.0f*(float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
 
   /* Wait for ADC */
   LST_ADC_WaitForSharpADC();
@@ -233,6 +230,9 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
     interpol_result = LST_Utils_Interpolate_Table_PD(&steering_pd_table, lst_control_speed_encoder);
     floatP = *(interpol_result);
     floatD = *(interpol_result + 1);
+    /* Set P and D in memory for debugging */
+    lst_control_steeringP = floatP*LST_CONTROL_STEERING_P_DIVIDER;
+    lst_control_steeringD = floatD*LST_CONTROL_STEERING_D_DIVIDER;
   }
 
   /* Reference is always 0 (middle of line sensor) */

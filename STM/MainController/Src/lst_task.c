@@ -30,6 +30,10 @@ void LST_Task_Start(void const * argument) {
   osThreadDef(LST_Task_BT_RequestHandler, LST_Task_BT_RequestHandler, osPriorityLow, 0, 256);
   lst_task_BTRequestHandlerTaskHandle = osThreadCreate(osThread(LST_Task_BT_RequestHandler), NULL);
 
+  /* Start inertial sensor task */
+  osThreadDef(LST_Task_Inertial, LST_Task_Inertial, osPriorityNormal, 0, 256);
+  lst_task_InertialTaskHandle = osThreadCreate(osThread(LST_Task_Inertial), NULL);
+
   /* ToDo Determine which mode to start based on the switches on the car */
   lst_bt_diag_mode = LST_BT_DIAG_MODE_FASTLAP;
   if (lst_task_mode == LST_TASK_MODE_FASTLAP){
@@ -96,6 +100,24 @@ void LST_Task_Obstacle(void const * argument) {
 
     /* Wait for the next cycle */
     vTaskDelayUntil(&xLastWakeTime, LST_CONTROL_REPEAT_TICKS);
+  }
+}
+
+/**
+ * @brief This task handles the Inertial module
+ */
+void LST_Task_Inertial(void const * argument) {
+  /* Record starting timestamp */
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+
+  /* Infinite loop */
+  while (1) {
+    if(lst_inertial_ready == LST_INERTIAL_READY){
+      LST_Inertial_GetSensorData();
+    }
+
+    /* Wait for the next cycle */
+    vTaskDelayUntil(&xLastWakeTime, LST_TASK_INERTIAL_TASK_REPEAT_TICKS);
   }
 }
 

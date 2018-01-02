@@ -33,5 +33,6 @@ void LST_Inertial_GetSensorData();
 
 /* External variables --------------------------------------------------------*/
 extern float lst_inertial_sensor_data[6];
+extern uint8_t lst_inertial_ready;
 
 #endif /* LST_INERTIAL_H_ */

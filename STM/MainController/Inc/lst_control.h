@@ -32,11 +32,11 @@
 #define LST_CONTROL_STEERING_D_DIVIDER   1630.0f
 
 /* Default values for the speed PID controller */
-#define LST_CONTROL_SPEED_P           32768
-#define LST_CONTROL_SPEED_P_DIVIDER   16384.0f
-#define LST_CONTROL_SPEED_D           0
+#define LST_CONTROL_SPEED_P           12000
+#define LST_CONTROL_SPEED_P_DIVIDER   1638.40f
+#define LST_CONTROL_SPEED_D           5000
 #define LST_CONTROL_SPEED_D_DIVIDER   16384.0f
-#define LST_CONTROL_SPEED_I           0
+#define LST_CONTROL_SPEED_I           300
 #define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
 
 /* Float denums for dividing steering and servo control values */

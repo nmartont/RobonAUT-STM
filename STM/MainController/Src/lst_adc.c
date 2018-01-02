@@ -33,11 +33,11 @@ void LST_ADC_Init() {
 void LST_ADC_StartSharpADC(){
   cntr_adc_sharp = 0;
   /* Start all 3 ADCs */
-  while(hadc1.State != HAL_ADC_STATE_READY){}
+  while(!(hadc1.State & HAL_ADC_STATE_READY)){}
   HAL_ADC_Start_IT(&hadc1);
-  while(hadc2.State != HAL_ADC_STATE_READY){}
+  while(!(hadc2.State & HAL_ADC_STATE_READY)){}
   HAL_ADC_Start_IT(&hadc2);
-  while(hadc3.State != HAL_ADC_STATE_READY){}
+  while(!(hadc3.State & HAL_ADC_STATE_READY)){}
   HAL_ADC_Start_IT(&hadc3);
 }
 

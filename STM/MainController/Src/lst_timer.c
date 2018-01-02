@@ -56,12 +56,12 @@ void LST_TIM_SetServoRcPwm(int16_t servo){
 /**
  * @brief Function calculates vehicle speed
  */
-uint16_t LST_TIM_CalculateSpeed(){
+int16_t LST_TIM_CalculateSpeed(){
   uint32_t temp = htim3.Instance->CNT;
   int32_t speed = temp - enc_cnt_last;
   enc_cnt_last = temp;
 
-  if(speed <- LST_TIM_ENCODER_OVERFLOW_THRESHOLD){
+  if(speed < -LST_TIM_ENCODER_OVERFLOW_THRESHOLD){
     speed = speed + LST_TIM_ENCODER_MAX;
   }else if(speed > LST_TIM_ENCODER_OVERFLOW_THRESHOLD){
     speed = speed - LST_TIM_ENCODER_MAX;

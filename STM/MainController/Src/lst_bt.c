@@ -39,12 +39,12 @@ uint8_t lst_bt_diag_mode = LST_BT_DIAG_MODE_FASTLAP;
 
 #ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
 static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
+    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
     0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
     0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
     0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
-    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Fast lap mode
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
@@ -84,12 +84,12 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8};
 
 static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
+    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
     0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
     0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
     0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
-    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Obstacle lap mode
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
@@ -130,12 +130,12 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
 };
 #else
 static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
+    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
     0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
     0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
     0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
-    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Fast lap mode
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
@@ -143,12 +143,12 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x02, 'L', '2', LST_BT_VARTYPE_UINT16,// Line position repeated
     };
 static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
+    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
     0x01, 'P', LST_BT_VARTYPE_UINT16, // Steering P
     0x01, 'D', LST_BT_VARTYPE_UINT16, // Steering D
     0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
-    0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Obstacle lap mode
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
@@ -454,18 +454,22 @@ void LST_BT_Send_VarValues() {
   lst_uart_buffer_tx[0] = LST_BT_MSGTYPE_VARVALUES;
   
   /* Send P, D, Motor, Steering */
-  lst_uart_buffer_tx[1]=lst_control_steeringP & 0xff;
-  lst_uart_buffer_tx[2]=(lst_control_steeringP >> 8);
-  lst_uart_buffer_tx[3]=lst_control_steeringD & 0xff;
-  lst_uart_buffer_tx[4]=(lst_control_steeringD >> 8);
-  lst_uart_buffer_tx[5]=lst_control_steering & 0xff;
-  lst_uart_buffer_tx[6]=(lst_control_steering >> 8);
-  lst_uart_buffer_tx[7]=lst_control_motor & 0xff;
-  lst_uart_buffer_tx[8]=(lst_control_motor >> 8);
-  lst_uart_buffer_tx[9]=lst_control_line_no;
   int16_t temp = lst_control_speed_encoder;
-  lst_uart_buffer_tx[10]=temp & 0xff;
-  lst_uart_buffer_tx[11]=(temp >> 8);
+  if(temp<0){
+    // Speed can't be a small negative number because of BT 0xFF bit
+    temp = temp*-1 + 10000;
+  }
+  lst_uart_buffer_tx[1]=temp & 0xff;
+  lst_uart_buffer_tx[2]=(temp >> 8);
+  lst_uart_buffer_tx[3]=lst_control_steeringP & 0xff;
+  lst_uart_buffer_tx[4]=(lst_control_steeringP >> 8);
+  lst_uart_buffer_tx[5]=lst_control_steeringD & 0xff;
+  lst_uart_buffer_tx[6]=(lst_control_steeringD >> 8);
+  lst_uart_buffer_tx[7]=lst_control_steering & 0xff;
+  lst_uart_buffer_tx[8]=(lst_control_steering >> 8);
+  lst_uart_buffer_tx[9]=lst_control_motor & 0xff;
+  lst_uart_buffer_tx[10]=(lst_control_motor >> 8);
+  lst_uart_buffer_tx[11]=lst_control_line_no;
   /* Handle FASTLAP/OBSTACLE modes */
   uint8_t extra_bytes = 0;
   if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
