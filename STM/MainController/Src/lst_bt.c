@@ -9,7 +9,7 @@
 
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
-#define LST_BT_VARLIST_FASTLAP_DATALEN  202
+#define LST_BT_VARLIST_FASTLAP_DATALEN  205
 #define LST_BT_VARLIST_OBSTACLE_DATALEN 202
 #else
 #define LST_BT_VARLIST_FASTLAP_DATALEN  42
@@ -46,6 +46,7 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Fast lap mode
+    0x01, 'Z', LST_BT_VARTYPE_INT16,      // Z accel
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -473,8 +474,10 @@ void LST_BT_Send_VarValues() {
   /* Handle FASTLAP/OBSTACLE modes */
   uint8_t extra_bytes = 0;
   if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
-    extra_bytes = 1;
+    extra_bytes = 3;
     lst_uart_buffer_tx[12]=lst_fast_q1_mode;
+    lst_uart_buffer_tx[13]=lst_i2c_master1_rx[4];
+    lst_uart_buffer_tx[14]=lst_i2c_master1_rx[5];
   }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
     extra_bytes = 1;
     lst_uart_buffer_tx[12]=lst_obs_lap_mode;

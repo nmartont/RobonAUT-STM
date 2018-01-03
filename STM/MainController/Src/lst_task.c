@@ -31,8 +31,8 @@ void LST_Task_Start(void const * argument) {
   lst_task_BTRequestHandlerTaskHandle = osThreadCreate(osThread(LST_Task_BT_RequestHandler), NULL);
 
   /* Start inertial sensor task */
-  osThreadDef(LST_Task_Inertial, LST_Task_Inertial, osPriorityNormal, 0, 256);
-  lst_task_InertialTaskHandle = osThreadCreate(osThread(LST_Task_Inertial), NULL);
+//  osThreadDef(LST_Task_Inertial, LST_Task_Inertial, osPriorityNormal, 0, 256);
+//  lst_task_InertialTaskHandle = osThreadCreate(osThread(LST_Task_Inertial), NULL);
 
   /* ToDo Determine which mode to start based on the switches on the car */
   lst_bt_diag_mode = LST_BT_DIAG_MODE_FASTLAP;

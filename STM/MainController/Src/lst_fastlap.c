@@ -14,6 +14,8 @@
 uint8_t lst_fast_mode = LST_FAST_MODE_BT;
 
 uint8_t cntr_brake                   = 0;
+uint16_t cntr_temp                    = 0;
+int16_t iiii = 250;
 
 float lst_fast_q1_accel_plus_p       = 0.0f;
 float lst_fast_q1_accel_plus_d       = 0.0f;
@@ -101,8 +103,20 @@ static void LST_Fast_State_Machine(){
   case LST_FAST_MODE_SPEED_CONTROL:
     LST_Fast_Reset_State_Machine();
 
+    if(cntr_temp<800){
+      cntr_temp++;
+      lst_control_motor = iiii;
+    }
+    else if(cntr_temp<1300){
+      cntr_temp++;
+      lst_control_motor = 0;
+    }
+    else{
+      iiii = iiii+50;
+      cntr_temp = 0;
+    }
+
     lst_control_steering = LST_Control_Servo_BT();
-    lst_control_motor = LST_Control_SpeedController(100);
     break;
   case LST_FAST_MODE_LINE_FOLLOW:
     LST_Fast_Reset_State_Machine();

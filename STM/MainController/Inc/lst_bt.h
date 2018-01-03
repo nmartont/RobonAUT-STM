@@ -154,4 +154,6 @@ extern float    lst_control_speed_encoder;
 extern uint8_t lst_fast_q1_mode;
 extern uint8_t lst_obs_lap_mode;
 
+extern uint8_t lst_i2c_master1_rx[16];
+
 #endif /* LST_BT_H_ */
