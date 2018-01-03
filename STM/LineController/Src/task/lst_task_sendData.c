@@ -95,9 +95,10 @@ void lst_sendData_transmitReceive(void)
 	}
 	*/
 
-	HAL_SPI_Transmit_IT(
+	HAL_SPI_TransmitReceive_IT(
 					&hspi1,
 					(uint8_t *) &lst_spiData_tx,
+					(uint8_t *) &lst_spiData_rx,
 					LST_SPI_SIZE
 					);
 
@@ -122,11 +123,11 @@ void lst_sendData_TxRxComplete()
 void lst_sendData_init()
 {
 
-	// Pull DRDY low to signal that LineController is busy
-	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
-
 	// Set spiCompleted to 1 to enter data transfer function at start
 	lst_spiCompleted = 1;
+
+	// Pull DRDY low to signal that LineController is busy
+	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
 
 }
 
