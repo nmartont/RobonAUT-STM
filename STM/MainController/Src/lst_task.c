@@ -103,23 +103,23 @@ void LST_Task_Obstacle(void const * argument) {
   }
 }
 
-/**
- * @brief This task handles the Inertial module
- */
-void LST_Task_Inertial(void const * argument) {
-  /* Record starting timestamp */
-  TickType_t xLastWakeTime = xTaskGetTickCount();
-
-  /* Infinite loop */
-  while (1) {
-    if(lst_inertial_ready == LST_INERTIAL_READY){
-      LST_Inertial_GetSensorData();
-    }
-
-    /* Wait for the next cycle */
-    vTaskDelayUntil(&xLastWakeTime, LST_TASK_INERTIAL_TASK_REPEAT_TICKS);
-  }
-}
+///**
+// * @brief This task handles the Inertial module
+// */
+//void LST_Task_Inertial(void const * argument) {
+//  /* Record starting timestamp */
+//  TickType_t xLastWakeTime = xTaskGetTickCount();
+//
+//  /* Infinite loop */
+//  while (1) {
+//    if(lst_inertial_data_ready == 1){
+//      LST_Inertial_GetSensorData();
+//    }
+//
+//    /* Wait for the next cycle */
+//    vTaskDelayUntil(&xLastWakeTime, LST_TASK_INERTIAL_TASK_REPEAT_TICKS);
+//  }
+//}
 
 /**
  * @brief This task handles the BT requests

@@ -14,6 +14,8 @@
 uint8_t lst_i2c_master1_tx[LST_I2C_BUFFER1_SIZE] = { 0x00 };
 uint8_t lst_i2c_master1_rx[LST_I2C_BUFFER1_SIZE] = { 0x00 };
 
+uint8_t lst_i2c_mem1_rx_cmplt = LST_I2C_MEMRX_NOT_COMPLETE;
+
 /* External variables --------------------------------------------------------*/
 
 /******************************************************************************/
@@ -34,7 +36,7 @@ void LST_I2C_LSM6DS3_ReadRegister(uint16_t MemAddress, uint8_t * pData, uint16_t
   /* Wait until I2C1 is ready */
   while(hi2c1.State != HAL_I2C_STATE_READY){}
 
-  HAL_I2C_Mem_Read(&hi2c1, LST_I2C_LSM6DS3_ADDRESS, MemAddress, 1, pData, Size, 1000);
+  HAL_I2C_Mem_Read_IT(&hi2c1, LST_I2C_LSM6DS3_ADDRESS, MemAddress, 1, pData, Size);
 }
 
 /**
@@ -45,4 +47,12 @@ void LST_I2C_LSM6DS3_WriteRegister(uint16_t MemAddress, uint8_t * pData, uint16_
   while(hi2c1.State != HAL_I2C_STATE_READY){}
 
   HAL_I2C_Mem_Write(&hi2c1, LST_I2C_LSM6DS3_ADDRESS, MemAddress, 1, pData, Size, 1000);
+}
+
+void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c){
+  if (hi2c->Instance == I2C1)
+  {
+    /* Set the i2c transfer complete bit to 1 */
+    lst_i2c_mem1_rx_cmplt = LST_I2C_MEMRX_COMPLETE;
+  }
 }

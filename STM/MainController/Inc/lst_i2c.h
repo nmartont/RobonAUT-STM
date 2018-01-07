@@ -17,8 +17,10 @@
 #include "LSM6DS3.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_I2C_LSM6DS3_ADDRESS 0xD6  // ToDo Jumper?? 0x6B
+#define LST_I2C_LSM6DS3_ADDRESS 0xD6
 #define LST_I2C_BUFFER1_SIZE    16
+#define LST_I2C_MEMRX_NOT_COMPLETE 1
+#define LST_I2C_MEMRX_COMPLETE     0
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_I2C_Init();
@@ -32,5 +34,7 @@ extern I2C_HandleTypeDef hi2c3;
 
 extern uint8_t lst_i2c_master1_tx[LST_I2C_BUFFER1_SIZE];
 extern uint8_t lst_i2c_master1_rx[LST_I2C_BUFFER1_SIZE];
+
+extern uint8_t lst_i2c_mem1_rx_cmplt;
 
 #endif /* LST_I2C_H_ */

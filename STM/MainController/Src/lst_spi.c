@@ -88,6 +88,6 @@ void LST_SPI_ReceiveLineControllerData(){
  */
 void LST_SPI_WaitForLineControllerData(){
   while (hspi1.State != HAL_SPI_STATE_READY &&
-      lst_spi_master1_txrx_cmplt != LST_SPI_TXRX_NOT_COMPLETE) {
+      lst_spi_master1_txrx_cmplt != LST_SPI_TXRX_COMPLETE) {
   }
 }

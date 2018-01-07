@@ -92,16 +92,20 @@ void LST_Control_Commons(){
   LST_SPI_ReceiveLineControllerData();
 #endif
 
+  /* Get Inertial sensor data via interrupt routine */
+  if(lst_inertial_data_ready == 1) LST_Inertial_GetSensorData();
+
   /* ADC conversions */
   LST_ADC_StartSharpADC();
-
-  // LST_Inertial_GetSensorData();
 
   /* Calculate and normalize speed from encoder */
   lst_control_speed_encoder = -10.0f*(float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
 
   /* Wait for ADC */
   LST_ADC_WaitForSharpADC();
+
+  /* Wait for Inertial data */
+  if(lst_inertial_data_ready == 1) LST_Inertial_WaitForSensorData();
 
   /* Wait for the end of the LineController transaction */
 #ifdef LST_CONFIG_UART_LINE_COM

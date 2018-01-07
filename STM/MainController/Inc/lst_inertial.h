@@ -28,11 +28,13 @@
 /* Function prototypes -------------------------------------------------------*/
 void LST_Inertial_Init();
 void LST_Inertial_GetSensorData();
+void LST_Inertial_WaitForSensorData();
 
 /* Private variables ---------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
 extern float lst_inertial_sensor_data[6];
 extern uint8_t lst_inertial_ready;
+extern uint8_t lst_inertial_data_ready;
 
 #endif /* LST_INERTIAL_H_ */
