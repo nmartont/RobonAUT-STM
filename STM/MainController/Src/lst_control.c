@@ -93,7 +93,11 @@ void LST_Control_Commons(){
 #endif
 
   /* Get Inertial sensor data via interrupt routine */
-  if(lst_inertial_data_ready == 1) LST_Inertial_GetSensorData();
+
+  // TODO:TEST
+  if(lst_inertial_data_ready == 1) {}
+  vTaskDelay(1);
+  LST_Inertial_GetSensorData();
 
   /* ADC conversions */
   LST_ADC_StartSharpADC();
