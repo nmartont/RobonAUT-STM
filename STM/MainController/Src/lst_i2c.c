@@ -33,12 +33,14 @@ void LST_I2C_Init() {
  * @brief Reads from a register
  */
 void LST_I2C_LSM6DS3_ReadRegister(uint16_t MemAddress, uint8_t * pData, uint16_t Size){
+
   /* Wait until I2C1 is ready */
   while(hi2c1.State != HAL_I2C_STATE_READY){}
 
   // TODO:TEST 2018.01.11
   //HAL_I2C_Mem_Read_IT(&hi2c1, LST_I2C_LSM6DS3_ADDRESS, MemAddress, 1, pData, Size);
-  HAL_I2C_Mem_Read(&hi2c1, LST_I2C_LSM6DS3_ADDRESS, MemAddress, 1, pData, Size, 0xff);
+  //HAL_I2C_Mem_Read(&hi2c1, LST_I2C_LSM6DS3_ADDRESS, MemAddress, 1, pData, Size, 0xff);
+  HAL_I2C_Mem_Read_DMA(&hi2c1, LST_I2C_LSM6DS3_ADDRESS, MemAddress, 1, pData, Size);
 }
 
 /**

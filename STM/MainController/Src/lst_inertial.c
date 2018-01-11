@@ -122,10 +122,16 @@ void LST_Inertial_GetSensorData(){
  * @brief Waits for sensor data, then does the float conversion
  */
 void LST_Inertial_WaitForSensorData(){
+
+
   /* Wait for sensor data */
+
+	// TODO:TEST 2018.01.11
+	/*
   while (hi2c1.State != HAL_I2C_STATE_READY &&
       lst_i2c_mem1_rx_cmplt != LST_I2C_MEMRX_COMPLETE) {
   }
+  */
 
   /* Convert acceleration data to floats */
   int16_t raw_val = 0;

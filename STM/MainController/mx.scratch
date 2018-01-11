@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
-<ProjectName>D:\RobonAUT-STM\STM\MainController\\MainController</ProjectName>
+<ProjectName>C:\Users\Balazs\DOKUMENTUMOK\STM\RobonAUT-STM\STM\MainController\\MainController</ProjectName>
 <CMSIS>..\Drivers\CMSIS</CMSIS>
-<HAL_Driver>C:\Users\nmartont\STM32Cube\Repository\STM32Cube_FW_F4_V1.18.0\Drivers\CMSIS</HAL_Driver>
+<HAL_Driver>C:\Users\Balazs\STM32Cube\Repository\STM32Cube_FW_F4_V1.18.0\Drivers\CMSIS</HAL_Driver>
 
 <Toolchain>SW4STM32</Toolchain>
 <Version>0</Version>
 
 <filestoremove>
 	<file>
-	   		<name>..\Src\main.c</name>
-	   		<name>..\Src\freertos.c</name>
-	   		<name>..\Src\stm32f4xx_it.c</name>
-	   		<name>..\Src\stm32f4xx_hal_msp.c</name>
 	</file>
 </filestoremove>
 

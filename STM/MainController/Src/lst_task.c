@@ -66,11 +66,18 @@ void LST_Task_FastLap(void const * argument) {
 
   /* Infinite loop */
   while (1) {
+
+  	// TODO:TEST 2018.01.11
+  	HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 1);
+
     LST_Fast_Logic();
 
     /* Send diagnostic data via BT */
     if (lst_bt_send_diagdata_flag)
       LST_BT_Send_VarValues();
+
+    // TODO:TEST 2018.01.11
+    HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 0);
 
     /* Wait for the next cycle */
     vTaskDelayUntil(&xLastWakeTime, LST_CONTROL_REPEAT_TICKS);

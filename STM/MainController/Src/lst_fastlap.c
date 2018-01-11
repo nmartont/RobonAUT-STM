@@ -57,6 +57,7 @@ void LST_Fast_Init() {
  * @brief Main handler logic of the fast lap
  */
 void LST_Fast_Logic(){
+
   /* Get line data, sensor data, etc */
   LST_Control_Commons();
 
