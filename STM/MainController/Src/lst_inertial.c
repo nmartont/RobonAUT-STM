@@ -84,6 +84,9 @@ void LST_Inertial_GetSensorData(){
   /* Reset Rx complete flag */
   lst_i2c_mem1_rx_cmplt = LST_I2C_MEMRX_NOT_COMPLETE;
 
+  // TODO:TEST 2018.01.11
+  lst_inertial_data_ready = 0;
+
   /* Get 6DoF inertial sensor data */
 #ifdef AUTO_BYTE_INCREMENT  // ToDo test
 
@@ -110,6 +113,9 @@ void LST_Inertial_GetSensorData(){
   LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTZ_H_G, (uint8_t *) &lst_i2c_master1_rx[11], 1);
 #endif
 
+  // TODO:TEST 2018.01.11 breakpoint line
+  volatile int i=0;
+
 }
 
 /**
@@ -135,7 +141,8 @@ void LST_Inertial_WaitForSensorData(){
   }
 
   /* Reset data ready flag */
-  lst_inertial_data_ready = 0;
+  // TODO:TEST 2018.01.11
+  //lst_inertial_data_ready = 0;
 }
 
 /**

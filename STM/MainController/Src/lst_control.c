@@ -94,9 +94,9 @@ void LST_Control_Commons(){
 
   /* Get Inertial sensor data via interrupt routine */
 
-  // TODO:TEST
-  if(lst_inertial_data_ready == 1) {}
-  vTaskDelay(1);
+  // TODO:TEST 2018.01.11
+  if(lst_inertial_data_ready == 1) //{}
+  //vTaskDelay(1);
   LST_Inertial_GetSensorData();
 
   /* ADC conversions */
@@ -109,7 +109,8 @@ void LST_Control_Commons(){
   LST_ADC_WaitForSharpADC();
 
   /* Wait for Inertial data */
-  if(lst_inertial_data_ready == 1) LST_Inertial_WaitForSensorData();
+  // TODO:TEST 2018.01.11
+  //if(lst_inertial_data_ready == 1) LST_Inertial_WaitForSensorData();
 
   /* Wait for the end of the LineController transaction */
 #ifdef LST_CONFIG_UART_LINE_COM
