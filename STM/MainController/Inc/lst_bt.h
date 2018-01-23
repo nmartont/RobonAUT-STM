@@ -80,7 +80,7 @@
 
 /* GamePad Defines ---------------------------------------------------------- */
 #define LST_GAMEPAD_ARRAY_SIZE      64
-/* Key mapping for Ipega BT Controller */
+/* Key mapping for RumblePad BT Controller */
 /* Face Buttons */
 #define LST_GAMEPAD_BUTTON_A        49
 #define LST_GAMEPAD_BUTTON_B        50

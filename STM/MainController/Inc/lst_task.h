@@ -26,6 +26,7 @@
 #include "lst_obstacle.h"
 #include "lst_fastlap.h"
 #include "lst_dip.h"
+#include "lst_infra.h"
 
 /* Defines -------------------------------------------------------------------*/
 // #define LST_TASK_INERTIAL_TASK_REPEAT_TICKS 5000 // 2Hz
