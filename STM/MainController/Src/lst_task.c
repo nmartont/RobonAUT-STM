@@ -30,6 +30,10 @@ void LST_Task_Start(void const * argument) {
   osThreadDef(LST_Task_BT_RequestHandler, LST_Task_BT_RequestHandler, osPriorityLow, 0, 256);
   lst_task_BTRequestHandlerTaskHandle = osThreadCreate(osThread(LST_Task_BT_RequestHandler), NULL);
 
+  /* Start DIP Read handler */
+  osThreadDef(LST_Task_DIP_Read, LST_Task_DIP_Read, osPriorityLow, 0, 256);
+  lst_task_DIPReadHandle = osThreadCreate(osThread(LST_Task_DIP_Read), NULL);
+
   /* Start inertial sensor task */
 //  osThreadDef(LST_Task_Inertial, LST_Task_Inertial, osPriorityNormal, 0, 256);
 //  lst_task_InertialTaskHandle = osThreadCreate(osThread(LST_Task_Inertial), NULL);
@@ -142,4 +146,28 @@ void LST_Task_BT_RequestHandler(void const * argument) {
     /* Wait for the next cycle */
     vTaskDelayUntil(&xLastWakeTime, LST_TASK_BT_TASK_REPEAT_TICKS);
   }
+}
+
+/**
+ * @brief DIP Switch handling task
+ */
+void LST_Task_DIP_Read(void const * argument) {
+
+	while (1) {
+
+		for (uint8_t i=0; i<8; i++)
+		{
+
+			LST_DIP_SetMux(i);
+
+			osDelay(1);
+
+			LST_DIP_Read(i);
+
+		}
+
+	}
+
+	osThreadTerminate(lst_task_DIPReadHandle);
+
 }

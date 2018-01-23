@@ -61,6 +61,14 @@
 #define SPI1_SS_GPIO_Port GPIOA
 #define CYCLE_OUT_Pin GPIO_PIN_4
 #define CYCLE_OUT_GPIO_Port GPIOC
+#define ADDR2_Pin GPIO_PIN_10
+#define ADDR2_GPIO_Port GPIOB
+#define ADDR1_Pin GPIO_PIN_12
+#define ADDR1_GPIO_Port GPIOB
+#define ADDR0_Pin GPIO_PIN_11
+#define ADDR0_GPIO_Port GPIOA
+#define DIP_Pin GPIO_PIN_12
+#define DIP_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14

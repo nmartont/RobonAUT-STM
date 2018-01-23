@@ -25,6 +25,7 @@
 #include "lst_inertial.h"
 #include "lst_obstacle.h"
 #include "lst_fastlap.h"
+#include "lst_dip.h"
 
 /* Defines -------------------------------------------------------------------*/
 // #define LST_TASK_INERTIAL_TASK_REPEAT_TICKS 5000 // 2Hz
@@ -38,6 +39,7 @@ void LST_Task_Start(void const * argument);
 void LST_Task_FastLap(void const * argument);
 void LST_Task_Obstacle(void const * argument);
 void LST_Task_BT_RequestHandler(void const * argument);
+void LST_Task_DIP_Read(void const * argument);
 // void LST_Task_Inertial(void const * argument);
 
 /* Private variables ---------------------------------------------------------*/
@@ -45,6 +47,7 @@ osThreadId lst_task_StartTaskHandle;
 osThreadId lst_task_TaskStartHandle;
 osThreadId lst_task_MainTaskHandle;
 osThreadId lst_task_BTRequestHandlerTaskHandle;
+osThreadId lst_task_DIPReadHandle;
 // osThreadId lst_task_InertialTaskHandle;
 
 #endif /* LST_TASK_H_ */
