@@ -150,24 +150,20 @@ void LST_Task_BT_RequestHandler(void const * argument) {
 
 /**
  * @brief DIP Switch handling task
+ * @author bszakaly
  */
 void LST_Task_DIP_Read(void const * argument) {
 
-	while (1) {
+	while (1)
+	{
 
-		for (uint8_t i=0; i<8; i++)
-		{
+		LST_DIP_ReadSwitches();
 
-			LST_DIP_SetMux(i);
-
-			osDelay(1);
-
-			LST_DIP_Read(i);
-
-		}
+		if (READ_AT_STARTUP_ONLY) break;
 
 	}
 
+	// Terminate task
 	osThreadTerminate(lst_task_DIPReadHandle);
 
 }

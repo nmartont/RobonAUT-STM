@@ -7,6 +7,27 @@
 
 #include "lst_dip.h"
 
+void LST_DIP_ReadSwitches()
+{
+
+	// Read the 8 switches consecutively
+	for (uint8_t i=0; i<8; i++)
+	{
+
+		LST_DIP_SetMux(i);
+
+		// Wait for MUX output rise
+		vTaskDelay(MUX_DELAY_OSTICK);
+
+		LST_DIP_Read(i);
+
+	}
+
+	// Wait between DIP switch scans
+	vTaskDelay(READ_INTERVAL_OSTICK);
+
+}
+
 void LST_DIP_SetMux(uint8_t position)
 {
 
