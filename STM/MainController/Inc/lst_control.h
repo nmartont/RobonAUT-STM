@@ -52,6 +52,11 @@
 /* Interpolation */
 #define LST_CONTROL_PD_INTERPOL_POINTS  5
 
+// LST_SETTINGS Servo invert
+
+// Invert steering directions
+#define LST_INVERT_STEERING
+
 /* Function prototypes -------------------------------------------------------*/
 void LST_Control_Init();
 void LST_Control_Commons();

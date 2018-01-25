@@ -16,9 +16,12 @@
 #include "main.h"
 
 /* Defines -------------------------------------------------------------------*/
+
+// LST_SETTINGS Servo
+
 #define LST_TIM_RCPWM_MIDDLE 4575
-#define LST_TIM_RCPWM_MIN    -1525
-#define LST_TIM_RCPWM_MAX    1525
+#define LST_TIM_RCPWM_MIN    -1250 // -1525
+#define LST_TIM_RCPWM_MAX    860 // 1525
 
 #define LST_TIM_ENCODER_MAX                50000
 #define LST_TIM_ENCODER_OVERFLOW_THRESHOLD 10000
