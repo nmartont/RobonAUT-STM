@@ -43,10 +43,12 @@ int16_t lst_control_errorSignal_speed =     0;
 int16_t lst_control_errorSignalOld_speed =  0;
 int32_t lst_control_errorSignalSum_speed =  0;
 
+// LST_SETTINGS Servo offset TODO move
+
 /* Motor and steering variables */
 int16_t lst_control_steering = 0;
 int16_t lst_control_motor = 0;
-int16_t lst_control_steering_offset = -100; // -150
+int16_t lst_control_steering_offset = -115; // negative: left
 float lst_control_speed_encoder = 0.0f;
 
 /* Declare variables for steering controller interpolation */
