@@ -20,7 +20,12 @@ uint32_t enc_cnt_last = 0;
 void LST_Timer_Init() {
   /* Start PWMs */
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
+#ifdef LST_CONFIG_CUSTOM_MOTOR_CONTROL
+  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);
+  // ToDo set up defaults for custom motor control
+#else
   LST_TIM_SetMotorRcPwm(0);
+#endif
   
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
   LST_TIM_SetServoRcPwm(0);
