@@ -49,6 +49,8 @@ osThreadId lst_task_TaskStartHandle;
 osThreadId lst_task_MainTaskHandle;
 osThreadId lst_task_BTRequestHandlerTaskHandle;
 osThreadId lst_task_DIPReadHandle;
+osThreadId lst_test_StartTestHandle;
+osThreadId lst_test_PwmTestHandle;
 // osThreadId lst_task_InertialTaskHandle;
 
 #endif /* LST_TASK_H_ */
