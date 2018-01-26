@@ -29,6 +29,9 @@ void LST_TIM_SetMotorRcPwm(int16_t motor);
 void LST_TIM_SetServoRcPwm(int16_t servo);
 int16_t LST_TIM_CalculateSpeed();
 
+// LST_SETTINGS Motor PWM
+static const uint32_t counterLimit = 4499;
+
 /* Private variables ---------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/

@@ -142,18 +142,18 @@ void LST_Test_PWM(void const * argument) {
   
   // Init compare signals
   int32_t ch1 = 0;
-  int32_t ch2 = 50000;
+  int32_t ch2 = counterLimit;
   uint8_t dir = 0;
 
   /* Infinite loop */
   while (1) {
     
-  	if (ch1 >= 50000) dir = 1;
+  	if (ch1 >= counterLimit) dir = 1;
   	if (ch1 <= 0) dir = 0;
 
   	if (dir) ch1--;
   	else ch1++;
-  	ch2 = 50000 - ch1;
+  	ch2 = counterLimit - ch1;
 
     __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, ch1);
     __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_2, ch2);
@@ -161,7 +161,7 @@ void LST_Test_PWM(void const * argument) {
       LST_BT_Send_VarValues();
 
     // Delay
-    // osDelay(10);
+    osDelay(1);
 
   }
 }
