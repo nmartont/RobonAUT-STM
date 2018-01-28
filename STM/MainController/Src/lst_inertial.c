@@ -130,14 +130,14 @@ void LST_Inertial_WaitForSensorData(){
   }
   */
 
-  /* Convert acceleration data to floats */
+  /* Convert gyro data to floats */
   int16_t raw_val = 0;
   for(uint8_t i = 0; i<3; i++){
     raw_val = (lst_i2c_master1_rx[2*i + 1] << 8) | (lst_i2c_master1_rx[2*i]);
     lst_inertial_sensor_data[i] = calc_gyro(raw_val);
   }
 
-  /* Convert gyroscope data to floats */
+  /* Convert accel data to floats */
   for(uint8_t i = 3; i<6; i++){
     raw_val = (lst_i2c_master1_rx[2*i + 1] << 8) | (lst_i2c_master1_rx[2*i]);
     lst_inertial_sensor_data[i] = calc_accel(raw_val);

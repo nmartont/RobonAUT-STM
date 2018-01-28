@@ -9,11 +9,11 @@
 
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
-#define LST_BT_VARLIST_FASTLAP_DATALEN  205
-#define LST_BT_VARLIST_OBSTACLE_DATALEN 202
+#define LST_BT_VARLIST_FASTLAP_DATALEN  226
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 226
 #else
-#define LST_BT_VARLIST_FASTLAP_DATALEN  42
-#define LST_BT_VARLIST_OBSTACLE_DATALEN 42
+#define LST_BT_VARLIST_FASTLAP_DATALEN  66
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 66
 #endif
 
 /* Private variables ---------------------------------------------------------*/
@@ -46,7 +46,12 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Fast lap mode
-    0x01, 'Z', LST_BT_VARTYPE_INT16,      // Z accel
+    0x02, 'G', 'x',  LST_BT_VARTYPE_INT16,      // GyroX
+    0x02, 'G', 'y', LST_BT_VARTYPE_INT16,      // GyroY
+    0x02, 'G', 'z', LST_BT_VARTYPE_INT16,      // GyroZ
+    0x02, 'A', 'x', LST_BT_VARTYPE_INT16,      // AccelX
+    0x02, 'A', 'y', LST_BT_VARTYPE_INT16,      // AccelY
+    0x02, 'A', 'z', LST_BT_VARTYPE_INT16,      // AccelZ
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -82,7 +87,8 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x03, 'V', '2', '8', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '2', '9', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '3', '0', LST_BT_VARTYPE_UINT8,
-    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8};
+    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8,
+};
 
 static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = {
     0x02, 'S', 'p', LST_BT_VARTYPE_INT16,      // Speed from encoder
@@ -92,6 +98,12 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Obstacle lap mode
+    0x02, 'G', 'x',  LST_BT_VARTYPE_INT16,      // GyroX
+    0x02, 'G', 'y', LST_BT_VARTYPE_INT16,      // GyroY
+    0x02, 'G', 'z', LST_BT_VARTYPE_INT16,      // GyroZ
+    0x02, 'A', 'x', LST_BT_VARTYPE_INT16,      // AccelX
+    0x02, 'A', 'y', LST_BT_VARTYPE_INT16,      // AccelY
+    0x02, 'A', 'z', LST_BT_VARTYPE_INT16,      // AccelZ
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -127,7 +139,7 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x03, 'V', '2', '8', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '2', '9', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '3', '0', LST_BT_VARTYPE_UINT8,
-    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8
+    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8,
 };
 #else
 static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
@@ -138,6 +150,12 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Fast lap mode
+    0x02, 'G', 'x',  LST_BT_VARTYPE_INT16,      // GyroX
+    0x02, 'G', 'y', LST_BT_VARTYPE_INT16,      // GyroY
+    0x02, 'G', 'z', LST_BT_VARTYPE_INT16,      // GyroZ
+    0x02, 'A', 'x', LST_BT_VARTYPE_INT16,      // AccelX
+    0x02, 'A', 'y', LST_BT_VARTYPE_INT16,      // AccelY
+    0x02, 'A', 'z', LST_BT_VARTYPE_INT16,      // AccelZ
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -151,6 +169,12 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
     0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Obstacle lap mode
+    0x02, 'G', 'x',  LST_BT_VARTYPE_INT16,      // GyroX
+    0x02, 'G', 'y', LST_BT_VARTYPE_INT16,      // GyroY
+    0x02, 'G', 'z', LST_BT_VARTYPE_INT16,      // GyroZ
+    0x02, 'A', 'x', LST_BT_VARTYPE_INT16,      // AccelX
+    0x02, 'A', 'y', LST_BT_VARTYPE_INT16,      // AccelY
+    0x02, 'A', 'z', LST_BT_VARTYPE_INT16,      // AccelZ
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -474,13 +498,35 @@ void LST_BT_Send_VarValues() {
   /* Handle FASTLAP/OBSTACLE modes */
   uint8_t extra_bytes = 0;
   if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
-    extra_bytes = 3;
+    extra_bytes = 13;
     lst_uart_buffer_tx[12]=lst_fast_q1_mode;
-    lst_uart_buffer_tx[13]=lst_i2c_master1_rx[4];
-    lst_uart_buffer_tx[14]=lst_i2c_master1_rx[5];
+    lst_uart_buffer_tx[13]=lst_i2c_master1_rx[0];
+    lst_uart_buffer_tx[14]=lst_i2c_master1_rx[1];
+    lst_uart_buffer_tx[15]=lst_i2c_master1_rx[2];
+    lst_uart_buffer_tx[16]=lst_i2c_master1_rx[3];
+    lst_uart_buffer_tx[17]=lst_i2c_master1_rx[4];
+    lst_uart_buffer_tx[18]=lst_i2c_master1_rx[5];
+    lst_uart_buffer_tx[19]=lst_i2c_master1_rx[6];
+    lst_uart_buffer_tx[20]=lst_i2c_master1_rx[7];
+    lst_uart_buffer_tx[21]=lst_i2c_master1_rx[8];
+    lst_uart_buffer_tx[22]=lst_i2c_master1_rx[9];
+    lst_uart_buffer_tx[23]=lst_i2c_master1_rx[10];
+    lst_uart_buffer_tx[24]=lst_i2c_master1_rx[11];
   }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
-    extra_bytes = 1;
+    extra_bytes = 13;
     lst_uart_buffer_tx[12]=lst_obs_lap_mode;
+    lst_uart_buffer_tx[13]=lst_i2c_master1_rx[0];
+    lst_uart_buffer_tx[14]=lst_i2c_master1_rx[1];
+    lst_uart_buffer_tx[15]=lst_i2c_master1_rx[2];
+    lst_uart_buffer_tx[16]=lst_i2c_master1_rx[3];
+    lst_uart_buffer_tx[17]=lst_i2c_master1_rx[4];
+    lst_uart_buffer_tx[18]=lst_i2c_master1_rx[5];
+    lst_uart_buffer_tx[19]=lst_i2c_master1_rx[6];
+    lst_uart_buffer_tx[20]=lst_i2c_master1_rx[7];
+    lst_uart_buffer_tx[21]=lst_i2c_master1_rx[8];
+    lst_uart_buffer_tx[22]=lst_i2c_master1_rx[9];
+    lst_uart_buffer_tx[23]=lst_i2c_master1_rx[10];
+    lst_uart_buffer_tx[24]=lst_i2c_master1_rx[11];
   }
 
   /* Copy source buffer to TX buffer */
