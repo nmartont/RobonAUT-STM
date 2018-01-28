@@ -35,7 +35,7 @@ void LST_Task_Start(void const * argument) {
   lst_task_DIPReadHandle = osThreadCreate(osThread(LST_Task_DIP_Read), NULL);
 
   /* Determine which mode to start based on the switches on the car */
-  if(lst_dip_read_once == 0){  // Wait for DIP read
+  while(lst_dip_read_once == 0){  // Wait for DIP read
     vTaskDelay(10);
   }
   if(lst_dip_settings[0] == 0){
