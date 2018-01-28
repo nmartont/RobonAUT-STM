@@ -88,12 +88,12 @@ void LST_Inertial_GetSensorData(){
   lst_inertial_data_ready = 0;
 
   /* Get 6DoF inertial sensor data */
-#ifdef AUTO_BYTE_INCREMENT  // ToDo test
+#ifdef AUTO_BYTE_INCREMENT
 
   LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTX_L_G, (uint8_t *) &lst_i2c_master1_rx[0],  12);
 
 #else
-  // FixMe this won't work with Interrupt I2C method
+  // This won't work with Interrupt I2C method
   LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTX_L_XL, (uint8_t *) &lst_i2c_master1_rx[0], 1);
   LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTX_H_XL, (uint8_t *) &lst_i2c_master1_rx[1], 1);
 
@@ -112,9 +112,6 @@ void LST_Inertial_GetSensorData(){
   LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTZ_L_G, (uint8_t *) &lst_i2c_master1_rx[10], 1);
   LST_I2C_LSM6DS3_ReadRegister(LSM6DS3_ACC_GYRO_OUTZ_H_G, (uint8_t *) &lst_i2c_master1_rx[11], 1);
 #endif
-
-  // TODO:TEST 2018.01.11 breakpoint line
-  volatile int i=0;
 
 }
 

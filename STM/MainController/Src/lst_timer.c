@@ -22,7 +22,7 @@ void LST_Timer_Init() {
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
 #ifdef LST_CONFIG_CUSTOM_MOTOR_CONTROL
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);
-  // ToDo set up defaults for custom motor control
+  LST_TIM_SetMotorUnipolPwm(0);
 #else
   LST_TIM_SetMotorRcPwm(0);
 #endif
@@ -39,11 +39,26 @@ void LST_Timer_Init() {
  */
 void LST_TIM_SetMotorRcPwm(int16_t motor){
   /* Min/Max value */
-  if (motor < LST_TIM_RCPWM_MIN) motor = LST_TIM_RCPWM_MIN;
-  if (motor > LST_TIM_RCPWM_MAX) motor = LST_TIM_RCPWM_MAX;
+  if (motor < LST_TIM_MOTOR_PWM_MIN) motor = LST_TIM_MOTOR_PWM_MIN;
+  if (motor > LST_TIM_MOTOR_PWM_MAX) motor = LST_TIM_MOTOR_PWM_MAX;
 
   /* Set timer value */
-  __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, LST_TIM_RCPWM_MIDDLE + motor);
+  __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, LST_TIM_MOTOR_PWM_MIDDLE + motor);
+}
+
+/**
+ * @brief Sets the Unipolar PWM signal for the DC Motor
+ * https://e2e.ti.com/blogs_/b/motordrivecontrol/
+ * archive/2012/04/09/so-which-pwm-technique-is-best-part-5
+ */
+void LST_TIM_SetMotorUnipolPwm(int16_t motor){
+  /* Min/Max value */
+  if (motor < LST_TIM_MOTOR_PWM_MIN) motor = LST_TIM_MOTOR_PWM_MIN;
+  if (motor > LST_TIM_MOTOR_PWM_MAX) motor = LST_TIM_MOTOR_PWM_MAX;
+
+  /* Set timer value */
+  __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_1, LST_TIM_MOTOR_PWM_MIDDLE + motor);
+  __HAL_TIM_SET_COMPARE(&htim5, TIM_CHANNEL_2, LST_TIM_MOTOR_PWM_MIDDLE - motor);
 }
 
 /**
@@ -51,11 +66,11 @@ void LST_TIM_SetMotorRcPwm(int16_t motor){
  */
 void LST_TIM_SetServoRcPwm(int16_t servo){
   /* Min/Max value */
-  if (servo < LST_TIM_RCPWM_MIN) servo = LST_TIM_RCPWM_MIN;
-  if (servo > LST_TIM_RCPWM_MAX) servo = LST_TIM_RCPWM_MAX;
+  if (servo < LST_TIM_SERVO_PWM_MIN) servo = LST_TIM_SERVO_PWM_MIN;
+  if (servo > LST_TIM_SERVO_PWM_MAX) servo = LST_TIM_SERVO_PWM_MAX;
 
   /* Set timer value */
-  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, LST_TIM_RCPWM_MIDDLE + servo);
+  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, LST_TIM_SERVO_PWM_MIDDLE + servo);
 }
 
 /**

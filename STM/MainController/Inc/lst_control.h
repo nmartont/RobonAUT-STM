@@ -41,7 +41,33 @@
 
 /* Float denums for dividing steering and servo control values */
 #define LST_CONTROL_BT_STEERING_DENUM -21.487f
+
+#ifdef LST_CONFIG_CUSTOM_MOTOR_CONTROL
+#define LST_CONTROL_BT_MOTOR_DENUM    -60.0f  // ToDo set this to something higher
+#define LST_CONTROL_MOTOR_RATE_LIMIT  10.0f   // ToDo calibrate
+
+/* Default values for the speed PID controller */
+// ToDo calibrate
+#define LST_CONTROL_SPEED_P           12000
+#define LST_CONTROL_SPEED_P_DIVIDER   1638.40f
+#define LST_CONTROL_SPEED_D           5000
+#define LST_CONTROL_SPEED_D_DIVIDER   16384.0f
+#define LST_CONTROL_SPEED_I           300
+#define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
+#else
 #define LST_CONTROL_BT_MOTOR_DENUM    -60.0f
+#define LST_CONTROL_MOTOR_RATE_LIMIT  2000.0f // ToDo calibrate
+
+/* Default values for the speed PID controller */
+// ToDo calibrate
+#define LST_CONTROL_SPEED_P           12000
+#define LST_CONTROL_SPEED_P_DIVIDER   1638.40f
+#define LST_CONTROL_SPEED_D           5000
+#define LST_CONTROL_SPEED_D_DIVIDER   16384.0f
+#define LST_CONTROL_SPEED_I           300
+#define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
+#endif
+
 #define LST_CONTROL_STEERING_DENUM    21.487f
 #define LST_CONTROL_SPEED_DENUM       1.0f
 
@@ -52,6 +78,9 @@
 /* Interpolation */
 #define LST_CONTROL_PD_INTERPOL_POINTS  5
 
+/* Speed filter order */
+#define LST_CONTROL_SPEED_FILTER_ORDER  3
+
 /* Function prototypes -------------------------------------------------------*/
 void LST_Control_Init();
 void LST_Control_Commons();
@@ -60,6 +89,7 @@ int16_t LST_Control_Servo_BT();
 int32_t LST_Control_SteeringController(uint8_t use_interpolation);
 int32_t LST_Control_SpeedController(int16_t reference);
 void LST_Control_ServoAndMotor();
+float LST_Control_CalculateSpeed();
 
 /* Private variables ---------------------------------------------------------*/
 

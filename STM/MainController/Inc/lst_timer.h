@@ -16,15 +16,27 @@
 #include "main.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LST_TIM_RCPWM_MIDDLE 4575
-#define LST_TIM_RCPWM_MIN    -1525
-#define LST_TIM_RCPWM_MAX    1525
+// ToDo: what's up with the limits of the new servo??
+#define LST_TIM_SERVO_PWM_MIDDLE 4575
+#define LST_TIM_SERVO_PWM_MIN    -1250 // 1525
+#define LST_TIM_SERVO_PWM_MAX    860   // 1525
+
+#ifdef LST_CONFIG_CUSTOM_MOTOR_CONTROL
+#define LST_TIM_MOTOR_PWM_MIDDLE   2250
+#define LST_TIM_MOTOR_PWM_MIN      -2025
+#define LST_TIM_MOTOR_PWM_MAX      2025
+#else
+#define LST_TIM_MOTOR_PWM_MIDDLE   4575
+#define LST_TIM_MOTOR_PWM_MIN      -1525
+#define LST_TIM_MOTOR_PWM_MAX      1525
+#endif
 
 #define LST_TIM_ENCODER_MAX                50000
 #define LST_TIM_ENCODER_OVERFLOW_THRESHOLD 10000
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Timer_Init();
+void LST_TIM_SetMotorUnipolPwm(int16_t motor);
 void LST_TIM_SetMotorRcPwm(int16_t motor);
 void LST_TIM_SetServoRcPwm(int16_t servo);
 int16_t LST_TIM_CalculateSpeed();

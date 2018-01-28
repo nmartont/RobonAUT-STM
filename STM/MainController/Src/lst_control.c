@@ -21,6 +21,9 @@ uint8_t lst_control_line_no_array[8] = { 0x00 };
 uint8_t lst_control_line_no          = 0;
 uint8_t lst_control_line_no_input    = 0;
 
+/* Speed filter */
+float lst_control_speed_array[LST_CONTROL_SPEED_FILTER_ORDER] = {0.0f};
+
 /* Line positions for steering PID controller */
 float lst_control_linePos =     0.0f;
 float lst_control_linePosOld =  0.0f;
@@ -41,6 +44,7 @@ int16_t lst_control_errorSignalOld_steering = 0;
 
 int16_t lst_control_errorSignal_speed =     0;
 int16_t lst_control_errorSignalOld_speed =  0;
+int16_t lst_control_referenceOld_speed =    0;
 int32_t lst_control_errorSignalSum_speed =  0;
 
 /* Motor and steering variables */
@@ -103,7 +107,7 @@ void LST_Control_Commons(){
   LST_ADC_StartSharpADC();
 
   /* Calculate and normalize speed from encoder */
-  lst_control_speed_encoder = -10.0f*(float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
+  lst_control_speed_encoder = LST_Control_CalculateSpeed();
 
   /* Wait for ADC */
   LST_ADC_WaitForSharpADC();
@@ -261,8 +265,8 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
   str_cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
 
   /* Max/Min */
-  if (str_cntrl_result < LST_TIM_RCPWM_MIN) str_cntrl_result = LST_TIM_RCPWM_MIN;
-  if (str_cntrl_result > LST_TIM_RCPWM_MAX) str_cntrl_result = LST_TIM_RCPWM_MAX;
+  if (str_cntrl_result < LST_TIM_SERVO_PWM_MIN) str_cntrl_result = LST_TIM_SERVO_PWM_MIN;
+  if (str_cntrl_result > LST_TIM_SERVO_PWM_MAX) str_cntrl_result = LST_TIM_SERVO_PWM_MAX;
 
   return str_cntrl_result;
 }
@@ -271,6 +275,24 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
  * @brief PID controller for the speed
  */
 int32_t LST_Control_SpeedController(int16_t reference){
+  // ToDo Test rate limiter
+  /*    Rate limiter    */
+  /* Calculate the rate limit based on control freq */
+  float difference =
+      10.0f*(float)(reference - lst_control_referenceOld_speed)/
+      (float)LST_CONTROL_REPEAT_TICKS;
+
+  if(difference<-LST_CONTROL_MOTOR_RATE_LIMIT){
+    reference = lst_control_referenceOld_speed -
+            (float)LST_CONTROL_REPEAT_TICKS*LST_CONTROL_MOTOR_RATE_LIMIT/10.0f;
+  }else if(difference>LST_CONTROL_MOTOR_RATE_LIMIT){
+    reference = lst_control_referenceOld_speed +
+            (float)LST_CONTROL_REPEAT_TICKS*LST_CONTROL_MOTOR_RATE_LIMIT/10.0f;
+  }
+  // TODO NB!!!! If control freq changes, CHANGE THE REPEAT TICKS CONSTANT TOO!
+
+  lst_control_referenceOld_speed = reference;
+
   int32_t speed_cntrl_result = 0;
 
   /*    PID Controller    */
@@ -298,10 +320,10 @@ int32_t LST_Control_SpeedController(int16_t reference){
   uint8_t int_ok = 1;
 
   /* Positive saturation? */
-  if (speed_cntrl_result > LST_TIM_RCPWM_MAX)
+  if (speed_cntrl_result > LST_TIM_MOTOR_PWM_MAX)
   {
     /* Clamp the output */
-    speed_cntrl_result = LST_TIM_RCPWM_MAX;
+    speed_cntrl_result = LST_TIM_MOTOR_PWM_MAX;
 
     /* Error is the same sign? Inhibit integration. */
     if (lst_control_errorSignal_speed > 0)
@@ -310,9 +332,9 @@ int32_t LST_Control_SpeedController(int16_t reference){
     }
   }
   /* Repeat for negative sign */
-  else if (speed_cntrl_result < LST_TIM_RCPWM_MIN)
+  else if (speed_cntrl_result < LST_TIM_MOTOR_PWM_MIN)
   {
-    speed_cntrl_result = LST_TIM_RCPWM_MIN;
+    speed_cntrl_result = LST_TIM_MOTOR_PWM_MIN;
 
     if (lst_control_errorSignal_speed < 0)
     {
@@ -334,5 +356,33 @@ int32_t LST_Control_SpeedController(int16_t reference){
  */
 void LST_Control_ServoAndMotor(){
   LST_TIM_SetServoRcPwm(lst_control_steering + lst_control_steering_offset);
+#ifdef LST_CONFIG_CUSTOM_MOTOR_CONTROL
+  LST_TIM_SetMotorUnipolPwm(lst_control_motor);
+#else
   LST_TIM_SetMotorRcPwm(lst_control_motor);
+#endif
+}
+
+/**
+ * @brief Function that calculates speed
+ */
+float LST_Control_CalculateSpeed(){
+  // ToDo test
+
+  // TODO NB!!!! If control freq changes, CHANGE THE REPEAT TICKS CONSTANT TOO!
+  float sp = -10.0f*(float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
+  float sum = 0.0f;
+  float temp = 0.0f;
+
+  // Speed values array
+  uint8_t cccntr = 0;
+  for(cccntr=LST_CONTROL_SPEED_FILTER_ORDER - 1; cccntr!=255; cccntr--){
+    temp = lst_control_speed_array[cccntr];
+    sum = sum + temp;
+    lst_control_speed_array[cccntr+1] = temp;
+  }
+  sum = sum + sp;
+  lst_control_speed_array[0] = sp;
+
+  return sum/(float)(LST_CONTROL_SPEED_FILTER_ORDER + 1);
 }
