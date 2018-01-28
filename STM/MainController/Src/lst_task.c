@@ -34,12 +34,17 @@ void LST_Task_Start(void const * argument) {
   osThreadDef(LST_Task_DIP_Read, LST_Task_DIP_Read, osPriorityLow, 0, 256);
   lst_task_DIPReadHandle = osThreadCreate(osThread(LST_Task_DIP_Read), NULL);
 
-  /* Start inertial sensor task */
-//  osThreadDef(LST_Task_Inertial, LST_Task_Inertial, osPriorityNormal, 0, 256);
-//  lst_task_InertialTaskHandle = osThreadCreate(osThread(LST_Task_Inertial), NULL);
+  /* Determine which mode to start based on the switches on the car */
+  if(lst_dip_read_once == 0){  // Wait for DIP read
+    vTaskDelay(10);
+  }
+  if(lst_dip_settings[0] == 0){
+    lst_bt_diag_mode = LST_BT_DIAG_MODE_FASTLAP;
+  }
+  else{
+    lst_bt_diag_mode = LST_BT_DIAG_MODE_OBSTACLE;
+  }
 
-  /* ToDo Determine which mode to start based on the switches on the car */
-  lst_bt_diag_mode = LST_BT_DIAG_MODE_FASTLAP;
   if (lst_task_mode == LST_TASK_MODE_FASTLAP){
     /* Start Fast Lap mode */
     osThreadDef(LST_Task_FastLap, LST_Task_FastLap, osPriorityNormal, 0, 1024);
@@ -152,22 +157,14 @@ void LST_Task_BT_RequestHandler(void const * argument) {
  * @brief DIP Switch handling task
  */
 void LST_Task_DIP_Read(void const * argument) {
+  /* Record starting timestamp */
+  TickType_t xLastWakeTime = xTaskGetTickCount();
 
 	while (1) {
 
-		for (uint8_t i=0; i<8; i++)
-		{
+	  LST_DIP_ReadAll();
 
-			LST_DIP_SetMux(i);
-
-			osDelay(1);
-
-			LST_DIP_Read(i);
-
-		}
-
+		/* Wait for the next cycle */
+    vTaskDelayUntil(&xLastWakeTime, LST_TASK_DIP_TASK_REPEAT_TICKS);
 	}
-
-	osThreadTerminate(lst_task_DIPReadHandle);
-
 }

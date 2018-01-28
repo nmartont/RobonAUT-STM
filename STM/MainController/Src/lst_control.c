@@ -279,15 +279,18 @@ int32_t LST_Control_SpeedController(int16_t reference){
   /*    Rate limiter    */
   /* Calculate the rate limit based on control freq */
   float difference =
-      10.0f*(float)(reference - lst_control_referenceOld_speed)/
-      (float)LST_CONTROL_REPEAT_TICKS;
+      LST_CONTROL_TICKS_TIMEBASE*
+      (float)(reference - lst_control_referenceOld_speed)/
+      (float)LST_CONTROL_SPEED_CONTROL_TICKS;
 
   if(difference<-LST_CONTROL_MOTOR_RATE_LIMIT){
     reference = lst_control_referenceOld_speed -
-            (float)LST_CONTROL_REPEAT_TICKS*LST_CONTROL_MOTOR_RATE_LIMIT/10.0f;
+            (float)LST_CONTROL_SPEED_CONTROL_TICKS*LST_CONTROL_MOTOR_RATE_LIMIT/
+            LST_CONTROL_TICKS_TIMEBASE;
   }else if(difference>LST_CONTROL_MOTOR_RATE_LIMIT){
     reference = lst_control_referenceOld_speed +
-            (float)LST_CONTROL_REPEAT_TICKS*LST_CONTROL_MOTOR_RATE_LIMIT/10.0f;
+            (float)LST_CONTROL_SPEED_CONTROL_TICKS*LST_CONTROL_MOTOR_RATE_LIMIT/
+            LST_CONTROL_TICKS_TIMEBASE;
   }
   // TODO NB!!!! If control freq changes, CHANGE THE REPEAT TICKS CONSTANT TOO!
 
@@ -370,7 +373,8 @@ float LST_Control_CalculateSpeed(){
   // ToDo test
 
   // TODO NB!!!! If control freq changes, CHANGE THE REPEAT TICKS CONSTANT TOO!
-  float sp = -10.0f*(float)LST_TIM_CalculateSpeed()/(float)LST_CONTROL_REPEAT_TICKS;
+  float sp = -LST_CONTROL_TICKS_TIMEBASE*(float)LST_TIM_CalculateSpeed()
+      /(float)LST_CONTROL_SPEED_CALC_TICKS;
   float sum = 0.0f;
   float temp = 0.0f;
 

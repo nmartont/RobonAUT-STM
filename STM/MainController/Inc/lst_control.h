@@ -23,7 +23,11 @@
 
 /* Defines -------------------------------------------------------------------*/
 /* Control frequency for the FreeRTOS tasks */
-#define LST_CONTROL_REPEAT_TICKS 10  // 100Hz
+#define LST_CONTROL_TICKS_TIMEBASE          10.0f // 10.0 == 1ms
+#define LST_CONTROL_REPEAT_TICKS            10    // 100Hz
+#define LST_CONTROL_SPEED_CONTROL_TICKS     10
+#define LST_CONTROL_STEERING_CONTROL_TICKS  10
+#define LST_CONTROL_SPEED_CALC_TICKS        10
 
 /* Default P and D values for the steering */
 #define LST_CONTROL_STEERING_P           1540

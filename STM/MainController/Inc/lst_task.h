@@ -29,8 +29,9 @@
 #include "lst_infra.h"
 
 /* Defines -------------------------------------------------------------------*/
-// #define LST_TASK_INERTIAL_TASK_REPEAT_TICKS 5000 // 2Hz
-#define LST_TASK_BT_TASK_REPEAT_TICKS 200 // 5Hz
+// #define LST_TASK_INERTIAL_TASK_REPEAT_TICKS 5000
+#define LST_TASK_BT_TASK_REPEAT_TICKS  200 // 5Hz
+#define LST_TASK_DIP_TASK_REPEAT_TICKS 1000 // 1Hz
 
 #define LST_TASK_MODE_FASTLAP  0
 #define LST_TASK_MODE_OBSTACLE 1

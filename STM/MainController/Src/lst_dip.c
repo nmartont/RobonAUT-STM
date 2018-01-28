@@ -7,6 +7,8 @@
 
 #include "lst_dip.h"
 
+uint8_t lst_dip_read_once = 0;
+
 void LST_DIP_SetMux(uint8_t position)
 {
 
@@ -22,4 +24,21 @@ void LST_DIP_Read(uint8_t position)
 	lst_dip_settings[lst_dip_map[position]] =
 			HAL_GPIO_ReadPin(DIP_GPIO_Port, DIP_Pin);
 
+}
+
+void LST_DIP_ReadAll(){
+  lst_dip_read_once = 1;
+
+  for (uint8_t i=0; i<8; i++){
+    LST_DIP_SetMux(i);
+
+    /* 200 ticks delay for the MUX */
+    volatile uint16_t vol_cntr = 0;
+    for(vol_cntr=0; vol_cntr<200; ){
+      vol_cntr++;
+    }
+
+    LST_DIP_Read(i);
+
+  }
 }

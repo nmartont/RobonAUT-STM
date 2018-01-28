@@ -13,8 +13,10 @@
 
 void LST_DIP_SetMux(uint8_t position);
 void LST_DIP_Read(uint8_t position);
+void LST_DIP_ReadAll();
 
 uint8_t lst_dip_settings[8];
+extern uint8_t lst_dip_read_once;
 
 /**
  * @brief Maps the MUX addresses to the DIP switch positions
