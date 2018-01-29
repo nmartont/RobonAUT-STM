@@ -83,6 +83,8 @@ osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 
+static void MX_TIM5_Init_Factory_Motor_Control(void);
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -159,6 +161,10 @@ int main(void)
   MX_TIM3_Init();
 
   /* USER CODE BEGIN 2 */
+
+#ifndef LST_CONFIG_CUSTOM_MOTOR_CONTROL
+  MX_TIM5_Init_Factory_Motor_Control();
+#endif
 
   /* USER CODE END 2 */
 
@@ -801,6 +807,16 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+
+
+/* TIM5 custom init function */
+MX_TIM5_Init_Factory_Motor_Control(void)
+{
+
+
+
+}
 
 /* USER CODE END 4 */
 

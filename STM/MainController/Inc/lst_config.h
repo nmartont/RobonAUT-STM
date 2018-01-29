@@ -13,11 +13,14 @@
 /* Defines -------------------------------------------------------------------*/
 
 /* Defines -------------------------------------------------------------------*/
+
 // #define LST_CONFIG_TEST
 // #define LST_CONFIG_CHANGE_BT_BAUD
 #define LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
 // #define LST_CONFIG_UART_LINE_COM
-#define LST_CONFIG_CUSTOM_MOTOR_CONTROL
+
+// LST_SETTINGS Motor control type
+//#define LST_CONFIG_CUSTOM_MOTOR_CONTROL
 
 /* Function prototypes -------------------------------------------------------*/
 
