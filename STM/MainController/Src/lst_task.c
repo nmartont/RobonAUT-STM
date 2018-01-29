@@ -155,13 +155,13 @@ void LST_Task_BT_RequestHandler(void const * argument) {
 
 /**
  * @brief DIP Switch handling task
+ * @author bszakaly
  */
 void LST_Task_DIP_Read(void const * argument) {
   /* Record starting timestamp */
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
-	while (1) {
-
+	while (1)
 	  LST_DIP_ReadAll();
 
 		/* Wait for the next cycle */

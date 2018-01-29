@@ -20,6 +20,9 @@ void myNecDecodedCallback(uint16_t address, uint8_t cmd);
 void myNecErrorCallback();
 void myNecRepeatCallback();
 
+// TODO:TEST 2018. 01. 25.
+uint32_t LST_test_counter = 0;
+
 /******************************************************************************/
 /*                   Infra handler for RobonAUT 2018 Team LST                 */
 /******************************************************************************/
@@ -40,6 +43,9 @@ void LST_Infra_Init() {
   nec.NEC_DecodedCallback = myNecDecodedCallback;
   nec.NEC_ErrorCallback = myNecErrorCallback;
   nec.NEC_RepeatCallback = myNecRepeatCallback;
+
+  // TODO:TEST 2018. 01. 25.
+  nec.timingAgcBoundary = 0;
 
   NEC_Read(&nec);
 }
@@ -79,6 +85,10 @@ void myNecRepeatCallback() {
  * @brief Function that handles the timer capture callback
  */
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
+
+	// TODO:TEST 2018. 01. 25.
+	LST_test_counter++;
+
   if (htim == &htim8) {
       NEC_TIM_IC_CaptureCallback(&nec);
   }

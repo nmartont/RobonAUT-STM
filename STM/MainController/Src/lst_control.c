@@ -47,10 +47,12 @@ int16_t lst_control_errorSignalOld_speed =  0;
 int16_t lst_control_referenceOld_speed =    0;
 int32_t lst_control_errorSignalSum_speed =  0;
 
+// LST_SETTINGS Servo offset TODO move
+
 /* Motor and steering variables */
 int16_t lst_control_steering = 0;
 int16_t lst_control_motor = 0;
-int16_t lst_control_steering_offset = 0; // -150
+int16_t lst_control_steering_offset = -115; // negative: left
 float lst_control_speed_encoder = 0.0f;
 
 /* Declare variables for steering controller interpolation */
@@ -210,6 +212,7 @@ int16_t LST_Control_Servo_BT(){
   steering += temp1;
 
   return steering;
+
 }
 
 /**
@@ -358,7 +361,14 @@ int32_t LST_Control_SpeedController(int16_t reference){
  * @brief Sets the control for the servo and the motor
  */
 void LST_Control_ServoAndMotor(){
+
+// TODO TEST 2018. 01. 25. invert steering
+#ifdef LST_INVERT_STEERING
+  LST_TIM_SetServoRcPwm(-lst_control_steering + lst_control_steering_offset);
+#else
   LST_TIM_SetServoRcPwm(lst_control_steering + lst_control_steering_offset);
+#endif
+
 #ifdef LST_CONFIG_CUSTOM_MOTOR_CONTROL
   LST_TIM_SetMotorUnipolPwm(lst_control_motor);
 #else

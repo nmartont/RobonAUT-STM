@@ -19,6 +19,9 @@
 // ToDo: what's up with the limits of the new servo??
 #define LST_TIM_SERVO_PWM_MIDDLE 4575
 #define LST_TIM_SERVO_PWM_MIN    -1250 // 1525
+
+// LST_SETTINGS Servo
+
 #define LST_TIM_SERVO_PWM_MAX    860   // 1525
 
 #ifdef LST_CONFIG_CUSTOM_MOTOR_CONTROL
