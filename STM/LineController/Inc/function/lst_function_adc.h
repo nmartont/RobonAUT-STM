@@ -17,6 +17,9 @@
 	#include "stm32f3xx_hal.h"
 #endif
 
+// TODO:TEST 2017.01.02
+#include "lst_function_timer.h"
+
 // External variables
 
 extern ADC_HandleTypeDef hadc1;

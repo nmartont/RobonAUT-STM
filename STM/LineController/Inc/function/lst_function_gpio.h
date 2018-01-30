@@ -34,8 +34,8 @@
 
 // Constants
 
-#define LFB_RESET_HOLD_CLK 6
-#define LFB_SET_HOLD_CLK 2
+#define LED_FEEDBACK_RESET_HOLD_CLK 6
+#define LED_FEEDBACK_SET_HOLD_CLK 2
 
 // Function declarations
 
@@ -47,21 +47,18 @@
 void lst_gpio_latch_ledSegment(void);
 
 /**
- * \brief
- *	Sets all analog MUX addresses to pass on the output
+ * \brief Sets all analog MUX addresses to pass on the output
  *	of the segment's TCRT sensors to the 4 ADCs.
  */
 void lst_gpio_write_muxes(uint8_t segment_id);
 
 /**
- * \brief
- *  // TODO doxy
+ * \brief Transmits the feedback LED data with GPIO control.
  */
 void lst_gpio_write_feedbackLeds(uint32_t data);
 
 /**
- * \brief
- *  // TODO doxy
+ * \brief Latches the feedback LED driver outputs.
  */
 void lst_gpio_latch_feedbackLeds(void);
 

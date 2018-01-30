@@ -45,14 +45,6 @@
  */
 #define LST_LINEEVAL_BASIC_MULTIPLIER 2048
 
-
-/**
- * \brief
- * 	TODO
- */
-#define LST_LINEEVAL_ADVANCED_THR_HIGH 100
-#define LST_LINEEVAL_ADVANCED_THR_LOW 40
-
 /**
  * \brief
  * 	If line sensing is displayed based on raw sensor input data
@@ -83,22 +75,20 @@
 #define LST_TLC5928_LATCH_HOLD_CLK 2
 
 /**
- * \brief
- * 	TODO doxy
+ * \brief The waiting time after MUX addressing in CPU clock cycles.
  */
-#define LST_CD74HC4051_OUTRISE_HOLD_CLK 100 // TODO check w\ measurement
+#define LST_CD74HC4051_OUTRISE_HOLD_CLK 100
+
+// Other constants
 
 /**
- * \brief
- * The size of the inter-STM SPI package.
+ * \brief The size of the inter-STM SPI package.
  */
 #define LST_SPI_SIZE 38
 
 /**
- * \brief
- *  The size of the inter-STM SPI transmit buffer in bytes.
- * \warning
- *  Cannot be higher than LST_SPI_SIZE.
+ * \brief The size of the inter-STM SPI transmit buffer in bytes.
+ * \warning Cannot be higher than LST_SPI_SIZE.
  */
 #define LST_SPI_TXBUF_SIZE 38
 
@@ -117,7 +107,13 @@
  */
 #define LST_SPI_RXBUF_SIZE 1
 
-// TODO:doxy
+// TODO:needed?
 #define LST_SENDDATA_MAX 65534
+
+/**
+ * \brief Timeout for the TCRT LED driver SPI communication in
+ *  milliseconds.
+ */
+#define LST_SPI_TXRX_TIMEOUT 50 // msec
 
 #endif /* LST_CONSTANTS_H_ */

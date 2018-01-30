@@ -21,19 +21,17 @@
 // Functions
 
 /**
- * \brief
- * 	Calls the function that needs to be executed on the microcontroller.
- * 	Use it to set a Test or the Main function.
+ * \brief	Calls the function that needs to be executed on
+ *  the microcontroller. Use it to set a Test or the Main function.
  */
 void lst_entry_point(void);
 
 /**
- * \brief
- * 	Executes the RACE FUNCTION.
+ * \brief	Executes the RACE FUNCTION.
  */
 void lst_main_function(void);
 
-// TODO:doxy
+// \brief Initializes variables and GPIO outputs.
 void lst_init_functions(void);
 
 #endif /* LST_LINECONTROLLERNUCLEO_H_ */
