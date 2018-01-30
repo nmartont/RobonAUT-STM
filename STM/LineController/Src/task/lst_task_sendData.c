@@ -12,13 +12,23 @@
 // TODO:upgrade -> update send buffer whenever SS is high
 // (there is no ongoing communication)
 
+// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+
 void lst_sendData(void)
 {
+
+
 
 	// TODO TEST 2018. 01. 30.
 	// Send data regardless of SPI state
 	lst_sendData_fillTxBuffer();
 
+	/*
 	// Send only if previous has completed
 	if (lst_spiCompleted)
 	{
@@ -31,6 +41,7 @@ void lst_sendData(void)
 		lst_sendData_transmitReceive();
 
 	}
+	*/
 
 }
 
@@ -109,7 +120,7 @@ void lst_sendData_transmitReceive(void)
 
 	// Signal the mainController - ready to transmit/receive
 	// (pull DRDY high)
-	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 1);
+	//HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 1);
 
 }
 
@@ -117,7 +128,7 @@ void lst_sendData_TxRxComplete()
 {
 
 	// Signal the mainController - busy (pull DRDY low)
-	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
+	//HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
 
 	// Signal sendData that the next packet can be sent in
 	// the following sensor read cycle
@@ -132,7 +143,7 @@ void lst_sendData_init()
 	lst_spiCompleted = 1;
 
 	// Pull DRDY low to signal that LineController is busy
-	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
+	//HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
 
 }
 

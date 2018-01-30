@@ -22,13 +22,32 @@ void lst_main_function(void)
 	while (1)
 	{
 
+		// Measure read_line() time on scope !! MEASURED: 35ms !!!!!!!!!!!!!!!!!!
+
+		//HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 1);
+
 		lst_readLine();
 
+		//HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
+
+
+
+
 		lst_evaluate_line();
+
+
+
+		// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+		// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+		// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+		// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
+		// WARNING !!! LINE DATA CYCLE TIME TEST ONLY !!!
 
 		lst_sendData();
 
 		lst_displayLine(LST_LINEDISPLAY_RAW_THRESHOLD);
+
+
 
 	}
 
