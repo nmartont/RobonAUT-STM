@@ -545,12 +545,20 @@ void LST_BT_Send_VarValues() {
     lst_uart_buffer_tx[22]=lst_i2c_master1_rx[9];
     lst_uart_buffer_tx[23]=lst_i2c_master1_rx[10];
     lst_uart_buffer_tx[24]=lst_i2c_master1_rx[11];
+    /*
     lst_uart_buffer_tx[25]=lst_adc_sharp_result[0] & 0xff;
     lst_uart_buffer_tx[26]=(lst_adc_sharp_result[0] >> 8);
     lst_uart_buffer_tx[27]=lst_adc_sharp_result[1] & 0xff;
     lst_uart_buffer_tx[28]=(lst_adc_sharp_result[1] >> 8);
     lst_uart_buffer_tx[29]=lst_adc_sharp_result[2] & 0xff;
     lst_uart_buffer_tx[30]=(lst_adc_sharp_result[2] >> 8);
+     */
+    lst_uart_buffer_tx[25]=LST_Sharp_GetLeftDistance() & 0xff;
+    lst_uart_buffer_tx[26]=(LST_Sharp_GetLeftDistance() >> 8);
+    lst_uart_buffer_tx[27]=LST_Sharp_GetFrontDistance() & 0xff;
+    lst_uart_buffer_tx[28]=(LST_Sharp_GetFrontDistance() >> 8);
+    lst_uart_buffer_tx[29]=LST_Sharp_GetRightDistance() & 0xff;
+    lst_uart_buffer_tx[30]=(LST_Sharp_GetRightDistance() >> 8);
   }
 
   /* Copy source buffer to TX buffer */

@@ -102,6 +102,7 @@ static void LST_Init() {
   LST_Control_Init();
   LST_I2C_Init();
   LST_Inertial_Init();
+  LST_Sharp_Init();
 }
 /* USER CODE END Application */
 

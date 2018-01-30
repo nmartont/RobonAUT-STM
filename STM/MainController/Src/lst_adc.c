@@ -12,7 +12,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 uint8_t cntr_adc_sharp = 0;
-uint16_t lst_adc_sharp_result[3] = {0x00};
+uint16_t lst_adc_sharp_result[3] = {0x00}; // 0: Left, 1: Front, 2: Right sensor
 
 /* External variables --------------------------------------------------------*/
 
@@ -49,9 +49,9 @@ void LST_ADC_WaitForSharpADC(){
   while(cntr_adc_sharp<3){}
 
   /* Get results */
-  lst_adc_sharp_result[0] = HAL_ADC_GetValue(&hadc1);
-  lst_adc_sharp_result[1] = HAL_ADC_GetValue(&hadc2);
-  lst_adc_sharp_result[2] = HAL_ADC_GetValue(&hadc3);
+  lst_adc_sharp_result[0] = HAL_ADC_GetValue(&hadc3);
+  lst_adc_sharp_result[1] = HAL_ADC_GetValue(&hadc1);
+  lst_adc_sharp_result[2] = HAL_ADC_GetValue(&hadc2);
 }
 
 /**
@@ -68,3 +68,4 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
     cntr_adc_sharp++;
   }
 }
+
