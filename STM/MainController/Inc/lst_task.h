@@ -27,6 +27,7 @@
 #include "lst_fastlap.h"
 #include "lst_dip.h"
 #include "lst_infra.h"
+#include "tasks/lst_encoder.h"
 
 /* Defines -------------------------------------------------------------------*/
 // #define LST_TASK_INERTIAL_TASK_REPEAT_TICKS 5000
@@ -49,7 +50,7 @@
 #define LST_TASK_ENCODER_TICKS		(2		* LST_RTOS_TICKS_PER_MS)
 
 // Task priority constants (-3:IDLE, +3:REALTIME)
-#define LST_TASK_BT_PRIO				-2
+#define LST_TASK_BT_PRIO				0
 #define LST_TASK_DIP_PRIO				0
 #define LST_TASK_LINEREAD_PRIO	1
 #define LST_TASK_LINEEVAL_PRIO	2

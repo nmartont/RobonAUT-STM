@@ -61,6 +61,7 @@ void LST_Task_Start(void const * argument) {
   lst_task_SharpRead_Handle =
   		osThreadCreate(osThread(LST_Task_Sharp_Read), NULL);
 */
+
   osThreadDef(LST_Task_Encoder_Read, LST_Task_Encoder_Read,
   		LST_TASK_ENCODER_PRIO, 0, LST_TASK_ENCODER_STACK);
   lst_task_EncoderRead_Handle =
@@ -110,7 +111,7 @@ void LST_Task_FastLap(void const * argument) {
   while (1) {
 
   	// TODO:TEST 2018.01.11
-  	HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 1);
+  	//HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 1);
 
     LST_Fast_Logic();
 
@@ -119,7 +120,7 @@ void LST_Task_FastLap(void const * argument) {
       LST_BT_Send_VarValues();
 
     // TODO:TEST 2018.01.11
-    HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 0);
+    //HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 0);
 
     /* Wait for the next cycle */
     vTaskDelayUntil(&xLastWakeTime, LST_CONTROL_REPEAT_TICKS);
@@ -231,9 +232,6 @@ void LST_TASK_Line_Read(void const * argument)
 void LST_Task_Line_Eval(void const * argument)
 {
 
-	// Record starting timestamp
-	TickType_t xLastWakeTime = xTaskGetTickCount();
-
 	// Infinite loop
 	while (1) {
 
@@ -294,8 +292,12 @@ void LST_Task_Encoder_Read(void const * argument)
 	// Infinite loop
 	while (1) {
 
-		// TODO the function itself
+		HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 1);
 
+		// Call the handling function
+		LST_Encoder_CalculateSpeed();
+
+		HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 0);
 
 		// Wait for the next cycle
 		vTaskDelayUntil(&xLastWakeTime, LST_TASK_ENCODER_TICKS);

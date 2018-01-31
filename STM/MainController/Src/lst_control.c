@@ -22,7 +22,7 @@ uint8_t lst_control_line_no          = 0;
 uint8_t lst_control_line_no_input    = 0;
 
 /* Speed filter */
-float lst_control_speed_array[LST_CONTROL_SPEED_FILTER_ORDER] = {0.0f};
+//float lst_control_speed_array[LST_CONTROL_SPEED_FILTER_ORDER] = {0.0f};
 
 /* Line positions for steering PID controller */
 float lst_control_linePos =     0.0f;
@@ -109,7 +109,8 @@ void LST_Control_Commons(){
   LST_ADC_StartSharpADC();
 
   /* Calculate and normalize speed from encoder */
-  lst_control_speed_encoder = LST_Control_CalculateSpeed();
+  //lst_control_speed_encoder = LST_Control_CalculateSpeed();
+  // !! moved to separate task
 
   /* Wait for ADC */
   LST_ADC_WaitForSharpADC();
@@ -376,9 +377,8 @@ void LST_Control_ServoAndMotor(){
 #endif
 }
 
-/**
- * @brief Function that calculates speed
- */
+/*
+// TODO PURGE
 float LST_Control_CalculateSpeed(){
   // ToDo test
 
@@ -400,12 +400,13 @@ float LST_Control_CalculateSpeed(){
 
   return sum/(float)(LST_CONTROL_SPEED_FILTER_ORDER + 1);
 }
+*/
 
 // TODO TEMP 2018. 01. 30. functions for task migration
 
 void LST_Control_TEMP_setSpeedEncoder(float speed)
 {
 
-
+	lst_control_speed_encoder = speed;
 
 }

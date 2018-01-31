@@ -82,8 +82,7 @@
 /* Interpolation */
 #define LST_CONTROL_PD_INTERPOL_POINTS  5
 
-/* Speed filter order */
-#define LST_CONTROL_SPEED_FILTER_ORDER  3
+
 
 // LST_SETTINGS Servo invert
 
@@ -98,7 +97,7 @@ int16_t LST_Control_Servo_BT();
 int32_t LST_Control_SteeringController(uint8_t use_interpolation);
 int32_t LST_Control_SpeedController(int16_t reference);
 void LST_Control_ServoAndMotor();
-float LST_Control_CalculateSpeed();
+//float LST_Control_CalculateSpeed(); // !! moved to another task
 
 /* Private variables ---------------------------------------------------------*/
 
