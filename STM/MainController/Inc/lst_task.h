@@ -27,6 +27,7 @@
 #include "lst_fastlap.h"
 #include "lst_dip.h"
 #include "lst_infra.h"
+#include "lst_sharp.h"
 #include "tasks/lst_encoder.h"
 
 /* Defines -------------------------------------------------------------------*/
