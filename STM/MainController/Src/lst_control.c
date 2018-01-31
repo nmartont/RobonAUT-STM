@@ -400,3 +400,12 @@ float LST_Control_CalculateSpeed(){
 
   return sum/(float)(LST_CONTROL_SPEED_FILTER_ORDER + 1);
 }
+
+// TODO TEMP 2018. 01. 30. functions for task migration
+
+void LST_Control_TEMP_setSpeedEncoder(float speed)
+{
+
+
+
+}
