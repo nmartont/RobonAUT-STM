@@ -167,128 +167,166 @@ static void LST_Fast_State_Machine(){
 static void LST_Fast_Q1_Logic(){
   // ToDo Érzéketlenségi idõsáv a triplavonal kereséshez, pl 200 ticks
   switch(lst_fast_q1_mode){
-  case LST_FAST_MODE_Q1_START:
-    /* Set controller values */
-    lst_control_steeringP = LST_FAST_Q1_START_STEERING_P;
-    lst_control_steeringD = LST_FAST_Q1_START_STEERING_D;
 
-    /* Accelerate to the desired starting speed */
-    if(cntr_q1_start < LST_FAST_Q1_START_TIME){
-      lst_control_motor = LST_FAST_Q1_START_MOTOR_SPEED;
-      cntr_q1_start++;
-    }
-    else{
-      lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
-      cntr_q1_start = 0;
-    }
-    break;
-  case LST_FAST_MODE_Q1_SLOW:
-    /* Set controller values */
-    lst_control_steeringP = LST_FAST_Q1_SLOW_STEERING_P;
-    lst_control_steeringD = LST_FAST_Q1_SLOW_STEERING_D;
+  	// Fast lap start (from a stopped position)
+		case LST_FAST_MODE_Q1_START:
+			/* Set controller values */
+			lst_control_steeringP = LST_FAST_Q1_START_STEERING_P;
+			lst_control_steeringD = LST_FAST_Q1_START_STEERING_D;
 
-    /* Set motor value */
-    lst_control_motor = LST_FAST_Q1_SLOW_MOTOR_SPEED;
+// Linear increase of motor control signal
+#ifdef LST_FAST_MODE_ENCODERLESS
 
-    /* Check for dotted lines */
-    // Check for triple lines
-    if(flag_q1_slow_triple_search == 1){
-      if (lst_control_line_no < 2) cntr_q1_slow_triple = 0;
-      if (lst_control_line_no >= 2) cntr_q1_slow_triple++;
-      if(cntr_q1_slow_triple > LST_FAST_Q1_SLOW_FILTER_THRESHOLD){
-        flag_q1_slow_triple_search = 0;
-        cntr_q1_slow_triple = 0;
-      }
-    }
-    // Check for single lines
-    else{
-      if (lst_control_line_no > 1) cntr_q1_slow_single = 0;
-      if (lst_control_line_no == 1) cntr_q1_slow_single++;
-      if (cntr_q1_slow_single > LST_FAST_Q1_SLOW_FILTER_THRESHOLD){
-        flag_q1_slow_triple_search = 1;
-        cntr_q1_slow_single = 0;
-        cntr_q1_slow_dotted_lines++;
-      }
-    }
+			/* Accelerate to the desired starting speed */
+			if(cntr_q1_start < LST_FAST_Q1_START_TIME){
+				lst_control_motor = LST_FAST_Q1_START_MOTOR_SPEED;
+				cntr_q1_start++;
+			}
+			else{
+				lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
+				cntr_q1_start = 0;
+			}
 
-    /* Check for total number of dotted lines */
-    if(cntr_q1_slow_dotted_lines > LST_FAST_Q1_SLOW_LINES_THRESHOLD){
-      lst_fast_q1_mode = LST_FAST_MODE_Q1_ACCEL;
-      cntr_q1_slow_dotted_lines = 0;
-    }
-    break;
-  case LST_FAST_MODE_Q1_ACCEL:
-    /* Linearly increase everything from slow to fast */
-    if(cntr_q1_accel < LST_FAST_Q1_ACCEL_TIME){
-      lst_control_steeringP  += lst_fast_q1_accel_plus_p;
-      lst_control_steeringD  += lst_fast_q1_accel_plus_d;
-      lst_fast_motor_float   += lst_fast_q1_accel_plus_motor;
-      lst_control_motor       = lst_fast_motor_float;
+// Speed control handles motor soft start
+#else
 
-      cntr_q1_accel++;
-    }
-    else{
-      lst_fast_motor_float = LST_FAST_Q1_SLOW_MOTOR_SPEED;
-      lst_fast_q1_mode = LST_FAST_MODE_Q1_FAST;
-      cntr_q1_accel = 0;
-    }
-    break;
-  case LST_FAST_MODE_Q1_FAST:
-    /* Set controller values */
-    lst_control_steeringP = LST_FAST_Q1_FAST_STEERING_P;
-    lst_control_steeringD = LST_FAST_Q1_FAST_STEERING_D;
+			lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
+			cntr_q1_start = 0;
 
-    /* Set motor value */
-    lst_control_motor = LST_FAST_Q1_FAST_MOTOR_SPEED;
+#endif
 
-    /* Check for triple lines */
-    if (lst_control_line_no < 2) cntr_q1_fast_triple_line = 0;
-    if (lst_control_line_no >= 2) cntr_q1_fast_triple_line++;
-    if(cntr_q1_fast_triple_line>LST_FAST_Q1_FAST_TRIPLE_LINES){
-      /* Switch to braking */
-      lst_fast_q1_mode = LST_FAST_MODE_Q1_BRAKE;
-      cntr_q1_fast_triple_line = 0;
-    }
-    break;
-  case LST_FAST_MODE_Q1_BRAKE:
-    /* Set controller values */
-    lst_control_steeringP = LST_FAST_Q1_BRAKE_STEERING_P;
-    lst_control_steeringD = LST_FAST_Q1_BRAKE_STEERING_D;
+			break;
 
-    /* Satufék */
-    if(cntr_q1_brake<LST_FAST_BRAKE_DELAY){
-      lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-      cntr_q1_brake++;
-    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY){
-      lst_control_motor = 0;
-      cntr_q1_brake++;
-    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 5*LST_FAST_BRAKE_DELAY){
-      lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-      cntr_q1_brake++;
-    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 6*LST_FAST_BRAKE_DELAY){
-      lst_control_motor = 0;
-      cntr_q1_brake++;
-    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 9*LST_FAST_BRAKE_DELAY){
-      lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-      cntr_q1_brake++;
-    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 10*LST_FAST_BRAKE_DELAY){
-      lst_control_motor = 0;
-      cntr_q1_brake++;
-    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 11*LST_FAST_BRAKE_DELAY){
-      lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-      cntr_q1_brake++;
-//    }
-//    else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 14*LST_FAST_BRAKE_DELAY){
-//      lst_fast_motor = 0;
-//      cntr_q1_brake++;
-//    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 16*LST_FAST_BRAKE_DELAY){
-//        lst_fast_motor = LST_FAST_Q1_BRAKE_MOTOR;
-//        cntr_q1_brake++;
-    }else{
-      lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
-      cntr_q1_brake = 0;
-    }
-    break;
+		case LST_FAST_MODE_Q1_SLOW:
+			/* Set controller values */
+			lst_control_steeringP = LST_FAST_Q1_SLOW_STEERING_P;
+			lst_control_steeringD = LST_FAST_Q1_SLOW_STEERING_D;
+
+			/* Set motor value */
+			lst_control_motor = LST_FAST_Q1_SLOW_MOTOR_SPEED;
+
+			/* Check for dotted lines */
+			// Check for triple lines
+			if(flag_q1_slow_triple_search == 1){
+				if (lst_control_line_no < 2) cntr_q1_slow_triple = 0;
+				if (lst_control_line_no >= 2) cntr_q1_slow_triple++;
+				if(cntr_q1_slow_triple > LST_FAST_Q1_SLOW_FILTER_THRESHOLD){
+					flag_q1_slow_triple_search = 0;
+					cntr_q1_slow_triple = 0;
+				}
+			}
+			// Check for single lines
+			else{
+				if (lst_control_line_no > 1) cntr_q1_slow_single = 0;
+				if (lst_control_line_no == 1) cntr_q1_slow_single++;
+				if (cntr_q1_slow_single > LST_FAST_Q1_SLOW_FILTER_THRESHOLD){
+					flag_q1_slow_triple_search = 1;
+					cntr_q1_slow_single = 0;
+					cntr_q1_slow_dotted_lines++;
+				}
+			}
+
+			/* Check for total number of dotted lines */ // Dotted lines found, jump to ACCEL mode
+			if(cntr_q1_slow_dotted_lines > LST_FAST_Q1_SLOW_LINES_THRESHOLD){
+				lst_fast_q1_mode = LST_FAST_MODE_Q1_ACCEL;
+				cntr_q1_slow_dotted_lines = 0;
+			}
+			break;
+
+		case LST_FAST_MODE_Q1_ACCEL:
+
+#ifdef LST_FAST_MODE_ENCODERLESS
+
+			/* Linearly increase everything from slow to fast */
+			if(cntr_q1_accel < LST_FAST_Q1_ACCEL_TIME){
+				lst_control_steeringP  += lst_fast_q1_accel_plus_p;
+				lst_control_steeringD  += lst_fast_q1_accel_plus_d;
+				lst_fast_motor_float   += lst_fast_q1_accel_plus_motor;
+				lst_control_motor       = lst_fast_motor_float;
+
+				cntr_q1_accel++;
+			}
+			else{
+				lst_fast_motor_float = LST_FAST_Q1_SLOW_MOTOR_SPEED;
+				lst_fast_q1_mode = LST_FAST_MODE_Q1_FAST;
+				cntr_q1_accel = 0;
+			}
+
+#else // Jump to high speed immediately, motor control handles acceleration slope
+
+			lst_fast_q1_mode = LST_FAST_MODE_Q1_FAST;
+
+#endif
+
+			break;
+
+		case LST_FAST_MODE_Q1_FAST:
+			/* Set controller values */
+			lst_control_steeringP = LST_FAST_Q1_FAST_STEERING_P;
+			lst_control_steeringD = LST_FAST_Q1_FAST_STEERING_D;
+
+			/* Set motor value */
+			lst_control_motor = LST_FAST_Q1_FAST_MOTOR_SPEED;
+
+			/* Check for triple lines */
+			if (lst_control_line_no < 2) cntr_q1_fast_triple_line = 0;
+			if (lst_control_line_no >= 2) cntr_q1_fast_triple_line++;
+			if(cntr_q1_fast_triple_line>LST_FAST_Q1_FAST_TRIPLE_LINES){
+				/* Switch to braking */
+				lst_fast_q1_mode = LST_FAST_MODE_Q1_BRAKE;
+				cntr_q1_fast_triple_line = 0;
+			}
+			break;
+
+		case LST_FAST_MODE_Q1_BRAKE:
+			/* Set controller values */
+			lst_control_steeringP = LST_FAST_Q1_BRAKE_STEERING_P;
+			lst_control_steeringD = LST_FAST_Q1_BRAKE_STEERING_D;
+
+#ifdef LST_FAST_MODE_ENCODERLESS
+
+			/* Satufék */
+			if(cntr_q1_brake<LST_FAST_BRAKE_DELAY){
+				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
+				cntr_q1_brake++;
+			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY){
+				lst_control_motor = 0;
+				cntr_q1_brake++;
+			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 5*LST_FAST_BRAKE_DELAY){
+				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
+				cntr_q1_brake++;
+			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 6*LST_FAST_BRAKE_DELAY){
+				lst_control_motor = 0;
+				cntr_q1_brake++;
+			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 9*LST_FAST_BRAKE_DELAY){
+				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
+				cntr_q1_brake++;
+			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 10*LST_FAST_BRAKE_DELAY){
+				lst_control_motor = 0;
+				cntr_q1_brake++;
+			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 11*LST_FAST_BRAKE_DELAY){
+				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
+				cntr_q1_brake++;
+	//    }
+	//    else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 14*LST_FAST_BRAKE_DELAY){
+	//      lst_fast_motor = 0;
+	//      cntr_q1_brake++;
+	//    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 16*LST_FAST_BRAKE_DELAY){
+	//        lst_fast_motor = LST_FAST_Q1_BRAKE_MOTOR;
+	//        cntr_q1_brake++;
+			}else{
+				lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
+				cntr_q1_brake = 0;
+			}
+
+#else // Jump to low speed immediately, motor control handles deceleration slope
+
+			lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
+
+#endif
+
+			break;
+
   }
 }
 
