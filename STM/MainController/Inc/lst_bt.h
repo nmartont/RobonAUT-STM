@@ -17,7 +17,7 @@
 #include "lst_utils.h"
 #include "lst_uart.h"
 #include "lst_spi.h"
-#include "lst_encoder.h"
+#include "tasks/lst_encoder.h"
 
 /* Defines -------------------------------------------------------------------*/
 /* Buffer defines */
