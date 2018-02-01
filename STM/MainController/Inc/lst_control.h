@@ -115,6 +115,8 @@ extern float    lst_encoder_speed;
 extern int16_t  lst_control_steering_offset;
 extern uint8_t  lst_control_line_no;
 extern float lst_encoder_speed;
+extern int16_t lst_control_motor;
+extern int16_t lst_control_steering;
 
 // TODO TEMP 2018. 01. 30. functions for task migration
 // None

@@ -73,22 +73,35 @@ void LST_Task_Start(void const * argument) {
     vTaskDelay(10);
   }
   if(lst_dip_settings[0] == 0){
+
     lst_bt_diag_mode = LST_BT_DIAG_MODE_FASTLAP;
+
+    /* Start Fast Lap mode */
+		osThreadDef(LST_Task_FastLap, LST_Task_FastLap, osPriorityNormal, 0, 1024);
+		lst_task_MainTaskHandle = osThreadCreate(osThread(LST_Task_FastLap), NULL);
+
   }
   else{
-    lst_bt_diag_mode = LST_BT_DIAG_MODE_OBSTACLE;
-  }
 
-  if (lst_task_mode == LST_TASK_MODE_FASTLAP){
-    /* Start Fast Lap mode */
-    osThreadDef(LST_Task_FastLap, LST_Task_FastLap, osPriorityNormal, 0, 1024);
-    lst_task_MainTaskHandle = osThreadCreate(osThread(LST_Task_FastLap), NULL);
-  }
-  else if (lst_task_mode == LST_TASK_MODE_OBSTACLE){
+    lst_bt_diag_mode = LST_BT_DIAG_MODE_OBSTACLE;
+
     /* Start Obstacle Lap mode */
+		osThreadDef(LST_Task_Obstacle, LST_Task_Obstacle, osPriorityNormal, 0, 1024);
+		lst_task_MainTaskHandle = osThreadCreate(osThread(LST_Task_Obstacle), NULL);
+
+  }
+  /*
+  if (lst_task_mode == LST_TASK_MODE_FASTLAP){
+  	// Start Fast Lap mode
+		osThreadDef(LST_Task_FastLap, LST_Task_FastLap, osPriorityNormal, 0, 1024);
+		lst_task_MainTaskHandle = osThreadCreate(osThread(LST_Task_FastLap), NULL);
+    }
+  else if (lst_task_mode == LST_TASK_MODE_OBSTACLE){
+    // Start Obstacle Lap mode
     osThreadDef(LST_Task_Obstacle, LST_Task_Obstacle, osPriorityNormal, 0, 1024);
     lst_task_MainTaskHandle = osThreadCreate(osThread(LST_Task_Obstacle), NULL);
   }
+  */
 
   /* Exit starter task */
   osThreadTerminate(lst_task_TaskStartHandle);

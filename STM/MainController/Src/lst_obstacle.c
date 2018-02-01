@@ -70,8 +70,16 @@ static void LST_Obs_StateMachine(){
     lst_control_motor = LST_Control_Motor_BT();
     break;
   case LST_OBS_MODE_LAP:
+
     /* Q1 logic */
+
+  	// Periodic controls
+  	LST_Movement_Set();
+  	LST_Steering_Set();
+
+  	// Obstacle logic
     LST_Obs_Lap();
+
     break;
   case LST_OBS_MODE_NO_CONTROL:
     /* Leave values on default */
@@ -125,27 +133,35 @@ static void LST_Obs_Lap(){
  */
 static void LST_Obs_Search(){
   // ToDo
+	LST_Movement_Stop();
 }
 
 /**
  * @brief Mode for the drone
  */
 static void LST_Obs_Drone(){
-  // ToDo
+  // ToDo TEST 2018. 02. 01.
+
+	LST_Movement_Stop();
+
 }
 
 /**
  * @brief Mode for the corner
  */
 static void LST_Obs_Corner(){
-  // ToDo
+	// ToDo TEST 2018. 02. 01.
+	LST_Movement_Move(70);
 }
 
 /**
  * @brief Mode for the convoy
  */
 static void LST_Obs_Convoy(){
-  // ToDo
+  // ToDo TEST 2018. 02. 01.
+
+	LST_Movement_Stop();
+
 }
 
 /**
@@ -153,6 +169,7 @@ static void LST_Obs_Convoy(){
  */
 static void LST_Obs_Barrel(){
   // ToDo
+	LST_Movement_Stop();
 }
 
 /**
@@ -160,6 +177,7 @@ static void LST_Obs_Barrel(){
  */
 static void LST_Obs_Roundabout(){
   // ToDo
+	LST_Movement_Stop();
 }
 
 /**
@@ -167,6 +185,7 @@ static void LST_Obs_Roundabout(){
  */
 static void LST_Obs_Trainstop(){
   // ToDo
+	LST_Movement_Stop();
 }
 
 /**

@@ -16,6 +16,7 @@
 #include "main.h"
 #include "lst_control.h"
 #include "lst_radio.h"
+#include "control/lst_movement.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_OBS_STEERING_P 17000
