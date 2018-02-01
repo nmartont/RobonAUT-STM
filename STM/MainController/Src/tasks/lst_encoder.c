@@ -13,8 +13,7 @@ void LST_Encoder_CalculateSpeed(){
   // ToDo test
 
   // TODO NB!!!! If control freq changes, CHANGE THE REPEAT TICKS CONSTANT TOO!
-  float sp = -LST_ENCODER_TICKS_TIMEBASE*(float)LST_TIM_CalculateSpeed()
-      /(float)LST_ENCODER_SPEED_CALC_TICKS;
+  float sp = -LST_ENCODER_MULTIPLIER * (float)LST_TIM_CalculateSpeed();
   float sum = 0.0f;
   float temp = 0.0f;
 
