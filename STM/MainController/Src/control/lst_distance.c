@@ -12,7 +12,7 @@ uint8_t lst_ongoing = 0;
 uint8_t lst_goal = 0;
 
 // Returns 1 when started and finished, returns 0 if ongoing
-uint8_t lst_distance_measure_mm(uint16_t mm)
+uint8_t LST_Distance_Measure_mm(uint16_t mm)
 {
 
 	// New measurement
@@ -51,7 +51,7 @@ uint8_t lst_distance_measure_mm(uint16_t mm)
 
 // Can be called if suspected to be stuck or has to be cancelled
 // due to reaching other condition (e.g. wall detected)
-void lst_distance_measure_mm_reset()
+void LST_Distance_Measure_mm_Reset()
 {
 
 	lst_ongoing = 0;
@@ -59,7 +59,7 @@ void lst_distance_measure_mm_reset()
 }
 
 // Check if an ongoing measurement exists
-uint8_t lst_distance_measure_mm_getOngoing()
+uint8_t LST_Distance_Measure_mm_GetOngoing()
 {
 
 	return lst_ongoing;

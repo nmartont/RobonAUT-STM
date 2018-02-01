@@ -18,6 +18,9 @@
 #include "lst_radio.h"
 #include "control/lst_movement.h"
 #include "control/lst_steering.h"
+#include "control/lst_distance.h"
+#include "control/lst_movement.h"
+#include "lst_sharp.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_OBS_STEERING_P 17000
@@ -42,6 +45,22 @@ void LST_Obs_Logic();
 
 /* Private variables ---------------------------------------------------------*/
 
+
+#define LST_MOVEMENT_FB_BACKING_SLOWEST 60
+
+// Obs_Corner
+uint8_t lst_obs_corner_stage;
+#define LST_OBS_COR_STAGE_APPROACH						0
+#define LST_OBS_COR_STAGE_PASSEDJUNCTION 			1
+#define LST_OBS_COR_STAGE_CURVEDLINEFOUND 		2
+#define LST_OBS_COR_STAGE_BACKING_FIRST				3
+#define LST_OBS_COR_STAGE_BACKING_SECOND			4
+#define LST_OBS_COR_STAGE_BACKING_THIRD				5
+#define LST_OBS_COR_STAGE_EXIT								6
+#define LST_OBS_COR_STEERINGLOCK							-700
+
 /* External variables --------------------------------------------------------*/
+
+extern uint8_t  lst_control_line_no;
 
 #endif /* LST_OBSTACLE_H_ */
