@@ -382,6 +382,19 @@ int32_t LST_Control_SpeedController(int16_t reference){
 
 	}
 
+  // Speed limit (obstacle mode)
+  if (lst_movement_speedLimit != 0)
+  {
+
+  	if (speed_cntrl_result > lst_movement_speedLimit)
+  	{
+
+  		speed_cntrl_result = lst_movement_speedLimit;
+
+  	}
+
+  }
+
   speed_cntrl_result_previous = speed_cntrl_result;
 
   return speed_cntrl_result;

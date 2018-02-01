@@ -22,6 +22,8 @@
 #define LST_MOVEMENT_FB_SLOW							70
 #define LST_MOVEMENT_FB_MEDIUM						100
 
+#define LST_MOVEMENT_FB_BACKING_SLOWEST		-60
+
 // Variables
 
 // Motor control
@@ -30,6 +32,7 @@ int16_t lst_control_motor;
 // Movement controls
 uint8_t 	lst_movement_type;
 int16_t	lst_movement_speed;
+uint16_t lst_movement_speedLimit;
 
 // Functions
 void LST_Movement_Set();

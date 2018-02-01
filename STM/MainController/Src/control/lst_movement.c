@@ -43,3 +43,10 @@ void LST_Movement_Stop()
 	lst_movement_type = LST_MOVEMENT_STOP;
 
 }
+
+void LST_Movement_Set_SpeedLimit(uint16_t speedLimit)
+{
+
+	lst_movement_speedLimit = speedLimit;
+
+}
