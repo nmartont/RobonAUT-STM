@@ -158,9 +158,9 @@ static uint8_t LST_Control_Check_Lost_Line(){
 static void LST_Control_Resolve_Line(){
   /* Check for 0xFF control byte at the first byte of the SPI Rx buffer */
   // ToDo change control byte so that it's not FF, but say 0F
-  if(lst_spi_master1_rx[0] != LST_SPI_LINECNTR_CONTROL_BYTE){
+  if(lst_spi_master1_rx[0] < 254){ // FixMe last bit is bugged
     lst_spi_linecontroller_lost = 1;
-    return;
+    // return;
   }
   lst_spi_linecontroller_lost = 0;
 
@@ -242,8 +242,8 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
   /*    PD Controller    */
   if(!use_interpolation){
     /* Divide PD parameters into float */
-    floatP = lst_control_steeringP / LST_CONTROL_STEERING_P_DIVIDER;
-    floatD = lst_control_steeringD / LST_CONTROL_STEERING_D_DIVIDER;
+    floatP = (float)lst_control_steeringP / LST_CONTROL_STEERING_P_DIVIDER;
+    floatD = (float)lst_control_steeringD / LST_CONTROL_STEERING_D_DIVIDER;
   }else{
     float* interpol_result;
     interpol_result = LST_Utils_Interpolate_Table_PD(&steering_pd_table, lst_control_speed_encoder);

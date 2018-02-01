@@ -77,7 +77,7 @@
 
 /* Defines for lost line detection */
 #define LST_CONTROL_LOST_LINES_THRESHOLD       20
-#define LST_CONTROL_NEW_LINE_FILTER_THRESHOLD  4
+#define LST_CONTROL_NEW_LINE_FILTER_THRESHOLD  3
 
 /* Interpolation */
 #define LST_CONTROL_PD_INTERPOL_POINTS  5
