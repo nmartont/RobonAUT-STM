@@ -9,8 +9,8 @@
 
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
-#define LST_BT_VARLIST_FASTLAP_DATALEN  246
-#define LST_BT_VARLIST_OBSTACLE_DATALEN 246
+#define LST_BT_VARLIST_FASTLAP_DATALEN  250
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 250
 #else
 #define LST_BT_VARLIST_FASTLAP_DATALEN  86
 #define LST_BT_VARLIST_OBSTACLE_DATALEN 86
@@ -55,8 +55,8 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x02, 'S', '1', LST_BT_VARTYPE_UINT16,     // Sharp1
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
-		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_UINT16, // Distance MSBS
-		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
+		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_INT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -112,8 +112,8 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x02, 'S', '1', LST_BT_VARTYPE_UINT16,     // Sharp1
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
-		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_UINT16, // Distance MSBS
-		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
+		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_INT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -149,7 +149,7 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x03, 'V', '2', '8', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '2', '9', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '3', '0', LST_BT_VARTYPE_UINT8,
-    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8
 };
 #else
 static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
@@ -169,8 +169,8 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x02, 'S', '1', LST_BT_VARTYPE_UINT16,     // Sharp1
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
-		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_UINT16, // Distance MSBS
-		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
+		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_INT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -193,8 +193,8 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x02, 'S', '1', LST_BT_VARTYPE_UINT16,     // Sharp1
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
-		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_UINT16, // Distance MSBS
-		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
+		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_INT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -524,7 +524,7 @@ void LST_BT_Send_VarValues() {
   /* Handle FASTLAP/OBSTACLE modes */
   uint8_t extra_bytes = 0;
   if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
-    extra_bytes = 23;
+    extra_bytes = 19;
     lst_uart_buffer_tx[12]=lst_fast_q1_mode;
     lst_uart_buffer_tx[13]=lst_i2c_master1_rx[0];
     lst_uart_buffer_tx[14]=lst_i2c_master1_rx[1];
