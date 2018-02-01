@@ -29,7 +29,7 @@ void LST_Movement_Set()
 
 }
 
-void LST_Movement_Move(uint16_t speed)
+void LST_Movement_Move(int16_t speed)
 {
 
 	lst_movement_speed = speed;

@@ -45,9 +45,6 @@ void LST_Obs_Logic();
 
 /* Private variables ---------------------------------------------------------*/
 
-
-#define LST_MOVEMENT_FB_BACKING_SLOWEST 60
-
 // Obs_Corner
 uint8_t lst_obs_corner_stage;
 #define LST_OBS_COR_STAGE_APPROACH						0
@@ -57,7 +54,7 @@ uint8_t lst_obs_corner_stage;
 #define LST_OBS_COR_STAGE_BACKING_SECOND			4
 #define LST_OBS_COR_STAGE_BACKING_THIRD				5
 #define LST_OBS_COR_STAGE_EXIT								6
-#define LST_OBS_COR_STEERINGLOCK							-700
+#define LST_OBS_COR_STEERINGLOCK							1000 // Steering turned left
 
 /* External variables --------------------------------------------------------*/
 

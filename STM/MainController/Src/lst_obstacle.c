@@ -240,7 +240,7 @@ static void LST_Obs_Corner(){
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
 
 			// Measurement for the next stage
-			LST_Distance_Measure_mm(150);
+			LST_Distance_Measure_mm(-150);
 
 		}
 
@@ -277,7 +277,7 @@ static void LST_Obs_Corner(){
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_THIRD;
 
 			// Measurement for the next stage
-			LST_Distance_Measure_mm(150);
+			LST_Distance_Measure_mm(-150);
 
 		}
 
@@ -329,6 +329,21 @@ static void LST_Obs_Convoy(){
 static void LST_Obs_Barrel(){
   // ToDo
 
+  // TODO TEST
+
+  if (!LST_Distance_Measure_mm(100))
+  {
+
+    LST_Movement_Move(80);
+
+  }
+  else
+  {
+
+    LST_Movement_Stop();
+
+  }
+
 }
 
 /**
@@ -352,6 +367,7 @@ static void LST_Obs_Trainstop(){
  */
 static void LST_Obs_ResetStateMachine(){
   lst_obs_lap_mode             = LST_OBS_LAP_MODE_START;
+  lst_obs_corner_stage = LST_OBS_COR_STAGE_APPROACH;
   // ToDo reset other variables
 }
 
