@@ -38,6 +38,8 @@ uint16_t lst_control_speedP = LST_CONTROL_SPEED_P;
 uint16_t lst_control_speedD = LST_CONTROL_SPEED_D;
 uint16_t lst_control_speedI = LST_CONTROL_SPEED_I;
 
+int32_t speed_cntrl_result_previous = 0;
+
 /* Other controller variables */
 int16_t lst_control_errorSignal_steering = 0;
 int16_t lst_control_errorSignalOld_steering = 0;
@@ -304,7 +306,11 @@ int32_t LST_Control_SpeedController(int16_t reference){
   /* Divide PID parameters into float */
   float floatP = lst_control_speedP / LST_CONTROL_SPEED_P_DIVIDER;
   float floatD = lst_control_speedD / LST_CONTROL_SPEED_D_DIVIDER;
+#ifndef LST_CONTROL_MOTOR_NOINTEGRATOR
   float floatI = lst_control_speedI / LST_CONTROL_SPEED_I_DIVIDER;
+#else
+  float floatI = 0;
+#endif
 
   /* Error signal */
   lst_control_errorSignalOld_speed = lst_control_errorSignal_speed;
@@ -352,6 +358,31 @@ int32_t LST_Control_SpeedController(int16_t reference){
   {
     lst_control_errorSignalSum_speed = new_i;
   }
+
+  // Rate limiter to prevent oscillation due to mechanical hysteresis
+  // TODO TEST 2018. 02. 01.
+
+  // Limit rise
+  if (speed_cntrl_result_previous <
+  		(speed_cntrl_result - LST_CONTROL_SPEED_RATELIMIT))
+  {
+
+  	speed_cntrl_result = speed_cntrl_result_previous +
+  			LST_CONTROL_SPEED_RATELIMIT;
+
+  }
+
+  // Limit fall
+  if (speed_cntrl_result_previous >
+    		(speed_cntrl_result + LST_CONTROL_SPEED_RATELIMIT))
+	{
+
+		speed_cntrl_result = speed_cntrl_result_previous -
+				LST_CONTROL_SPEED_RATELIMIT;
+
+	}
+
+  speed_cntrl_result_previous = speed_cntrl_result;
 
   return speed_cntrl_result;
 }

@@ -10,11 +10,17 @@
 
 #include "stm32f4xx_hal.h"
 #include "tasks/lst_encoder.h"
+#include "lst_control.h"
 
 // Constants
 #define LST_MOVEMENT_STOP 0
 #define LST_MOVEMENT_SPEEDCONTROL 1
 #define LST_MOVEMENT_SPEEDCONTROL_FEEDBACK 2
+
+// Speeds
+#define LST_MOVEMENT_FB_SLOWEST 					60
+#define LST_MOVEMENT_FB_SLOW							70
+#define LST_MOVEMENT_FB_MEDIUM						100
 
 // Variables
 

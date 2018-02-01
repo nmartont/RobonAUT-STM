@@ -77,6 +77,9 @@ static void LST_Obs_StateMachine(){
   	LST_Movement_Set();
   	LST_Steering_Set();
 
+  	// TODO TEMPORARY !!!!!!!!!!!!!!!!
+  	LST_Steering_BTTest();
+
   	// Obstacle logic
     LST_Obs_Lap();
 
@@ -133,7 +136,9 @@ static void LST_Obs_Lap(){
  */
 static void LST_Obs_Search(){
   // ToDo
-	LST_Movement_Stop();
+
+
+
 }
 
 /**
@@ -142,7 +147,7 @@ static void LST_Obs_Search(){
 static void LST_Obs_Drone(){
   // ToDo TEST 2018. 02. 01.
 
-	LST_Movement_Stop();
+
 
 }
 
@@ -151,7 +156,7 @@ static void LST_Obs_Drone(){
  */
 static void LST_Obs_Corner(){
 	// ToDo TEST 2018. 02. 01.
-	LST_Movement_Move(70);
+
 }
 
 /**
@@ -160,7 +165,7 @@ static void LST_Obs_Corner(){
 static void LST_Obs_Convoy(){
   // ToDo TEST 2018. 02. 01.
 
-	LST_Movement_Stop();
+
 
 }
 
@@ -169,7 +174,7 @@ static void LST_Obs_Convoy(){
  */
 static void LST_Obs_Barrel(){
   // ToDo
-	LST_Movement_Stop();
+
 }
 
 /**
@@ -177,7 +182,7 @@ static void LST_Obs_Barrel(){
  */
 static void LST_Obs_Roundabout(){
   // ToDo
-	LST_Movement_Stop();
+
 }
 
 /**
@@ -185,7 +190,7 @@ static void LST_Obs_Roundabout(){
  */
 static void LST_Obs_Trainstop(){
   // ToDo
-	LST_Movement_Stop();
+
 }
 
 /**

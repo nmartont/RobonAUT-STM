@@ -18,7 +18,7 @@ void LST_Steering_Set()
 			break;
 
 		case LST_STEERING_BTTEST:
-			// TODO steering BT control function
+			lst_control_steering = LST_Control_Servo_BT();
 			break;
 
 		case LST_STEERING_FOLLOW:
@@ -41,5 +41,12 @@ void LST_Steering_Follow()
 {
 
 	lst_steering_type = LST_STEERING_FOLLOW;
+
+}
+
+void LST_Steering_BTTest()
+{
+
+	lst_steering_type = LST_STEERING_BTTEST;
 
 }

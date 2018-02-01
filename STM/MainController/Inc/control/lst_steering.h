@@ -9,6 +9,7 @@
 #define CONTROL_LST_STEERING_H_
 
 #include "stm32f4xx_hal.h"
+#include "lst_control.h"
 
 // Constants
 #define LST_STEERING_FOLLOW 0
@@ -28,5 +29,6 @@ int16_t		lst_steering_lockedPosition;
 void LST_Steering_Set();
 void LST_Steering_Lock(int16_t steeringValue);
 void LST_Steering_Follow();
+void LST_Steering_BTTest();
 
 #endif /* CONTROL_LST_STEERING_H_ */
