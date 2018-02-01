@@ -49,7 +49,7 @@ void LST_Encoder_CalculateSpeed()
 void LST_Encoder_CalculateDistance()
 {
 
-	lst_encoder_distance += (float)lst_encoder_speed * LST_ENCODER_INCR_MM;
+	lst_encoder_distance_um += (float)lst_encoder_speed * LST_ENCODER_INCR_UM;
 
 }
 
@@ -77,7 +77,7 @@ uint8_t LST_Encoder_MeasureDistance(float dist_mm){
   }
   if(lst_encoder_dist_meas_state != LST_ENCODER_DIST_MEAS_FINISHED){
     // Advance distance
-    lst_encoder_dist_meas_total += (float)lst_encoder_speed * LST_ENCODER_INCR_MM;
+    lst_encoder_dist_meas_total += (float)lst_encoder_speed * LST_ENCODER_INCR_UM;
   }
 
   return lst_encoder_dist_meas_state;

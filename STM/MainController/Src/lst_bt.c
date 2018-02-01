@@ -55,11 +55,11 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x02, 'S', '1', LST_BT_VARTYPE_UINT16,     // Sharp1
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
-		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
-		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_INT16, // Distance LSBS
+		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_UINT16, // Distance MSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
-    0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
+    0x02, 'L', '1', LST_BT_VARTYPE_INT16,// Line position
     0x02, 'L', '2', LST_BT_VARTYPE_UINT16,// Line position repeated
     0x03, 'V', '0', '0', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '0', '1', LST_BT_VARTYPE_UINT8,
@@ -113,7 +113,7 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
 		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
-		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_INT16, // Distance LSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -170,7 +170,7 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
 		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
-		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_INT16, // Distance LSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -194,7 +194,7 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
 		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
-		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_INT16, // Distance LSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -500,11 +500,11 @@ void LST_BT_Send_VarValues() {
   
   /* Send P, D, Motor, Steering */
   int16_t temp = lst_encoder_speed;
-  int16_t distance_msb = (lst_encoder_distance >> 16);
-  int16_t distance_lsb = (lst_encoder_distance & 0xffff);
+  int16_t distance_msb = (lst_encoder_distance_um >> 16);
+  int16_t distance_lsb = (lst_encoder_distance_um & 0xffff);
 
   // BT 0xff fix
-  if (distance_msb == -1) distance_msb = -2;
+  if (distance_msb == -1) distance_msb = -10000;
   if (distance_lsb == -1) distance_lsb = -2;
   if(temp<0){
     // Speed can't be a small negative number because of BT 0xFF bit

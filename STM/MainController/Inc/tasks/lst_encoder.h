@@ -21,7 +21,8 @@
 #define LST_ENCODER_DIST_MEAS_FINISHED      1
 #define LST_ENCODER_DIST_MEAS_NOT_STARTED   2
 
-#define LST_ENCODER_INCR_MM                 1.0f // WORKS W/ 2ms TASK CYCLE TIME
+// Encoder increment per micrometer
+#define LST_ENCODER_INCR_UM                 25.62f // WORKS W/ 2ms TASK CYCLE TIME
 
 // Functions
 void LST_Encoder_Calculate();
@@ -29,6 +30,7 @@ uint8_t LST_Encoder_MeasureDistance(float dist_mm);
 
 // Variables
 float lst_encoder_speed; // Current speed
-int32_t lst_encoder_distance; // Distance traversed [mm] since last reset
+// Distance measured in micrometers
+int32_t lst_encoder_distance_um; // Distance traversed [mm] since last reset
 
 #endif /* TASKS_LST_ENCODER_H_ */
