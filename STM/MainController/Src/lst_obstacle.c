@@ -77,9 +77,6 @@ static void LST_Obs_StateMachine(){
   	LST_Movement_Set();
   	LST_Steering_Set();
 
-  	// TODO TEMPORARY !!!!!!!!!!!!!!!!
-  	LST_Steering_BTTest();
-
   	// Obstacle logic
     LST_Obs_Lap();
 
@@ -141,13 +138,23 @@ static void LST_Obs_Search(){
 
 }
 
-/**
- * @brief Mode for the drone
- */
 static void LST_Obs_Drone(){
   // ToDo TEST 2018. 02. 01.
 
+	LST_Steering_Follow();
 
+	if (LST_Sharp_GetFrontDistance_mm() > 300)
+	{
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+
+	}
+	else
+	{
+
+		LST_Movement_Stop();
+
+	}
 
 }
 
@@ -155,7 +162,154 @@ static void LST_Obs_Drone(){
  * @brief Mode for the corner
  */
 static void LST_Obs_Corner(){
-	// ToDo TEST 2018. 02. 01.
+
+	switch (lst_obs_corner_stage)
+	{
+
+	case LST_OBS_COR_STAGE_APPROACH:
+
+		LST_Steering_Follow();
+
+		// Slow speed
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		// Jump to next stage if the Line disappears (in the center of the junction)
+		if (lst_control_line_no < 1) lst_obs_corner_stage =
+				LST_OBS_COR_STAGE_PASSEDJUNCTION;
+
+		break;
+
+	case LST_OBS_COR_STAGE_PASSEDJUNCTION:
+
+		LST_Steering_Follow();
+
+		// Slow down
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+
+		// Jump
+		if (lst_control_line_no > 1)
+			{
+
+			// Advance a certain distance to prepare for backing up
+			// (start the measurement)
+			//LST_Distance_Measure_mm(300); // NEXT STAGE A VERSION !!!
+
+			// Next stage
+			lst_obs_corner_stage =
+					LST_OBS_COR_STAGE_CURVEDLINEFOUND;
+
+			}
+
+
+		break;
+
+	case LST_OBS_COR_STAGE_CURVEDLINEFOUND:
+
+		// Lock because curved line interferes
+		LST_Steering_Lock(0);
+
+		/* A VERSION
+		// Continue ahead until the distance is reached
+		if (!LST_Distance_Measure_mm(0))
+		{
+
+			LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+
+		}
+		else
+		{
+
+			LST_Movement_Stop(); // Not really needed
+
+			// Next stage
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING;
+
+		}
+		*/
+
+		// B VERSION - move until wall ends
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+
+		if (LST_Sharp_GetRightDistance_mm() > 200)
+		{
+
+			LST_Movement_Stop(); // Not really needed
+
+			// Next stage
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
+
+			// Measurement for the next stage
+			LST_Distance_Measure_mm(150);
+
+		}
+
+		break;
+
+
+	case LST_OBS_COR_STAGE_BACKING_FIRST:
+
+		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+
+		// Back up a bit to lose the straight line
+		if (LST_Distance_Measure_mm(0))
+		{
+
+			// Next stage
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_SECOND;
+
+		}
+
+		break;
+
+	case LST_OBS_COR_STAGE_BACKING_SECOND:
+
+		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+
+		// Back up until the other straight line is found
+		if (lst_control_line_no > 1)
+		{
+
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_THIRD;
+
+			// Measurement for the next stage
+			LST_Distance_Measure_mm(150);
+
+		}
+
+		break;
+
+	case LST_OBS_COR_STAGE_BACKING_THIRD:
+
+		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+
+		// Back up a bit more to get aligned
+		if (LST_Distance_Measure_mm(0))
+		{
+
+			// Next stage
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_EXIT;
+
+		}
+
+		break;
+
+	case LST_OBS_COR_STAGE_EXIT:
+
+		LST_Steering_Follow();
+
+		// Slow speed
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		break;
+
+	}
 
 }
 
@@ -165,7 +319,7 @@ static void LST_Obs_Corner(){
 static void LST_Obs_Convoy(){
   // ToDo TEST 2018. 02. 01.
 
-
+	LST_Movement_Move(60);
 
 }
 

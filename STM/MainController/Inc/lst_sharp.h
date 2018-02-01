@@ -62,9 +62,9 @@ uint16_t LST_Sharp_ShortRangeTable[2][25];
 uint16_t LST_Sharp_LongRangeTable[2][19];
 
 // Functions
-uint16_t LST_Sharp_GetLeftDistance();
-uint16_t LST_Sharp_GetFrontDistance();
-uint16_t LST_Sharp_GetRightDistance();
+uint16_t LST_Sharp_GetLeftDistance_mm();
+uint16_t LST_Sharp_GetFrontDistance_mm();
+uint16_t LST_Sharp_GetRightDistance_mm();
 
 uint16_t LST_Sharp_GetRawLeftDistance();
 uint16_t LST_Sharp_GetRawFrontDistance();

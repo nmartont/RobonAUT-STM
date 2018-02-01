@@ -12,9 +12,9 @@
 #include "tasks/lst_encoder.h"
 
 // Functions
-uint8_t lst_distance_measure_mm(uint16_t mm);
-void lst_distance_measure_mm_reset();
-uint8_t lst_distance_measure_mm_getOngoing();
+uint8_t LST_Distance_Measure_mm(uint16_t mm);
+void LST_Distance_Measure_mm_Reset();
+uint8_t LST_Distance_Measure_mm_GetOngoing();
 
 // External variables
 extern int32_t lst_encoder_distance_um;

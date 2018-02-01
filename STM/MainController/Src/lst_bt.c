@@ -571,12 +571,12 @@ void LST_BT_Send_VarValues() {
     lst_uart_buffer_tx[29]=lst_adc_sharp_result[2] & 0xff;
     lst_uart_buffer_tx[30]=(lst_adc_sharp_result[2] >> 8);
      */
-    lst_uart_buffer_tx[25]=(LST_Sharp_GetLeftDistance() & 0xff);
-    lst_uart_buffer_tx[26]=(LST_Sharp_GetLeftDistance() >> 8);
-    lst_uart_buffer_tx[27]=LST_Sharp_GetFrontDistance() & 0xff;
-    lst_uart_buffer_tx[28]=(LST_Sharp_GetFrontDistance() >> 8);
-    lst_uart_buffer_tx[29]=LST_Sharp_GetRightDistance() & 0xff;
-    lst_uart_buffer_tx[30]=(LST_Sharp_GetRightDistance() >> 8);
+    lst_uart_buffer_tx[25]=(LST_Sharp_GetLeftDistance_mm() & 0xff);
+    lst_uart_buffer_tx[26]=(LST_Sharp_GetLeftDistance_mm() >> 8);
+    lst_uart_buffer_tx[27]=LST_Sharp_GetFrontDistance_mm() & 0xff;
+    lst_uart_buffer_tx[28]=(LST_Sharp_GetFrontDistance_mm() >> 8);
+    lst_uart_buffer_tx[29]=LST_Sharp_GetRightDistance_mm() & 0xff;
+    lst_uart_buffer_tx[30]=(LST_Sharp_GetRightDistance_mm() >> 8);
     lst_uart_buffer_tx[31]=(distance_msb & 0xff);
 		lst_uart_buffer_tx[32]=(distance_msb >> 8);
 		lst_uart_buffer_tx[33]=(distance_lsb & 0xff);
