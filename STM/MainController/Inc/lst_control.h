@@ -111,12 +111,12 @@ extern uint16_t lst_control_speedP;
 extern uint16_t lst_control_speedD;
 extern uint16_t lst_control_speedI;
 extern int16_t  lst_control_motor;
-extern float    lst_control_speed_encoder;
+extern float    lst_encoder_speed;
 extern int16_t  lst_control_steering_offset;
 extern uint8_t  lst_control_line_no;
+extern float lst_encoder_speed;
 
 // TODO TEMP 2018. 01. 30. functions for task migration
-
-void LST_Control_TEMP_setSpeedEncoder(float speed);
+// None
 
 #endif /* LST_CONTROL_H_ */

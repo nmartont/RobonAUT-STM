@@ -15,16 +15,20 @@
 
 // Constants
 #define LST_ENCODER_SPEED_FILTER_ORDER  		3
-#define LST_ENCODER_MULTIPLIER							5
+#define LST_ENCODER_MULTIPLIER							5 // WORKS W/ 2ms TASK CYCLE TIME
 
 #define LST_ENCODER_DIST_MEAS_ONGOING       0
 #define LST_ENCODER_DIST_MEAS_FINISHED      1
 #define LST_ENCODER_DIST_MEAS_NOT_STARTED   2
 
-#define LST_ENCODER_INCR_MM                 1.0f
+#define LST_ENCODER_INCR_MM                 1.0f // WORKS W/ 2ms TASK CYCLE TIME
 
 // Functions
-void LST_Encoder_CalculateSpeed();
+void LST_Encoder_Calculate();
 uint8_t LST_Encoder_MeasureDistance(float dist_mm);
+
+// Variables
+float lst_encoder_speed; // Current speed
+int32_t lst_encoder_distance; // Distance traversed [mm] since last reset
 
 #endif /* TASKS_LST_ENCODER_H_ */

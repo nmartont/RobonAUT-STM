@@ -491,7 +491,7 @@ void LST_BT_Send_VarValues() {
   lst_uart_buffer_tx[0] = LST_BT_MSGTYPE_VARVALUES;
   
   /* Send P, D, Motor, Steering */
-  int16_t temp = lst_control_speed_encoder;
+  int16_t temp = lst_encoder_speed;
   if(temp<0){
     // Speed can't be a small negative number because of BT 0xFF bit
     temp = temp*-1 + 10000;

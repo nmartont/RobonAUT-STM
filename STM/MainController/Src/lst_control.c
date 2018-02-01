@@ -53,7 +53,6 @@ int32_t lst_control_errorSignalSum_speed =  0;
 int16_t lst_control_steering = 0;
 int16_t lst_control_motor = 0;
 int16_t lst_control_steering_offset = -115; // negative: left
-float lst_control_speed_encoder = 0.0f;
 
 /* Declare variables for steering controller interpolation */
 // ToDo calibrate interpolation for steering controller parameters
@@ -246,7 +245,7 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
     floatD = (float)lst_control_steeringD / LST_CONTROL_STEERING_D_DIVIDER;
   }else{
     float* interpol_result;
-    interpol_result = LST_Utils_Interpolate_Table_PD(&steering_pd_table, lst_control_speed_encoder);
+    interpol_result = LST_Utils_Interpolate_Table_PD(&steering_pd_table, lst_encoder_speed);
     floatP = *(interpol_result);
     floatD = *(interpol_result + 1);
     /* Set P and D in memory for debugging */
@@ -310,7 +309,7 @@ int32_t LST_Control_SpeedController(int16_t reference){
 
   /* Error signal */
   lst_control_errorSignalOld_speed = lst_control_errorSignal_speed;
-  lst_control_errorSignal_speed = reference - lst_control_speed_encoder;
+  lst_control_errorSignal_speed = reference - lst_encoder_speed;
 
   /* Integrator */
   uint32_t new_i = lst_control_errorSignalSum_speed + lst_control_errorSignal_speed;
@@ -404,9 +403,3 @@ float LST_Control_CalculateSpeed(){
 
 // TODO TEMP 2018. 01. 30. functions for task migration
 
-void LST_Control_TEMP_setSpeedEncoder(float speed)
-{
-
-	lst_control_speed_encoder = speed;
-
-}

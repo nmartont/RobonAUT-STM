@@ -7,14 +7,26 @@
 
 #include "tasks/lst_encoder.h"
 
+// Private functions
+void LST_Encoder_CalculateSpeed();
+void LST_Encoder_CalculateDistance();
+
+// Private variables
 float lst_control_speed_array[LST_ENCODER_SPEED_FILTER_ORDER] = {0.0f};
 float lst_encoder_dist_meas_total = 0.0f;
 uint8_t lst_encoder_dist_meas_state = LST_ENCODER_DIST_MEAS_NOT_STARTED;
 
-void LST_Encoder_CalculateSpeed(){
-  // ToDo test
+void LST_Encoder_Calculate(){
 
-  // TODO NB!!!! If control freq changes, CHANGE THE REPEAT TICKS CONSTANT TOO!
+	LST_Encoder_CalculateSpeed();
+
+	LST_Encoder_CalculateDistance();
+
+}
+
+void LST_Encoder_CalculateSpeed()
+{
+
   float sp = -LST_ENCODER_MULTIPLIER * (float)LST_TIM_CalculateSpeed();
   float sum = 0.0f;
   float temp = 0.0f;
@@ -29,8 +41,16 @@ void LST_Encoder_CalculateSpeed(){
   sum = sum + sp;
   lst_control_speed_array[0] = sp;
 
-  LST_Control_TEMP_setSpeedEncoder(
-  		sum/(float)(LST_ENCODER_SPEED_FILTER_ORDER + 1));
+  lst_encoder_speed =
+  		sum/(float)(LST_ENCODER_SPEED_FILTER_ORDER + 1);
+
+}
+
+void LST_Encoder_CalculateDistance()
+{
+
+	lst_encoder_distance += (float)lst_encoder_speed * LST_ENCODER_INCR_MM;
+
 }
 
 uint8_t LST_Encoder_MeasureDistance(float dist_mm){
@@ -57,7 +77,7 @@ uint8_t LST_Encoder_MeasureDistance(float dist_mm){
   }
   if(lst_encoder_dist_meas_state != LST_ENCODER_DIST_MEAS_FINISHED){
     // Advance distance
-    lst_encoder_dist_meas_total += (float)lst_control_speed_encoder * LST_ENCODER_INCR_MM;
+    lst_encoder_dist_meas_total += (float)lst_encoder_speed * LST_ENCODER_INCR_MM;
   }
 
   return lst_encoder_dist_meas_state;

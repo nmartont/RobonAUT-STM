@@ -295,7 +295,7 @@ void LST_Task_Encoder_Read(void const * argument)
 		HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 1);
 
 		// Call the handling function
-		LST_Encoder_CalculateSpeed();
+		LST_Encoder_Calculate();
 
 		HAL_GPIO_WritePin(CYCLE_OUT_GPIO_Port, CYCLE_OUT_Pin, 0);
 
