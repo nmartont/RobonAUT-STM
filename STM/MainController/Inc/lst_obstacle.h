@@ -38,6 +38,28 @@
 #define LST_OBS_LAP_MODE_BARREL     15
 #define LST_OBS_LAP_MODE_ROUNDABOUT 16
 #define LST_OBS_LAP_MODE_TRAINSTOP  17
+#define LST_OBS_LAP_MODE_END        18
+
+// Obs_Search
+#define LST_OBS_SEARCH_MODE_BEGIN           0
+#define LST_OBS_SEARCH_MODE_LONGLINE        1
+#define LST_OBS_SEARCH_MODE_ROUNDABOUT      2
+#define LST_OBS_SEARCH_MODE_BARREL          3
+#define LST_OBS_SEARCH_MODE_DRONE           4
+#define LST_OBS_SEARCH_MODE_CONVOY          5
+#define LST_OBS_SEARCH_MODE_CORNER          6
+#define LST_OBS_SEARCH_MODE_FOUND           10
+
+
+#define LST_OBS_SEARCH_LINE_THRESHOLD                   4
+#define LST_OBS_SEARCH_LINE_ERROR_THRESHOLD             100
+#define LST_OBS_SEARCH_LONG_LINE_THRESHOLD              20
+#define LST_OBS_SEARCH_ONE_LINE_BETWEEN_LONGS_THRESHOLD 1
+#define LST_OBS_SEARCH_SHARP_THRESHOLD                  10
+#define LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD         300
+#define LST_OBS_SEARCH_LED_THRESHOLD                    110
+#define LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD         9
+
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Obs_Init();

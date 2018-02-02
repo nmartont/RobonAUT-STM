@@ -14,6 +14,12 @@
 uint8_t lst_obs_mode = LST_OBS_MODE_BT;
 uint8_t lst_obs_lap_mode = LST_OBS_LAP_MODE_START;
 
+uint8_t lst_obs_search_cntr_error = 0;
+uint8_t lst_obs_search_mode =       LST_OBS_SEARCH_MODE_BEGIN;
+uint8_t lst_obs_search_cntr =       0;
+uint8_t lst_obs_search_line_no =    0;
+
+
 /* External variables --------------------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
@@ -28,6 +34,11 @@ static void LST_Obs_Convoy();
 static void LST_Obs_Barrel();
 static void LST_Obs_Roundabout();
 static void LST_Obs_Trainstop();
+static void LST_Obs_End();
+
+static void LST_Obs_Search_Reset();
+static uint8_t LST_Obs_Search_Sharp_Detection(uint8_t sharp_number);
+static uint8_t LST_Obs_Search_Long_Line_Detected();
 
 /******************************************************************************/
 /*                Obstacle lap handler for RobonAUT 2018 Team LST             */
@@ -43,6 +54,7 @@ void LST_Obs_Init() {
   // INIT TODO TEST
   lst_temp = 0;
 
+  LST_Obs_Search_Reset();
 }
 
 /**
@@ -75,7 +87,7 @@ static void LST_Obs_StateMachine(){
     break;
   case LST_OBS_MODE_LAP:
 
-    /* Q1 logic */
+    /* Q2 logic */
 
   	// Periodic controls
   	LST_Movement_Set();
@@ -127,6 +139,9 @@ static void LST_Obs_Lap(){
   case LST_OBS_LAP_MODE_TRAINSTOP:
     LST_Obs_Trainstop();
     break;
+  case LST_OBS_LAP_MODE_END:
+    LST_Obs_End();
+    break;
   default:
     break;
   }
@@ -136,10 +151,280 @@ static void LST_Obs_Lap(){
  * @brief Mode for searching obstacles
  */
 static void LST_Obs_Search(){
-  // ToDo
 
-	LST_Movement_Stop();
+  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_BEGIN){
+    // Line detection
+    if(LST_Obs_Search_Long_Line_Detected()){
+      lst_obs_search_line_no = 255;
+      lst_obs_search_mode = LST_OBS_SEARCH_MODE_LONGLINE;
+    }
+    else if (lst_control_line_no == 0){
+      lst_obs_search_line_no = 0;
+      lst_obs_search_mode = LST_OBS_SEARCH_MODE_ROUNDABOUT;
+    }
+    else if (lst_control_line_no == 2){
+      lst_obs_search_line_no = 2;
+      lst_obs_search_mode = LST_OBS_SEARCH_MODE_BARREL;
+    }
+    else if (lst_control_line_no == 3){
+      lst_obs_search_line_no = 3;
+      lst_obs_search_mode = LST_OBS_SEARCH_MODE_DRONE;
+    }
+    // One Sharp detection
+    else if(LST_Obs_Search_Sharp_Detection(1)){
+      lst_obs_search_mode = LST_OBS_SEARCH_MODE_CONVOY;
+    }
+    // Two Sharps detection
+    else if(LST_Obs_Search_Sharp_Detection(2)){
+      lst_obs_search_mode = LST_OBS_SEARCH_MODE_CORNER;
+    }
+  }
+  // Roundabout search
+  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_ROUNDABOUT){
+    // Search for some zero-lines first
+    if(lst_obs_search_line_no == 0){
+      if(lst_control_line_no == 0){
+        lst_obs_search_cntr++;
+      }
+      else{
+        // ERROR, we are expecting some 0 lines
+        LST_Obs_Search_Reset();
+      }
 
+      if(lst_obs_search_cntr > LST_OBS_SEARCH_LINE_THRESHOLD){ // 4
+        lst_obs_search_cntr = 0;
+        lst_obs_search_line_no = 1;
+      }
+    }
+
+    // Search for some 1-lines
+    else if(lst_obs_search_line_no == 1){
+      if(lst_control_line_no == 1){
+        lst_obs_search_cntr++;
+      }
+      else{
+        lst_obs_search_cntr = 0;
+        lst_obs_search_cntr_error++;
+        if(lst_obs_search_cntr_error > LST_OBS_SEARCH_LINE_ERROR_THRESHOLD){ // 100
+          // ERROR, we were expecting some 1 lines
+          LST_Obs_Search_Reset();
+        }
+      }
+
+      // Found obstacle
+      if(lst_obs_search_cntr > LST_OBS_SEARCH_LINE_THRESHOLD){ // 4
+        lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
+        lst_obs_lap_mode = LST_OBS_LAP_MODE_ROUNDABOUT;
+      }
+    }
+
+  }
+
+  // Drone search
+  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_DRONE){
+    // Search for a long 3 line section
+    if(lst_obs_search_line_no == 3){
+      if(lst_control_line_no == 3){
+        lst_obs_search_cntr++;
+      }
+      else{
+        lst_obs_search_cntr = 0;
+        lst_obs_search_cntr_error++;
+        if(lst_obs_search_cntr_error > LST_OBS_SEARCH_LINE_ERROR_THRESHOLD){ // 100
+          // ERROR, we were expecting some 3 lines
+          LST_Obs_Search_Reset();
+        }
+      }
+
+      // Found obstacle
+      if(lst_obs_search_cntr > LST_OBS_SEARCH_LONG_LINE_THRESHOLD){ // 20
+        lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
+        lst_obs_lap_mode = LST_OBS_LAP_MODE_DRONE;
+      }
+    }
+  }
+
+  // Barrel search
+  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_BARREL){
+    // Search for some 2-lines first
+    if(lst_obs_search_line_no == 2){
+      if(lst_control_line_no == 2){
+        lst_obs_search_cntr++;
+      }
+      else{
+        // ERROR, we are expecting some 2 lines
+        LST_Obs_Search_Reset();
+      }
+
+      if(lst_obs_search_cntr > LST_OBS_SEARCH_LINE_THRESHOLD){ // 4
+        lst_obs_search_cntr = 0;
+        lst_obs_search_line_no = 1;
+      }
+    }
+
+    // Search for some 1-lines
+    else if(lst_obs_search_line_no == 1){
+      if(lst_control_line_no == 1){
+        lst_obs_search_cntr++;
+      }
+      else{
+        lst_obs_search_cntr = 0;
+        lst_obs_search_cntr_error++;
+        if(lst_obs_search_cntr_error > LST_OBS_SEARCH_LINE_ERROR_THRESHOLD){ // 100
+          // ERROR, we were expecting some 1 lines
+          LST_Obs_Search_Reset();
+        }
+      }
+
+      // Found obstacle
+      if(lst_obs_search_cntr > LST_OBS_SEARCH_LINE_THRESHOLD){ // 4
+        lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
+        lst_obs_lap_mode = LST_OBS_LAP_MODE_BARREL;
+      }
+    }
+  }
+
+  // LongLine search for End/Traintracks
+  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_LONGLINE){
+    // Check for one long line
+    if (lst_obs_search_line_no == 255){
+      if(LST_Obs_Search_Long_Line_Detected()){
+        lst_obs_search_line_no = 1;
+      }
+      else{
+        // ERROR, reset
+        LST_Obs_Search_Reset();
+      }
+    }
+
+    // Check for one lines
+    else if (lst_obs_search_line_no == 1){
+      uint8_t temp = LST_Obs_Search_Long_Line_Detected();
+      if(lst_control_line_no == 1 && !temp){
+        lst_obs_search_cntr++;
+      }
+      else if(temp){ // If long line detected
+        if (lst_obs_search_cntr > LST_OBS_SEARCH_ONE_LINE_BETWEEN_LONGS_THRESHOLD){ // 1
+          // found double lines, traintracks
+          lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
+          lst_obs_lap_mode = LST_OBS_LAP_MODE_TRAINSTOP;
+        }
+      }
+      else{
+        // line_no is not 1, but no long line
+        // this would be rather bad... so i'm ignoring it
+      }
+
+      if(lst_obs_search_cntr > 10){
+        // found the End
+        lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
+        lst_obs_lap_mode = LST_OBS_LAP_MODE_END;
+      }
+    }
+  }
+
+  // Convoy search
+  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_CONVOY){
+    // Search only for 1 Sharp sensor
+    if(LST_Obs_Search_Sharp_Detection(1)){
+      lst_obs_search_cntr++;
+    }
+    else{
+      // ERROR, we are expecting 1 Sharp here
+      LST_Obs_Search_Reset();
+    }
+
+    // Found obstacle
+    if(lst_obs_search_cntr > LST_OBS_SEARCH_SHARP_THRESHOLD){ // 10
+      lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
+      lst_obs_lap_mode = LST_OBS_LAP_MODE_CONVOY;
+    }
+  }
+
+  // Corner search
+  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_CORNER){
+    // Search only for 2 Sharp sensor
+    if(LST_Obs_Search_Sharp_Detection(2)){
+      lst_obs_search_cntr++;
+    }
+    else{
+      // ERROR, we are expecting 2 Sharp here
+      LST_Obs_Search_Reset();
+    }
+
+    // Found obstacle
+    if(lst_obs_search_cntr > LST_OBS_SEARCH_SHARP_THRESHOLD){ // 10
+      lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
+      lst_obs_lap_mode = LST_OBS_LAP_MODE_CORNER;
+    }
+  }
+
+  // Found obstacle
+  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_FOUND){
+    LST_Obs_Search_Reset();
+  }
+
+  // VONALÉRZÉKELÕS rész:
+  //    Nincs vonal -> Körforg
+  //      Van vonal
+  //      Nincs vonal
+  //    Három vonal (hosszú vonal) -> Útonálló drón
+  //      Három hosszú vonal hosszan
+  //    Két vonal -> Forgó hordó
+  //      Egy vonal
+  //      Két vonal
+  //    Hosszú vonal -> Vasúti átjáró/Cél
+  //      Egy vonal hosszan -> cél
+  //      Egy vonal röviden
+  //      Hosszú vonal -> Vasút
+
+  //  SHARP érzékelés
+  //    Egyik oldalt van csak:
+  //      Hosszan csak egy oldalt van -> konvoj
+  //    Mindkét oldalt van hosszan -> utcasarok
+
+  // Ha talált akadályt, RESET_SEARCH_VARS
+
+}
+
+static void LST_Obs_Search_Reset(){
+  lst_obs_search_mode = LST_OBS_SEARCH_MODE_BEGIN;
+  lst_obs_search_cntr = 0;
+  lst_obs_search_cntr_error = 0;
+}
+
+static uint8_t LST_Obs_Search_Sharp_Detection(uint8_t sharp_number){
+  if(sharp_number == 1){
+    return
+       (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD   &&
+        LST_Sharp_GetRightDistance_mm() > LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD) ||
+       (LST_Sharp_GetLeftDistance_mm() > LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD   &&
+        LST_Sharp_GetRightDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD);
+  }
+  else{
+    return
+       (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD   &&
+        LST_Sharp_GetRightDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD);
+  }
+}
+
+static uint8_t LST_Obs_Search_Long_Line_Detected(){
+  // See if at least 10 values next to each other are at least 110
+  uint8_t temp = 0;
+  uint8_t cntr = 0;
+  for(temp = 0; temp < 32; temp++){
+    if(lst_spi_master1_rx[temp + 6] > LST_OBS_SEARCH_LED_THRESHOLD){ // 110
+      cntr++;
+      if(cntr > LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD){ // 9
+        return 1;
+      }
+    }
+    else{
+      cntr = 0;
+    }
+  }
+
+  return 0;
 }
 
 static void LST_Obs_Drone(){
@@ -640,12 +925,22 @@ static void LST_Obs_Trainstop(){
 }
 
 /**
+ * @brief Mode for the End of the course :^)
+ */
+static void LST_Obs_End(){
+  // ToDo
+
+  LST_Movement_Stop();
+}
+
+/**
  * @brief Resets the state machine
  */
 static void LST_Obs_ResetStateMachine(){
   lst_obs_lap_mode             = LST_OBS_LAP_MODE_START;
   lst_obs_corner_stage = LST_OBS_COR_STAGE_APPROACH;
   // ToDo reset other variables
+  LST_Obs_Search_Reset();
 }
 
 /**
