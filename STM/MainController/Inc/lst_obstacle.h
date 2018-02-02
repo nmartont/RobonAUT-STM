@@ -40,7 +40,13 @@
 #define LST_OBS_LAP_MODE_TRAINSTOP  17
 #define LST_OBS_LAP_MODE_END        18
 
-// Obs_Search
+/* Function prototypes -------------------------------------------------------*/
+void LST_Obs_Init();
+void LST_Obs_Logic();
+
+/* Private variables ---------------------------------------------------------*/
+
+/* Obs Search */
 #define LST_OBS_SEARCH_MODE_BEGIN           0
 #define LST_OBS_SEARCH_MODE_LONGLINE        1
 #define LST_OBS_SEARCH_MODE_ROUNDABOUT      2
@@ -59,13 +65,6 @@
 #define LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD         300
 #define LST_OBS_SEARCH_LED_THRESHOLD                    110
 #define LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD         6 //9
-
-
-/* Function prototypes -------------------------------------------------------*/
-void LST_Obs_Init();
-void LST_Obs_Logic();
-
-/* Private variables ---------------------------------------------------------*/
 
 /* Obs_Corner */
 
@@ -114,6 +113,9 @@ int16_t lst_obs_tra_lastCarTimer;
 
 int16_t lst_obs_tra_crossingTimer;
 #define LST_OBS_TRA_CROSSINGTIMER_PERIOD		60
+
+/* Obs End */
+#define LST_OBS_END_DISTANCE_MM             500
 
 /* External variables --------------------------------------------------------*/
 

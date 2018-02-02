@@ -928,8 +928,15 @@ static void LST_Obs_Trainstop(){
  * @brief Mode for the End of the course :^)
  */
 static void LST_Obs_End(){
-  // ToDo
+  // ToDo TEST
 
+  // Go forward like 50cm
+  if (!LST_Distance_Measure_mm(LST_OBS_END_DISTANCE_MM)) // 500
+  {
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+  }
+
+  // Stop
   LST_Movement_Stop();
 }
 
