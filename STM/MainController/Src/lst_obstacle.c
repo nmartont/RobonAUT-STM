@@ -396,15 +396,15 @@ static void LST_Obs_Search_Reset(){
 static uint8_t LST_Obs_Search_Sharp_Detection(uint8_t sharp_number){
   if(sharp_number == 1){
     return
-       (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_THRESHOLD   &&
-        LST_Sharp_GetRightDistance_mm() > LST_OBS_SEARCH_SHARP_THRESHOLD) ||
-       (LST_Sharp_GetLeftDistance_mm() > LST_OBS_SEARCH_SHARP_THRESHOLD   &&
-        LST_Sharp_GetRightDistance_mm() < LST_OBS_SEARCH_SHARP_THRESHOLD);
+       (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD   &&
+        LST_Sharp_GetRightDistance_mm() > LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD) ||
+       (LST_Sharp_GetLeftDistance_mm() > LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD   &&
+        LST_Sharp_GetRightDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD);
   }
   else{
     return
-       (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_THRESHOLD   &&
-        LST_Sharp_GetRightDistance_mm() < LST_OBS_SEARCH_SHARP_THRESHOLD);
+       (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD   &&
+        LST_Sharp_GetRightDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD);
   }
 }
 
