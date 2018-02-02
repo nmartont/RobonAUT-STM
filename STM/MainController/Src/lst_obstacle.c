@@ -331,18 +331,28 @@ static void LST_Obs_Barrel(){
 
   // TODO TEST
 
-  if (!LST_Distance_Measure_mm(100))
-  {
+	LST_Steering_Lock(0);
 
-    LST_Movement_Move(80);
+	if (!lst_temp)
+		if (!LST_Distance_Measure_mm(3000))
+		{
 
-  }
-  else
-  {
+			LST_Movement_Move(60);
 
-    LST_Movement_Stop();
+		}
+		else
+		{
 
-  }
+			//LST_Movement_Stop();
+			lst_temp = 1;
+
+		}
+	else
+	{
+
+		LST_Movement_Stop();
+
+	}
 
 }
 
@@ -360,6 +370,8 @@ static void LST_Obs_Roundabout(){
  */
 static void LST_Obs_Trainstop(){
   // ToDo
+
+	LST_Movement_Stop();
 
 }
 

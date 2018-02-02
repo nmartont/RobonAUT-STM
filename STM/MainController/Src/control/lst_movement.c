@@ -19,7 +19,7 @@ void LST_Movement_Set()
 	{
 
 		lst_movement_reverse_counter = 0;
-		lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NEG1;
+		lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NUL1;
 		lst_movement_reverse_start = 0;
 
 	}
@@ -27,6 +27,24 @@ void LST_Movement_Set()
 	// Handle reverse transition
 	switch (lst_movement_reverse_stage)
 	{
+
+	// First null pulse
+	case LST_MOVEMENT_REVERSE_NUL1:
+		if (lst_movement_reverse_counter < LST_MOVEMENT_REVERSE_COUNT)
+		{
+
+			lst_movement_reverse_counter++;
+			lst_control_motor = 0;
+
+		}
+		else
+		{
+
+			lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NEG1;
+			lst_movement_reverse_counter = 0;
+
+		}
+		return; // Don't enter next switch block
 
 	// First negative pulse
 	case LST_MOVEMENT_REVERSE_NEG1:
@@ -40,14 +58,14 @@ void LST_Movement_Set()
 		else
 		{
 
-			lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NULL;
+			lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NUL2;
 			lst_movement_reverse_counter = 0;
 
 		}
 		return; // Don't enter next switch block
 
-	// Null pulse
-	case LST_MOVEMENT_REVERSE_NULL:
+	// Second null pulse
+	case LST_MOVEMENT_REVERSE_NUL2:
 		if (lst_movement_reverse_counter < LST_MOVEMENT_REVERSE_COUNT)
 		{
 

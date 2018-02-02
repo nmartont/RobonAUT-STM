@@ -60,4 +60,6 @@ uint8_t lst_obs_corner_stage;
 
 extern uint8_t  lst_control_line_no;
 
+uint8_t lst_temp;
+
 #endif /* LST_OBSTACLE_H_ */

@@ -32,12 +32,13 @@ uint8_t lst_movement_reverse_start;
 uint8_t lst_movement_reverse_ongoing;
 
 #define LST_MOVEMENT_REVERSE_NONE		0
-#define LST_MOVEMENT_REVERSE_NEG1		1
-#define LST_MOVEMENT_REVERSE_NULL		2
-#define LST_MOVEMENT_REVERSE_NEG2		3
+#define LST_MOVEMENT_REVERSE_NUL1		1
+#define LST_MOVEMENT_REVERSE_NEG1		2
+#define LST_MOVEMENT_REVERSE_NUL2		3
+#define LST_MOVEMENT_REVERSE_NEG2		4
 
-#define LST_MOVEMENT_REVERSE_COUNT	10
-#define LST_MOVEMENT_REVERSE_VALUE	-80
+#define LST_MOVEMENT_REVERSE_COUNT	30
+#define LST_MOVEMENT_REVERSE_VALUE	-120
 
 // Motor control
 int16_t lst_control_motor;
