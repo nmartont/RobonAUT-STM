@@ -87,7 +87,7 @@ static void LST_Obs_StateMachine(){
     break;
   case LST_OBS_MODE_LAP:
 
-    /* Q1 logic */
+    /* Q2 logic */
 
   	// Periodic controls
   	LST_Movement_Set();
@@ -768,6 +768,7 @@ static void LST_Obs_ResetStateMachine(){
   lst_obs_lap_mode             = LST_OBS_LAP_MODE_START;
   lst_obs_corner_stage = LST_OBS_COR_STAGE_APPROACH;
   // ToDo reset other variables
+  LST_Obs_Search_Reset();
 }
 
 /**
