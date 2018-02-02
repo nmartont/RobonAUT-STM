@@ -14,7 +14,6 @@
 #include "stm32f4xx_it.h"
 #include "cmsis_os.h"
 #include "main.h"
-#include "NEC_Decode.h"
 #include "lst_timer.h"
 
 /* Defines -------------------------------------------------------------------*/
@@ -23,6 +22,5 @@
 void LST_Infra_Init();
 
 /* External variables --------------------------------------------------------*/
-extern NEC nec;
 
 #endif /* LST_INFRA_H_ */
