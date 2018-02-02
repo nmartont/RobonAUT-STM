@@ -66,7 +66,9 @@ void LST_Obs_Logic();
 
 /* Private variables ---------------------------------------------------------*/
 
-// Obs_Corner
+/* Obs_Corner */
+
+// Stages
 uint8_t lst_obs_corner_stage;
 #define LST_OBS_COR_STAGE_APPROACH						0
 #define LST_OBS_COR_STAGE_PASSEDJUNCTION 			1
@@ -74,9 +76,32 @@ uint8_t lst_obs_corner_stage;
 #define LST_OBS_COR_STAGE_BACKING_FIRST				3
 #define LST_OBS_COR_STAGE_BACKING_SECOND			4
 #define LST_OBS_COR_STAGE_BACKING_THIRD				5
-#define LST_OBS_COR_STAGE_EXIT								6
+#define LST_OBS_COR_STAGE_OUTGOING						6
+#define LST_OBS_COR_STAGE_ALIGNMENT						7
+#define LST_OBS_COR_STAGE_EXIT								8
+
+// Steering
 #define LST_OBS_COR_STEERINGLOCK							1100 // Steering turned left
+#define LST_OBS_COR_RIGHT_LOCK								-500
+#define LST_OBS_COR_LEFT_LOCK									500
+
+// Sharp
 uint16_t lst_obs_cor_rightSharp_previous;
+#define LST_OBS_COR_SHARP_DIST_WALL						280
+
+/* Obs_Trainstop */
+
+// Stages
+uint8_t lst_obs_train_stage;
+#define LST_OBS_TRA_STAGE_APPROACH					0
+#define LST_OBS_TRA_STAGE_WAIT_FIRST				1
+#define LST_OBS_TRA_STAGE_CROSS_FIRST				2
+#define LST_OBS_TRA_STAGE_WAIT_SECOND				3
+#define LST_OBS_TRA_STAGE_CROSS_SECOND			4
+#define LST_OBS_TRA_STAGE_EXIT							5
+
+// Sharp
+#define LST_OBS_TRA_SHARP_DIST_CAR					400
 
 /* External variables --------------------------------------------------------*/
 
