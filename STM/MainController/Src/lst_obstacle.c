@@ -244,8 +244,7 @@ static void LST_Obs_Corner(){
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
 
 			// Measurement for the next stage
-			//LST_Distance_Measure_mm(-150);
-			LST_Distance_Measure_mm(-1500);
+			LST_Distance_Measure_mm(-150);
 
 		}
 
@@ -284,8 +283,7 @@ static void LST_Obs_Corner(){
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_THIRD;
 
 			// Measurement for the next stage
-			//LST_Distance_Measure_mm(-150);
-			LST_Distance_Measure_mm(-1500);
+			LST_Distance_Measure_mm(-150);
 
 		}
 
@@ -343,11 +341,10 @@ static void LST_Obs_Barrel(){
 	LST_Steering_Lock(0);
 
 	if (!lst_temp)
-		if (!LST_Distance_Measure_mm(300))
+		if (!LST_Distance_Measure_mm(-300))
 		{
 
-			//LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
-			LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+			LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
 		}
 		else
