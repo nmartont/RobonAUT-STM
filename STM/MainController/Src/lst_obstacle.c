@@ -438,30 +438,202 @@ static void LST_Obs_Roundabout(){
  */
 static void LST_Obs_Trainstop(){
 
-	// TODO TEST 2018. 02. 02
+	// TODO TEST 2018. 02. 02.
 
 	switch (lst_obs_train_stage)
 	{
 
+	case LST_OBS_TRA_STAGE_PREPARE:
+
+		// Init
+		lst_obs_train_repeatedCrossing = 0;
+
+		// Jump to next
+		lst_obs_train_stage = LST_OBS_TRA_STAGE_APPROACH;
+
+		break;
+
 	case LST_OBS_TRA_STAGE_APPROACH:
 
+		// Follow the line
+		LST_Steering_Follow();
+
+		// Slowest speed
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+
+		// Next stage if line ends
+		if (lst_control_line_no < 1)
+		{
+
+			// Lock now! TODO TEST 2018.02.02.
+			// also implement for corner
+			LST_Steering_Lock(0);
+
+			// Jump to next
+			lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
+
+		}
+
 		break;
 
-	case LST_OBS_TRA_STAGE_WAIT_FIRST:
+	case LST_OBS_TRA_STAGE_WATCH:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Stop();
+
+		// Wait for one car
+		if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_TRA_SHARP_DIST_CAR)
+		{
+
+			// Jump to next
+			lst_obs_train_stage = LST_OBS_TRA_STAGE_WAIT;
+
+			// Init variable
+			lst_obs_tra_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
+
+		}
+
 
 		break;
 
-	case LST_OBS_TRA_STAGE_CROSS_FIRST:
+	case LST_OBS_TRA_STAGE_WAIT:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Stop();
+
+		// Wait until no car is seen
+		if (LST_Sharp_GetFrontDistance_mm() > LST_OBS_TRA_SHARP_DIST_CAR)
+			{
+
+				// Jump to next
+				lst_obs_train_stage = LST_OBS_TRA_STAGE_COUNT;
+
+				// Init variable
+				lst_obs_tra_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
+
+			}
+
 
 		break;
 
-	case LST_OBS_TRA_STAGE_WAIT_SECOND:
+	case LST_OBS_TRA_STAGE_COUNT:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Stop();
+
+		// If sufficient time has elapsed without a car seen, then
+		// it is safe to proceed, else wait more
+		if (lst_obs_tra_lastCarTimer <= 0)
+		{
+
+			// Jump to next
+			lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSS;
+
+		}
+		else
+		{
+
+			// Reset counter if another car appears
+			if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_TRA_SHARP_DIST_CAR)
+			{
+
+				lst_obs_tra_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
+
+			}
+			else
+			{
+
+				lst_obs_tra_lastCarTimer--;
+
+			}
+
+		}
 
 		break;
 
-	case LST_OBS_TRA_STAGE_CROSS_SECOND:
+	case LST_OBS_TRA_STAGE_CROSS:
+
+		LST_Steering_Lock(0); // TODO Test: perpendicular line pulls steering in
+		// the right direction if not aligned, but is it better than
+		// locking at 0?
+
+		// Quickly through
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW); // TODO MEDIUM !!!!!!!!!!!!!!!
+
+		// Reached perpendicular line (train track)
+		if (lst_control_line_no > 0) // TODO WRONG!!!!!!!! CONTINUE HERE
+		{
+
+			// Init variable
+			lst_obs_tra_crossingTimer = LST_OBS_TRA_CROSSINGTIMER_PERIOD;
+
+			// Jump to next
+			lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSSING;
+
+		}
 
 		break;
+
+	case LST_OBS_TRA_STAGE_CROSSING:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW); // TODO MEDIUM !!!!!!!!!!!!!!!
+
+		// Delay a bit to get to the no line part
+		if (lst_obs_tra_crossingTimer <= 0)
+		{
+
+			// Jump to next
+			lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSSED;
+
+		}
+		else
+		{
+
+			lst_obs_tra_crossingTimer--;
+
+		}
+
+		break;
+
+	case LST_OBS_TRA_STAGE_CROSSED:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		// Find the line between the tracks
+		if (lst_control_line_no > 1)
+		{
+
+			// If this was the first crossing, repeat
+			if (!lst_obs_train_repeatedCrossing)
+			{
+
+				lst_obs_train_stage = LST_OBS_TRA_STAGE_APPROACH;
+
+				lst_obs_train_repeatedCrossing = 1;
+
+			}
+			else
+			{
+
+				lst_obs_train_stage = LST_OBS_TRA_STAGE_EXIT;
+
+			}
+
+		}
+
+		break;
+
+	case LST_OBS_TRA_STAGE_EXIT:
+
+		// Search mode
+		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
 	}
 

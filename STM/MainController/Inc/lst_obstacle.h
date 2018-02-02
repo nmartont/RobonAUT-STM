@@ -72,15 +72,26 @@ uint16_t lst_obs_cor_rightSharp_previous;
 
 // Stages
 uint8_t lst_obs_train_stage;
-#define LST_OBS_TRA_STAGE_APPROACH					0
-#define LST_OBS_TRA_STAGE_WAIT_FIRST				1
-#define LST_OBS_TRA_STAGE_CROSS_FIRST				2
-#define LST_OBS_TRA_STAGE_WAIT_SECOND				3
-#define LST_OBS_TRA_STAGE_CROSS_SECOND			4
-#define LST_OBS_TRA_STAGE_EXIT							5
+#define LST_OBS_TRA_STAGE_PREPARE						0
+#define LST_OBS_TRA_STAGE_APPROACH					1
+#define LST_OBS_TRA_STAGE_WATCH							2
+#define LST_OBS_TRA_STAGE_WAIT							3
+#define LST_OBS_TRA_STAGE_COUNT							4
+#define LST_OBS_TRA_STAGE_CROSS							5
+#define LST_OBS_TRA_STAGE_CROSSING					6
+#define LST_OBS_TRA_STAGE_CROSSED						7
+#define LST_OBS_TRA_STAGE_EXIT							8
+uint8_t lst_obs_train_repeatedCrossing;
 
 // Sharp
-#define LST_OBS_TRA_SHARP_DIST_CAR					400
+#define LST_OBS_TRA_SHARP_DIST_CAR					500
+
+// Timing
+int16_t lst_obs_tra_lastCarTimer;
+#define LST_OBS_TRA_LASTCARTIMER_PERIOD			300 // T = 10ms -> 3s
+
+int16_t lst_obs_tra_crossingTimer;
+#define LST_OBS_TRA_CROSSINGTIMER_PERIOD		10
 
 /* External variables --------------------------------------------------------*/
 
