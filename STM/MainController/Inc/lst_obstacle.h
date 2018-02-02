@@ -61,8 +61,8 @@ uint8_t lst_obs_corner_stage;
 
 // Steering
 #define LST_OBS_COR_STEERINGLOCK							1100 // Steering turned left
-#define LST_OBS_COR_RIGHT_LOCK								500
-#define LST_OBS_COR_LEFT_LOCK									-500
+#define LST_OBS_COR_RIGHT_LOCK								-500
+#define LST_OBS_COR_LEFT_LOCK									500
 
 // Sharp
 uint16_t lst_obs_cor_rightSharp_previous;

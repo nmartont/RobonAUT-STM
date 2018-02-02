@@ -165,6 +165,11 @@ static void LST_Obs_Drone(){
 /**
  * @brief Mode for the corner
  */
+
+// TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// IMPROVEMENT: When backing completed and moving forward, watch right
+// Sharp distance, if increases, turn a bit right, if decreases, a bit left
+// but only if the wall is in range
 static void LST_Obs_Corner(){
 
 	switch (lst_obs_corner_stage)
@@ -283,8 +288,8 @@ static void LST_Obs_Corner(){
 		if (LST_Sharp_GetRightDistance_mm() > lst_obs_cor_rightSharp_previous)
 		{
 
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_THIRD;
-			LST_Distance_Measure_mm(-150);
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
+			//LST_Distance_Measure_mm(-150);
 
 		}
 		else
@@ -295,8 +300,8 @@ static void LST_Obs_Corner(){
 		}
 
 		break;
-
-	// STAGE: Back up a bit more to align better
+/*
+	// STAGE: Back up a bit more to align better TODO NOT NEEDED?
 	case LST_OBS_COR_STAGE_BACKING_THIRD:
 
 		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
@@ -312,10 +317,10 @@ static void LST_Obs_Corner(){
 		}
 
 		break;
-
+*/
 	case LST_OBS_COR_STAGE_OUTGOING:
 
-		LST_Steering_Follow();
+		LST_Steering_Lock(0);
 
 		// Slow speed
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
