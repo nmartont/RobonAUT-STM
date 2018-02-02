@@ -350,8 +350,9 @@ static void LST_Obs_Barrel(){
  * @brief Mode for the roundabout
  */
 static void LST_Obs_Roundabout(){
-  // ToDo
+	// ToDo TEST 2018. 02. 02.
 
+		LST_Movement_Move(-80);
 }
 
 /**

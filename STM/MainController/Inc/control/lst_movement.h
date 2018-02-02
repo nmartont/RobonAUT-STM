@@ -25,6 +25,20 @@
 
 // Variables
 
+// Reverse switch
+uint8_t lst_movement_reverse_counter;
+uint8_t lst_movement_reverse_stage;
+uint8_t lst_movement_reverse_start;
+uint8_t lst_movement_reverse_ongoing;
+
+#define LST_MOVEMENT_REVERSE_NONE		0
+#define LST_MOVEMENT_REVERSE_NEG1		1
+#define LST_MOVEMENT_REVERSE_NULL		2
+#define LST_MOVEMENT_REVERSE_NEG2		3
+
+#define LST_MOVEMENT_REVERSE_COUNT	10
+#define LST_MOVEMENT_REVERSE_VALUE	-80
+
 // Motor control
 int16_t lst_control_motor;
 

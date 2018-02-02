@@ -42,7 +42,9 @@
 #define LST_CONTROL_SPEED_D_DIVIDER   16384.0f
 #define LST_CONTROL_SPEED_I           300
 #define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
+
 #define LST_CONTROL_SPEED_RATELIMIT		10
+uint8_t lst_control_speed_reverseLock;
 
 /* Float denums for dividing steering and servo control values */
 #define LST_CONTROL_BT_STEERING_DENUM -21.487f

@@ -382,6 +382,14 @@ int32_t LST_Control_SpeedController(int16_t reference){
 
 	}
 
+  // Apply reverse lock if needed TODO TEST 2018. 02. 02.
+  if (lst_control_speed_reverseLock)
+  {
+
+  	if (speed_cntrl_result > 0) speed_cntrl_result = 0;
+
+  }
+
   speed_cntrl_result_previous = speed_cntrl_result;
 
   return speed_cntrl_result;
