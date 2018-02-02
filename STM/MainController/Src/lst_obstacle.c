@@ -284,6 +284,7 @@ static void LST_Obs_Corner(){
 		{
 
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_THIRD;
+			LST_Distance_Measure_mm(-150);
 
 		}
 		else
@@ -295,10 +296,20 @@ static void LST_Obs_Corner(){
 
 		break;
 
-	// STAGE: Exit (but car is not really aligned!)
+	// STAGE: Back up a bit more to align better
 	case LST_OBS_COR_STAGE_BACKING_THIRD:
 
-		lst_obs_corner_stage = LST_OBS_COR_STAGE_EXIT;
+		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
+
+		// Back up a bit to lose the wall to the right
+		if (LST_Distance_Measure_mm(0))
+		{
+
+			// Next stage
+			lst_obs_corner_stage = lst_obs_corner_stage =
+					LST_OBS_COR_STAGE_EXIT;
+
+		}
 
 		break;
 
