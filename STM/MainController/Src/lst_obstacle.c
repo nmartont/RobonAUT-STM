@@ -138,7 +138,7 @@ static void LST_Obs_Lap(){
 static void LST_Obs_Search(){
   // ToDo
 
-
+	LST_Movement_Stop();
 
 }
 
@@ -307,6 +307,56 @@ static void LST_Obs_Corner(){
 
 			// Next stage
 			lst_obs_corner_stage = lst_obs_corner_stage =
+					LST_OBS_COR_STAGE_OUTGOING;
+
+		}
+
+		break;
+
+	case LST_OBS_COR_STAGE_OUTGOING:
+
+		LST_Steering_Follow();
+
+		// Slow speed
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL) &&
+				(LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL))
+		{
+
+			// Between outgoing walls, heading for exit
+			lst_obs_corner_stage =
+								LST_OBS_COR_STAGE_ALIGNMENT;
+
+		}
+
+		break;
+
+	case LST_OBS_COR_STAGE_ALIGNMENT:
+
+
+		// Align with steering
+		if (LST_Sharp_GetLeftDistance_mm() > LST_Sharp_GetRightDistance_mm())
+		{
+
+			LST_Steering_Lock(LST_OBS_COR_LEFT_LOCK);
+
+		}
+		else
+		{
+
+			LST_Steering_Lock(LST_OBS_COR_RIGHT_LOCK);
+
+		}
+
+		// Slow speed
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		// No need for alignment
+		if (lst_control_line_no > 0)
+		{
+
+			lst_obs_corner_stage =
 					LST_OBS_COR_STAGE_EXIT;
 
 		}
@@ -315,10 +365,8 @@ static void LST_Obs_Corner(){
 
 	case LST_OBS_COR_STAGE_EXIT:
 
-		LST_Steering_Follow();
-
-		// Slow speed
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+		// Search mode
+		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
 		break;
 
@@ -384,9 +432,33 @@ static void LST_Obs_Roundabout(){
  * @brief Mode for the train stop
  */
 static void LST_Obs_Trainstop(){
-  // ToDo
 
-	LST_Movement_Stop();
+	// TODO TEST 2018. 02. 02
+
+	switch (lst_obs_train_stage)
+	{
+
+	case LST_OBS_TRA_STAGE_APPROACH:
+
+		break;
+
+	case LST_OBS_TRA_STAGE_WAIT_FIRST:
+
+		break;
+
+	case LST_OBS_TRA_STAGE_CROSS_FIRST:
+
+		break;
+
+	case LST_OBS_TRA_STAGE_WAIT_SECOND:
+
+		break;
+
+	case LST_OBS_TRA_STAGE_CROSS_SECOND:
+
+		break;
+
+	}
 
 }
 
