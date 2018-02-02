@@ -131,6 +131,27 @@ void LST_Movement_Move(int16_t speed)
 
 }
 
+void LST_Movement_Move_Encoderless(int16_t speed)
+{
+
+	lst_movement_speed = speed;
+	lst_movement_type = LST_MOVEMENT_SPEEDCONTROL;
+
+	// Reverse handling
+	if ((lst_movement_speed < 0) && (!lst_movement_reverse_ongoing))
+	{
+
+		lst_movement_reverse_start = 1;
+		lst_movement_reverse_ongoing = 1;
+
+	}
+
+	// If a positive value is given, reverse has to be initiated
+	// again next time
+	if (lst_movement_speed > 0) lst_movement_reverse_ongoing = 0;
+
+}
+
 void LST_Movement_Stop()
 {
 

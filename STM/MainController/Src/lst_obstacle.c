@@ -39,6 +39,10 @@ static void LST_Obs_Trainstop();
 void LST_Obs_Init() {
   lst_control_steeringP = LST_OBS_STEERING_P;
   lst_control_steeringD = LST_OBS_STEERING_D;
+
+  // INIT TODO TEST
+  lst_temp = 0;
+
 }
 
 /**
@@ -240,7 +244,8 @@ static void LST_Obs_Corner(){
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
 
 			// Measurement for the next stage
-			LST_Distance_Measure_mm(-150);
+			//LST_Distance_Measure_mm(-150);
+			LST_Distance_Measure_mm(-1500);
 
 		}
 
@@ -251,7 +256,8 @@ static void LST_Obs_Corner(){
 
 		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
 		// Back up a bit to lose the straight line
 		if (LST_Distance_Measure_mm(0))
@@ -268,7 +274,8 @@ static void LST_Obs_Corner(){
 
 		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
 		// Back up until the other straight line is found
 		if (lst_control_line_no > 1)
@@ -277,7 +284,8 @@ static void LST_Obs_Corner(){
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_THIRD;
 
 			// Measurement for the next stage
-			LST_Distance_Measure_mm(-150);
+			//LST_Distance_Measure_mm(-150);
+			LST_Distance_Measure_mm(-1500);
 
 		}
 
@@ -287,7 +295,8 @@ static void LST_Obs_Corner(){
 
 		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
 		// Back up a bit more to get aligned
 		if (LST_Distance_Measure_mm(0))
@@ -334,10 +343,11 @@ static void LST_Obs_Barrel(){
 	LST_Steering_Lock(0);
 
 	if (!lst_temp)
-		if (!LST_Distance_Measure_mm(3000))
+		if (!LST_Distance_Measure_mm(300))
 		{
 
-			LST_Movement_Move(60);
+			//LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
+			LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
 		}
 		else
@@ -362,7 +372,9 @@ static void LST_Obs_Barrel(){
 static void LST_Obs_Roundabout(){
 	// ToDo TEST 2018. 02. 02.
 
-		LST_Movement_Move(-80);
+		LST_Movement_Move_Encoderless(-400);
+
+		// lst_control_motor(-100);
 }
 
 /**

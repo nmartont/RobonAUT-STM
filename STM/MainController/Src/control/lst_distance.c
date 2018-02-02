@@ -9,7 +9,7 @@
 
 // Private variables
 uint8_t lst_ongoing = 0;
-uint8_t lst_goal = 0;
+int32_t lst_goal = 0;
 uint8_t lst_direction = 0;
 
 // Returns 1 when started and finished, returns 0 if ongoing
@@ -29,7 +29,7 @@ uint8_t LST_Distance_Measure_mm(int16_t mm)
 
 		// Set the goal distance
 		lst_goal =
-				(float) lst_encoder_distance_um + mm * 1000;
+				lst_encoder_distance_um + (int32_t) mm * 1000;
 
 		return 0;
 

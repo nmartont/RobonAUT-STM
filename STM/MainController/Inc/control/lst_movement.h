@@ -23,6 +23,8 @@
 #define LST_MOVEMENT_FB_MEDIUM						100
 #define LST_MOVEMENT_FB_BACKING_SLOWEST   -80
 
+#define LST_MOVEMENT_BACKING_SLOW					-400
+
 // Variables
 
 // Reverse switch
@@ -37,9 +39,9 @@ uint8_t lst_movement_reverse_ongoing;
 #define LST_MOVEMENT_REVERSE_NUL		1
 #define LST_MOVEMENT_REVERSE_NEG		2
 
-#define LST_MOVEMENT_REVERSE_COUNT			10
-#define LST_MOVEMENT_REPETITION_COUNT		5
-#define LST_MOVEMENT_REVERSE_VALUE			-120
+#define LST_MOVEMENT_REVERSE_COUNT			5
+#define LST_MOVEMENT_REPETITION_COUNT		2
+#define LST_MOVEMENT_REVERSE_VALUE			-500
 
 // Motor control
 int16_t lst_control_motor;
@@ -52,5 +54,6 @@ int16_t	lst_movement_speed;
 void LST_Movement_Set();
 void LST_Movement_Move(int16_t speed);
 void LST_Movement_Stop();
+void LST_Movement_Move_Encoderless(int16_t speed);
 
 #endif /* CONTROL_LST_MOVEMENT_H_ */
