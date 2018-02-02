@@ -849,7 +849,7 @@ static void LST_Obs_Trainstop(){
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOW); // TODO MEDIUM !!!!!!!!!!!!!!!
 
 		// Reached perpendicular line (train track)
-		if (lst_control_line_no > 0) // TODO WRONG!!!!!!!! CONTINUE HERE
+		if (LST_Obs_Search_Long_Line_Detected()) // TEEEEEEEEEEEEEEST
 		{
 
 			// Init variable
@@ -892,7 +892,7 @@ static void LST_Obs_Trainstop(){
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
 		// Find the line between the tracks
-		if (lst_control_line_no > 1)
+		if (lst_control_line_no > 0)
 		{
 
 			// If this was the first crossing, repeat

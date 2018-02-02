@@ -58,7 +58,7 @@
 #define LST_OBS_SEARCH_SHARP_THRESHOLD                  10
 #define LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD         300
 #define LST_OBS_SEARCH_LED_THRESHOLD                    110
-#define LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD         9
+#define LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD         6 //9
 
 
 /* Function prototypes -------------------------------------------------------*/
@@ -113,7 +113,7 @@ int16_t lst_obs_tra_lastCarTimer;
 #define LST_OBS_TRA_LASTCARTIMER_PERIOD			300 // T = 10ms -> 3s
 
 int16_t lst_obs_tra_crossingTimer;
-#define LST_OBS_TRA_CROSSINGTIMER_PERIOD		10
+#define LST_OBS_TRA_CROSSINGTIMER_PERIOD		60
 
 /* External variables --------------------------------------------------------*/
 
