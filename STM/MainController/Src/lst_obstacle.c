@@ -243,6 +243,8 @@ static void LST_Obs_Corner(){
 			// Next stage
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
 
+			LST_Distance_Measure_mm(-800);
+
 		}
 
 		break;
@@ -257,7 +259,7 @@ static void LST_Obs_Corner(){
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
 		// Back up a bit to lose the wall to the right
-		if (LST_Sharp_GetRightDistance_mm() > 240)
+		if (LST_Distance_Measure_mm(0))
 		{
 
 			// Next stage
