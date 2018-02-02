@@ -243,14 +243,12 @@ static void LST_Obs_Corner(){
 			// Next stage
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
 
-			// Measurement for the next stage
-			LST_Distance_Measure_mm(-150);
-
 		}
 
 		break;
 
 
+	// STAGE: back up until the wall to the right is lost
 	case LST_OBS_COR_STAGE_BACKING_FIRST:
 
 		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
@@ -258,17 +256,21 @@ static void LST_Obs_Corner(){
 		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
-		// Back up a bit to lose the straight line
-		if (LST_Distance_Measure_mm(0))
+		// Back up a bit to lose the wall to the right
+		if (LST_Sharp_GetRightDistance_mm() > 240)
 		{
 
 			// Next stage
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_SECOND;
 
+			// Init var for next
+			lst_obs_cor_rightSharp_previous = 10000;
+
 		}
 
 		break;
 
+	// STAGE: Back up until the right Sharp distance is increasing again
 	case LST_OBS_COR_STAGE_BACKING_SECOND:
 
 		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
@@ -276,34 +278,25 @@ static void LST_Obs_Corner(){
 		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
-		// Back up until the other straight line is found
-		if (lst_control_line_no > 1)
+		if (LST_Sharp_GetRightDistance_mm() > lst_obs_cor_rightSharp_previous)
 		{
 
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_THIRD;
 
-			// Measurement for the next stage
-			LST_Distance_Measure_mm(-150);
+		}
+		else
+		{
+
+			lst_obs_cor_rightSharp_previous = LST_Sharp_GetRightDistance_mm();
 
 		}
 
 		break;
 
+	// STAGE: Exit (but car is not really aligned!)
 	case LST_OBS_COR_STAGE_BACKING_THIRD:
 
-		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
-
-		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
-		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
-
-		// Back up a bit more to get aligned
-		if (LST_Distance_Measure_mm(0))
-		{
-
-			// Next stage
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_EXIT;
-
-		}
+		lst_obs_corner_stage = LST_OBS_COR_STAGE_EXIT;
 
 		break;
 

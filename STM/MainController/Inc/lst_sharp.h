@@ -57,6 +57,10 @@ static const float LST_Sharp_LongRangeTable_Base
 
 };
 
+// The maximum values out of the distance request functions
+#define LST_SHARP_DIST_LONGRANGE_MAX 			2200
+#define LST_SHARP_DIST_SHORTRANGE_MAX 		380
+
 // Corrected tables
 uint16_t LST_Sharp_ShortRangeTable[2][25];
 uint16_t LST_Sharp_LongRangeTable[2][19];
