@@ -19,7 +19,8 @@ void LST_Movement_Set()
 	{
 
 		lst_movement_reverse_counter = 0;
-		lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NUL1;
+		lst_movement_repetition_counter = 0;
+		lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NUL;
 		lst_movement_reverse_start = 0;
 
 	}
@@ -29,7 +30,7 @@ void LST_Movement_Set()
 	{
 
 	// First null pulse
-	case LST_MOVEMENT_REVERSE_NUL1:
+	case LST_MOVEMENT_REVERSE_NUL:
 		if (lst_movement_reverse_counter < LST_MOVEMENT_REVERSE_COUNT)
 		{
 
@@ -40,14 +41,14 @@ void LST_Movement_Set()
 		else
 		{
 
-			lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NEG1;
+			lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NEG;
 			lst_movement_reverse_counter = 0;
 
 		}
 		return; // Don't enter next switch block
 
 	// First negative pulse
-	case LST_MOVEMENT_REVERSE_NEG1:
+	case LST_MOVEMENT_REVERSE_NEG:
 		if (lst_movement_reverse_counter < LST_MOVEMENT_REVERSE_COUNT)
 		{
 
@@ -58,44 +59,21 @@ void LST_Movement_Set()
 		else
 		{
 
-			lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NUL2;
-			lst_movement_reverse_counter = 0;
+			// End of reverse switch check
+			if (lst_movement_repetition_counter > LST_MOVEMENT_REPETITION_COUNT)
+			{
 
-		}
-		return; // Don't enter next switch block
+				lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NONE;
 
-	// Second null pulse
-	case LST_MOVEMENT_REVERSE_NUL2:
-		if (lst_movement_reverse_counter < LST_MOVEMENT_REVERSE_COUNT)
-		{
+			}
+			else
+			{
 
-			lst_movement_reverse_counter++;
-			lst_control_motor = 0;
+				lst_movement_repetition_counter++;
+				lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NUL;
+				lst_movement_reverse_counter = 0;
 
-		}
-		else
-		{
-
-			lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NEG2;
-			lst_movement_reverse_counter = 0;
-
-		}
-		return; // Don't enter next switch block
-
-		// First negative pulse
-	case LST_MOVEMENT_REVERSE_NEG2:
-		if (lst_movement_reverse_counter < LST_MOVEMENT_REVERSE_COUNT)
-		{
-
-			lst_movement_reverse_counter++;
-			lst_control_motor = LST_MOVEMENT_REVERSE_VALUE;
-
-		}
-		else
-		{
-
-			lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NONE;
-			lst_movement_reverse_counter = 0;
+			}
 
 		}
 		return; // Don't enter next switch block
