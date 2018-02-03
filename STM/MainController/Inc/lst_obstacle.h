@@ -132,7 +132,17 @@ int16_t lst_obs_train_crossingTimer;
 #define LST_OBS_TRA_CROSSINGTIMER_PERIOD		60
 
 /* Obs_Convoy */
+
+// Stages
 uint8_t lst_obs_convoy_stage;
+#define LST_OBS_CON_STAGE_APPROACH
+#define LST_OBS_CON_STAGE_WATCH
+#define LST_OBS_CON_STAGE_WAIT
+#define LST_OBS_CON_STAGE_COUNT
+#define LST_OBS_CON_STAGE_TURN
+#define LST_OBS_CON_STAGE_JOIN
+#define LST_OBS_CON_STAGE_FOLLOW
+#define LST_OBS_CON_STAGE_
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;

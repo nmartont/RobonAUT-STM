@@ -507,10 +507,8 @@ static void LST_Obs_Drone(){
  * @brief Mode for the corner
  */
 
-// TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// IMPROVEMENT: When backing completed and moving forward, watch right
-// Sharp distance, if increases, turn a bit right, if decreases, a bit left
-// but only if the wall is in range
+// TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// MAKE IT WORK TWO DIRECTIONS !!!!!!!!!!!!!!!!!!!!!!!!
 static void LST_Obs_Corner(){
 
 	switch (lst_obs_corner_stage)
@@ -735,11 +733,20 @@ static void LST_Obs_Corner(){
 /**
  * @brief Mode for the convoy
  */
-static void LST_Obs_Convoy(){
+static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
   // ToDo TEST 2018. 02. 01.
 
-	LST_Movement_Move(60);
+	LST_Steering_Follow();
+	LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
+	/*
+	switch (lst_obs_convoy_stage)
+	{
+
+	case
+
+	}
+*/
 }
 
 /**
@@ -748,12 +755,15 @@ static void LST_Obs_Convoy(){
 static void LST_Obs_Barrel(){
   // ToDo
 
-  // TODO TEST
+	LST_Steering_Follow();
+	LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
+  // TODO TEST
+/*
 	LST_Steering_Lock(0);
 
 	LST_Movement_Stop();
-
+*/
 }
 
 /**
