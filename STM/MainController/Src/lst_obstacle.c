@@ -156,7 +156,7 @@ static void LST_Obs_Search(){
   LST_Steering_Follow();
 
   // Go slowly
-  LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+  LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM); // TODO TEST 2018. 02. 03.
 
   if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_BEGIN){
     // Line detection
@@ -435,18 +435,69 @@ static uint8_t LST_Obs_Search_Long_Line_Detected(){
 static void LST_Obs_Drone(){
   // ToDo TEST 2018. 02. 01.
 
-	LST_Steering_Follow();
-
-	if (LST_Sharp_GetFrontDistance_mm() > 300)
+	switch (lst_obs_drone_stage)
 	{
+
+	case LST_OBS_DRO_STAGE_APPROACH:
 
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-	}
-	else
-	{
+		LST_Steering_Follow();
+
+		if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_DRO_SHARP_DIST_DRONE_IN)
+		{
+
+			lst_obs_drone_stage = LST_OBS_DRO_STAGE_WATCH;
+
+		}
+
+		break;
+
+	case LST_OBS_DRO_STAGE_WATCH:
 
 		LST_Movement_Stop();
+
+		LST_Steering_Follow();
+
+		if (LST_Sharp_GetFrontDistance_mm() > LST_OBS_DRO_SHARP_DIST_DRONE_OUT)
+		{
+
+			// Init timer
+			lst_obs_drone_takeoffTimer = LST_OBS_DRO_TAKEOFFTIMER_PERIOD;
+
+			lst_obs_drone_stage = LST_OBS_DRO_STAGE_WAIT;
+
+		}
+
+		break;
+
+	case LST_OBS_DRO_STAGE_WAIT:
+
+		LST_Movement_Stop();
+
+		LST_Steering_Follow();
+
+		if (lst_obs_drone_takeoffTimer <= 0)
+		{
+
+			lst_obs_drone_stage = LST_OBS_DRO_STAGE_EXIT;
+
+		}
+		else
+		{
+
+			lst_obs_drone_takeoffTimer--;
+
+		}
+
+		break;
+
+	case LST_OBS_DRO_STAGE_EXIT:
+
+		// Search mode
+		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+		break;
 
 	}
 
@@ -610,7 +661,19 @@ static void LST_Obs_Corner(){
 */
 	case LST_OBS_COR_STAGE_OUTGOING:
 
-		LST_Steering_Lock(0);
+		if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
+		{
+
+			// TODO STEERING CONTROL W/ SHARP
+			LST_Steering_Lock(0);
+
+		}
+		else
+		{
+
+			LST_Steering_Lock(0);
+
+		}
 
 		// Slow speed
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
@@ -689,26 +752,7 @@ static void LST_Obs_Barrel(){
 
 	LST_Steering_Lock(0);
 
-	if (!lst_temp)
-		if (!LST_Distance_Measure_mm(-300))
-		{
-
-			LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
-
-		}
-		else
-		{
-
-			//LST_Movement_Stop();
-			lst_temp = 1;
-
-		}
-	else
-	{
-
-		LST_Movement_Stop();
-
-	}
+	LST_Movement_Stop();
 
 }
 
@@ -718,9 +762,10 @@ static void LST_Obs_Barrel(){
 static void LST_Obs_Roundabout(){
 	// ToDo TEST 2018. 02. 02.
 
-		LST_Movement_Move_Encoderless(-400);
+	LST_Steering_Lock(0);
 
-		// lst_control_motor(-100);
+	LST_Movement_Stop();
+
 }
 
 /**
@@ -780,7 +825,7 @@ static void LST_Obs_Trainstop(){
 			lst_obs_train_stage = LST_OBS_TRA_STAGE_WAIT;
 
 			// Init variable
-			lst_obs_tra_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
+			lst_obs_train_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
 
 		}
 
@@ -801,7 +846,7 @@ static void LST_Obs_Trainstop(){
 				lst_obs_train_stage = LST_OBS_TRA_STAGE_COUNT;
 
 				// Init variable
-				lst_obs_tra_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
+				lst_obs_train_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
 
 			}
 
@@ -816,7 +861,7 @@ static void LST_Obs_Trainstop(){
 
 		// If sufficient time has elapsed without a car seen, then
 		// it is safe to proceed, else wait more
-		if (lst_obs_tra_lastCarTimer <= 0)
+		if (lst_obs_train_lastCarTimer <= 0)
 		{
 
 			// Jump to next
@@ -830,13 +875,13 @@ static void LST_Obs_Trainstop(){
 			if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_TRA_SHARP_DIST_CAR)
 			{
 
-				lst_obs_tra_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
+				lst_obs_train_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
 
 			}
 			else
 			{
 
-				lst_obs_tra_lastCarTimer--;
+				lst_obs_train_lastCarTimer--;
 
 			}
 
@@ -858,7 +903,7 @@ static void LST_Obs_Trainstop(){
 		{
 
 			// Init variable
-			lst_obs_tra_crossingTimer = LST_OBS_TRA_CROSSINGTIMER_PERIOD;
+			lst_obs_train_crossingTimer = LST_OBS_TRA_CROSSINGTIMER_PERIOD;
 
 			// Jump to next
 			lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSSING;
@@ -874,7 +919,7 @@ static void LST_Obs_Trainstop(){
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOW); // TODO MEDIUM !!!!!!!!!!!!!!!
 
 		// Delay a bit to get to the no line part
-		if (lst_obs_tra_crossingTimer <= 0)
+		if (lst_obs_train_crossingTimer <= 0)
 		{
 
 			// Jump to next
@@ -884,7 +929,7 @@ static void LST_Obs_Trainstop(){
 		else
 		{
 
-			lst_obs_tra_crossingTimer--;
+			lst_obs_train_crossingTimer--;
 
 		}
 
@@ -936,13 +981,23 @@ static void LST_Obs_End(){
   // ToDo TEST
 
   // Go forward like 30cm
-  if (!LST_Distance_Measure_mm(LST_OBS_END_DISTANCE_MM)) // 300
+  if (!LST_Distance_Measure_mm(LST_OBS_END_DISTANCE_MM))
   {
+
     LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+  }
+  else
+  {
+
+  	// Stop
+  	LST_Movement_Stop();
+  	LST_Steering_Lock(0);
+
+  	lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
+
   }
 
-  // Stop
-  LST_Movement_Stop();
 }
 
 /**

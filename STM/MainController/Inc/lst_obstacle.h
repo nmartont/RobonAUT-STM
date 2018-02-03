@@ -66,6 +66,23 @@ void LST_Obs_Logic();
 #define LST_OBS_SEARCH_LED_THRESHOLD                    150 //110
 #define LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD         7 //6
 
+/* Obs_Drone */
+
+// Stages
+uint8_t lst_obs_drone_stage;
+#define LST_OBS_DRO_STAGE_APPROACH						0
+#define LST_OBS_DRO_STAGE_WATCH								1
+#define LST_OBS_DRO_STAGE_WAIT								2
+#define LST_OBS_DRO_STAGE_EXIT								3
+
+// Sharp
+#define LST_OBS_DRO_SHARP_DIST_DRONE_IN				300
+#define LST_OBS_DRO_SHARP_DIST_DRONE_OUT			400
+
+// Timing
+int16_t lst_obs_drone_takeoffTimer;
+#define LST_OBS_DRO_TAKEOFFTIMER_PERIOD				100
+
 /* Obs_Corner */
 
 // Stages
@@ -108,14 +125,11 @@ uint8_t lst_obs_train_repeatedCrossing;
 #define LST_OBS_TRA_SHARP_DIST_CAR					500
 
 // Timing
-int16_t lst_obs_tra_lastCarTimer;
+int16_t lst_obs_train_lastCarTimer;
 #define LST_OBS_TRA_LASTCARTIMER_PERIOD			300 // T = 10ms -> 3s
 
-int16_t lst_obs_tra_crossingTimer;
+int16_t lst_obs_train_crossingTimer;
 #define LST_OBS_TRA_CROSSINGTIMER_PERIOD		60
-
-/* Obs_Drone */
-uint8_t lst_obs_drone_stage; // TODO add into code
 
 /* Obs_Convoy */
 uint8_t lst_obs_convoy_stage;
