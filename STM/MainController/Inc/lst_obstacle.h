@@ -159,7 +159,7 @@ int16_t lst_obs_convoy_lastCarTimer;
 int16_t lst_obs_convoy_turnTimer;
 #define LST_OBS_CON_TURNTIMER_PERIOD		50
 int16_t lst_obs_convoy_attachTimer;
-#define LST_OBS_CON_ATTACHTIMER_PERIOD	50
+#define LST_OBS_CON_ATTACHTIMER_PERIOD	400 //50 Attach until curve is reached
 
 // Steering
 #define LST_OBS_CON_STEERINGLOCK_RIGHT	-1000
@@ -175,7 +175,7 @@ uint8_t lst_obs_con_steeringState;
 uint8_t lst_obs_con_steeringHigh;
 uint8_t lst_obs_con_steeringLow;
 #define LST_OBS_CON_STEERING_THRESHOLD	10
-#define LST_OBS_CON_STEERING_COUNT			4
+#define LST_OBS_CON_STEERING_COUNT			4 //3
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;
