@@ -48,13 +48,16 @@ static uint8_t LST_Obs_Search_Long_Line_Detected();
  * @brief Initializes the Obstacle lap module
  */
 void LST_Obs_Init() {
+
   lst_control_steeringP = LST_OBS_STEERING_P;
   lst_control_steeringD = LST_OBS_STEERING_D;
 
   // INIT TODO TEST
   lst_temp = 0;
 
-  LST_Obs_Search_Reset();
+  LST_Obs_ResetStateMachine();
+
+  //LST_Obs_Search_Reset();
 }
 
 /**
@@ -98,9 +101,7 @@ static void LST_Obs_StateMachine(){
 
     break;
   case LST_OBS_MODE_NO_CONTROL:
-    /* Leave values on default */
   default:
-    /* Leave values at default */
     LST_Obs_ResetStateMachine();
     break;
   }
@@ -949,7 +950,14 @@ static void LST_Obs_End(){
  */
 static void LST_Obs_ResetStateMachine(){
   lst_obs_lap_mode             = LST_OBS_LAP_MODE_START;
-  lst_obs_corner_stage = LST_OBS_COR_STAGE_APPROACH;
+
+  lst_obs_corner_stage = 0;
+  lst_obs_train_stage = 0;
+  lst_obs_drone_stage = 0;
+  lst_obs_convoy_stage = 0;
+  lst_obs_roundabout_stage = 0;
+  lst_obs_barrel_stage = 0;
+
   // ToDo reset other variables
   LST_Obs_Search_Reset();
 }
