@@ -155,7 +155,7 @@ static void LST_Obs_Search(){
   LST_Steering_Follow();
 
   // Go slowly
-  LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+  LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
   if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_BEGIN){
     // Line detection
@@ -184,8 +184,9 @@ static void LST_Obs_Search(){
       lst_obs_search_mode = LST_OBS_SEARCH_MODE_CORNER;
     }
   }
+
   // Roundabout search
-  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_ROUNDABOUT){
+  else if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_ROUNDABOUT){
     // Search for some zero-lines first
     if(lst_obs_search_line_no == 0){
       if(lst_control_line_no == 0){
@@ -226,7 +227,7 @@ static void LST_Obs_Search(){
   }
 
   // Drone search
-  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_DRONE){
+  else if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_DRONE){
     // Search for a long 3 line section
     if(lst_obs_search_line_no == 3){
       if(lst_control_line_no == 3){
@@ -250,7 +251,7 @@ static void LST_Obs_Search(){
   }
 
   // Barrel search
-  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_BARREL){
+  else if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_BARREL){
     // Search for some 2-lines first
     if(lst_obs_search_line_no == 2){
       if(lst_control_line_no == 2){
@@ -290,14 +291,14 @@ static void LST_Obs_Search(){
   }
 
   // LongLine search for End/Traintracks
-  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_LONGLINE){
-    // Check for one long line
+  else if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_LONGLINE){
+    // Check for one long line, once more:
     if (lst_obs_search_line_no == 255){
       if(LST_Obs_Search_Long_Line_Detected()){
         lst_obs_search_line_no = 1;
       }
       else{
-        // ERROR, reset
+        // ERROR, no repeated long line found, reset
         LST_Obs_Search_Reset();
       }
     }
@@ -305,21 +306,19 @@ static void LST_Obs_Search(){
     // Check for one lines
     else if (lst_obs_search_line_no == 1){
       uint8_t temp = LST_Obs_Search_Long_Line_Detected();
-      if(lst_control_line_no == 1 && !temp){
+      if(!temp){ // If no long line
         lst_obs_search_cntr++;
       }
-      else if(temp){ // If long line detected
+      else{ // If long line detected
+        // if there were at least 2 non-long lines between long lines
         if (lst_obs_search_cntr > LST_OBS_SEARCH_ONE_LINE_BETWEEN_LONGS_THRESHOLD){ // 1
           // found double lines, traintracks
           lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
           lst_obs_lap_mode = LST_OBS_LAP_MODE_TRAINSTOP;
         }
       }
-      else{
-        // line_no is not 1, but no long line
-        // this would be rather bad... so i'm ignoring it
-      }
 
+      // if there is at least 11 non-long lines after the single long line, it's the end
       if(lst_obs_search_cntr > 10){
         // found the End
         lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
@@ -329,7 +328,7 @@ static void LST_Obs_Search(){
   }
 
   // Convoy search
-  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_CONVOY){
+  else if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_CONVOY){
     // Search only for 1 Sharp sensor
     if(LST_Obs_Search_Sharp_Detection(1)){
       lst_obs_search_cntr++;
@@ -347,13 +346,13 @@ static void LST_Obs_Search(){
   }
 
   // Corner search
-  if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_CORNER){
+  else if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_CORNER){
     // Search only for 2 Sharp sensor
     if(LST_Obs_Search_Sharp_Detection(2)){
       lst_obs_search_cntr++;
     }
     else{
-      // ERROR, we are expecting 2 Sharp here
+      // ERROR, we are expecting 2 Sharps here
       LST_Obs_Search_Reset();
     }
 
