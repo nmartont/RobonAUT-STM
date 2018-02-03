@@ -335,7 +335,7 @@ static void LST_Obs_Search(){
     }
 
     // Found obstacle
-    if(lst_obs_search_cntr > LST_OBS_SEARCH_SHARP_THRESHOLD){ // 10
+    if(lst_obs_search_cntr > LST_OBS_SEARCH_SHARP_THRESHOLD){ // 50
       lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
       lst_obs_lap_mode = LST_OBS_LAP_MODE_CONVOY;
     }
@@ -353,7 +353,7 @@ static void LST_Obs_Search(){
     }
 
     // Found obstacle
-    if(lst_obs_search_cntr > LST_OBS_SEARCH_SHARP_THRESHOLD){ // 10
+    if(lst_obs_search_cntr > LST_OBS_SEARCH_SHARP_THRESHOLD){ // 50
       lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
       lst_obs_lap_mode = LST_OBS_LAP_MODE_CORNER;
     }
@@ -413,9 +413,9 @@ static uint8_t LST_Obs_Search_Long_Line_Detected(){
   uint8_t temp = 0;
   uint8_t cntr = 0;
   for(temp = 0; temp < 32; temp++){
-    if(lst_spi_master1_rx[temp + 6] > LST_OBS_SEARCH_LED_THRESHOLD){ // 110
+    if(lst_spi_master1_rx[temp + 6] > LST_OBS_SEARCH_LED_THRESHOLD){ // 150
       cntr++;
-      if(cntr > LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD){ // 9
+      if(cntr > LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD){ // 7
         return 1;
       }
     }
