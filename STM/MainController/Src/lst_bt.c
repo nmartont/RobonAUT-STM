@@ -10,7 +10,7 @@
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
 #define LST_BT_VARLIST_FASTLAP_DATALEN  250
-#define LST_BT_VARLIST_OBSTACLE_DATALEN 250
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 298
 #else
 #define LST_BT_VARLIST_FASTLAP_DATALEN  86
 #define LST_BT_VARLIST_OBSTACLE_DATALEN 86
@@ -102,7 +102,15 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x01, 'S', LST_BT_VARTYPE_INT16,  // Steering command
     0x01, 'M', LST_BT_VARTYPE_INT16,  // Motor command
     0x03, 'L', 'n', 'o', LST_BT_VARTYPE_UINT8, // Line number
-    0x04, 'M', 'o', 'd', 'e', LST_BT_VARTYPE_UINT8, // Obstacle lap mode
+		0x04, 'o', 'M', 'O', 'D', LST_BT_VARTYPE_UINT8, // Obstacle mode
+		0x04, 'o', 'L', 'A', 'P', LST_BT_VARTYPE_UINT8, // Obstacle lap mode
+		0x04, 'o', 'S', 'R', 'C', LST_BT_VARTYPE_UINT8, // Obstacle search mode
+		0x04, 'o', 'C', 'O', 'R', LST_BT_VARTYPE_UINT8,
+		0x04, 'o', 'T', 'R', 'A', LST_BT_VARTYPE_UINT8,
+		0x04, 'o', 'D', 'R', 'O', LST_BT_VARTYPE_UINT8,
+		0x04, 'o', 'C', 'O', 'N', LST_BT_VARTYPE_UINT8,
+		0x04, 'o', 'R', 'O', 'U', LST_BT_VARTYPE_UINT8,
+		0x04, 'o', 'B', 'A', 'R', LST_BT_VARTYPE_UINT8,
     0x02, 'G', 'x',  LST_BT_VARTYPE_INT16,      // GyroX
     0x02, 'G', 'y', LST_BT_VARTYPE_INT16,      // GyroY
     0x02, 'G', 'z', LST_BT_VARTYPE_INT16,      // GyroZ
@@ -417,7 +425,7 @@ void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len) {
   
   /* Copy source buffer to TX buffer */
   if (error_msg_len > 0) {
-    LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &error_msg[0],
+    LST_Utils_Memory_Copy((uint16_t *) &lst_uart_buffer_tx[1], (uint16_t *) &error_msg[0],
         error_msg_len);
   }
   
@@ -464,7 +472,7 @@ void LST_BT_Send_VarList() {
   /* Handle FASTLAP/OBSTACLE modes */
   if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
     /* Copy source buffer to TX buffer */
-    LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_fastlap,
+    LST_Utils_Memory_Copy((uint16_t *) &lst_uart_buffer_tx[1], (uint16_t *) &buffer_varlist_fastlap,
         LST_BT_VARLIST_FASTLAP_DATALEN);
 
     /* Put message end character at the end of the message */
@@ -474,7 +482,7 @@ void LST_BT_Send_VarList() {
     LST_UART_BT_Send_Bytes(2 + LST_BT_VARLIST_FASTLAP_DATALEN);
   }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
     /* Copy source buffer to TX buffer */
-    LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_obstacle,
+    LST_Utils_Memory_Copy((uint16_t *) &lst_uart_buffer_tx[1], (uint16_t *) &buffer_varlist_obstacle,
         LST_BT_VARLIST_OBSTACLE_DATALEN);
 
     /* Put message end character at the end of the message */
@@ -549,20 +557,28 @@ void LST_BT_Send_VarValues() {
 		lst_uart_buffer_tx[33]=(distance_lsb & 0xff);
 		lst_uart_buffer_tx[34]=(distance_lsb >> 8);
   }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
-    extra_bytes = 23;
-    lst_uart_buffer_tx[12]=lst_obs_lap_mode;
-    lst_uart_buffer_tx[13]=lst_i2c_master1_rx[0];
-    lst_uart_buffer_tx[14]=lst_i2c_master1_rx[1];
-    lst_uart_buffer_tx[15]=lst_i2c_master1_rx[2];
-    lst_uart_buffer_tx[16]=lst_i2c_master1_rx[3];
-    lst_uart_buffer_tx[17]=lst_i2c_master1_rx[4];
-    lst_uart_buffer_tx[18]=lst_i2c_master1_rx[5];
-    lst_uart_buffer_tx[19]=lst_i2c_master1_rx[6];
-    lst_uart_buffer_tx[20]=lst_i2c_master1_rx[7];
-    lst_uart_buffer_tx[21]=lst_i2c_master1_rx[8];
-    lst_uart_buffer_tx[22]=lst_i2c_master1_rx[9];
-    lst_uart_buffer_tx[23]=lst_i2c_master1_rx[10];
-    lst_uart_buffer_tx[24]=lst_i2c_master1_rx[11];
+    extra_bytes = 31;
+    lst_uart_buffer_tx[12]=lst_obs_mode;
+    lst_uart_buffer_tx[13]=lst_obs_lap_mode;
+    lst_uart_buffer_tx[14]=lst_obs_search_mode;
+    lst_uart_buffer_tx[15]=lst_obs_corner_stage;
+    lst_uart_buffer_tx[16]=lst_obs_train_stage;
+    lst_uart_buffer_tx[17]=lst_obs_drone_stage;
+    lst_uart_buffer_tx[18]=lst_obs_convoy_stage;
+    lst_uart_buffer_tx[19]=lst_obs_roundabout_stage;
+    lst_uart_buffer_tx[20]=lst_obs_barrel_stage;
+    lst_uart_buffer_tx[21]=lst_i2c_master1_rx[0];
+    lst_uart_buffer_tx[22]=lst_i2c_master1_rx[1];
+    lst_uart_buffer_tx[23]=lst_i2c_master1_rx[2];
+    lst_uart_buffer_tx[24]=lst_i2c_master1_rx[3];
+    lst_uart_buffer_tx[25]=lst_i2c_master1_rx[4];
+    lst_uart_buffer_tx[26]=lst_i2c_master1_rx[5];
+    lst_uart_buffer_tx[27]=lst_i2c_master1_rx[6];
+    lst_uart_buffer_tx[28]=lst_i2c_master1_rx[7];
+    lst_uart_buffer_tx[29]=lst_i2c_master1_rx[8];
+    lst_uart_buffer_tx[30]=lst_i2c_master1_rx[9];
+    lst_uart_buffer_tx[31]=lst_i2c_master1_rx[10];
+    lst_uart_buffer_tx[32]=lst_i2c_master1_rx[11];
     /*
     lst_uart_buffer_tx[25]=lst_adc_sharp_result[0] & 0xff;
     lst_uart_buffer_tx[26]=(lst_adc_sharp_result[0] >> 8);
@@ -571,20 +587,20 @@ void LST_BT_Send_VarValues() {
     lst_uart_buffer_tx[29]=lst_adc_sharp_result[2] & 0xff;
     lst_uart_buffer_tx[30]=(lst_adc_sharp_result[2] >> 8);
      */
-    lst_uart_buffer_tx[25]=(LST_Sharp_GetLeftDistance_mm() & 0xff);
-    lst_uart_buffer_tx[26]=(LST_Sharp_GetLeftDistance_mm() >> 8);
-    lst_uart_buffer_tx[27]=LST_Sharp_GetFrontDistance_mm() & 0xff;
-    lst_uart_buffer_tx[28]=(LST_Sharp_GetFrontDistance_mm() >> 8);
-    lst_uart_buffer_tx[29]=LST_Sharp_GetRightDistance_mm() & 0xff;
-    lst_uart_buffer_tx[30]=(LST_Sharp_GetRightDistance_mm() >> 8);
-    lst_uart_buffer_tx[31]=(distance_msb & 0xff);
-		lst_uart_buffer_tx[32]=(distance_msb >> 8);
-		lst_uart_buffer_tx[33]=(distance_lsb & 0xff);
-		lst_uart_buffer_tx[34]=(distance_lsb >> 8);
+    lst_uart_buffer_tx[33]=(LST_Sharp_GetLeftDistance_mm() & 0xff);
+    lst_uart_buffer_tx[34]=(LST_Sharp_GetLeftDistance_mm() >> 8);
+    lst_uart_buffer_tx[35]=LST_Sharp_GetFrontDistance_mm() & 0xff;
+    lst_uart_buffer_tx[36]=(LST_Sharp_GetFrontDistance_mm() >> 8);
+    lst_uart_buffer_tx[37]=LST_Sharp_GetRightDistance_mm() & 0xff;
+    lst_uart_buffer_tx[38]=(LST_Sharp_GetRightDistance_mm() >> 8);
+    lst_uart_buffer_tx[39]=(distance_msb & 0xff);
+		lst_uart_buffer_tx[40]=(distance_msb >> 8);
+		lst_uart_buffer_tx[41]=(distance_lsb & 0xff);
+		lst_uart_buffer_tx[42]=(distance_lsb >> 8);
   }
 
   /* Copy source buffer to TX buffer */
-  LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[12 + extra_bytes], (uint8_t *) &lst_spi_master1_rx,
+  LST_Utils_Memory_Copy((uint16_t *) &lst_uart_buffer_tx[12 + extra_bytes], (uint16_t *) &lst_spi_master1_rx,
       LST_SPI_BUFFER1_SIZE);
   
   /* Put message end character at the end of the message */

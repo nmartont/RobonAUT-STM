@@ -28,7 +28,7 @@ struct table_pd_interpol {
 };
 
 /* Function prototypes -------------------------------------------------------*/
-void LST_Utils_Memory_Copy(uint8_t *pDest, uint8_t *pSrc, uint8_t len);
+void LST_Utils_Memory_Copy(uint16_t *pDest, uint16_t *pSrc, uint16_t len);
 float* LST_Utils_Interpolate_Table_PD(struct table_pd_interpol *table, float x);
 
 /* External variables --------------------------------------------------------*/

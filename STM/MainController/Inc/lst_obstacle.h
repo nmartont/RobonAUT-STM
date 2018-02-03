@@ -114,6 +114,18 @@ int16_t lst_obs_tra_lastCarTimer;
 int16_t lst_obs_tra_crossingTimer;
 #define LST_OBS_TRA_CROSSINGTIMER_PERIOD		60
 
+/* Obs_Drone */
+uint8_t lst_obs_drone_stage; // TODO add into code
+
+/* Obs_Convoy */
+uint8_t lst_obs_convoy_stage;
+
+/* Obs_Roundabout */
+uint8_t lst_obs_roundabout_stage;
+
+/* Obs_Barrel */
+uint8_t lst_obs_barrel_stage;
+
 /* Obs End */
 #define LST_OBS_END_DISTANCE_MM             300
 

@@ -18,6 +18,7 @@
 #include "lst_uart.h"
 #include "lst_spi.h"
 #include "tasks/lst_encoder.h"
+#include "lst_obstacle.h"
 
 /* Defines -------------------------------------------------------------------*/
 /* Buffer defines */
@@ -152,6 +153,18 @@ extern uint8_t  lst_control_line_no;
 extern float    lst_encoder_speed;
 extern uint16_t lst_adc_sharp_result[3];
 extern int32_t lst_encoder_distance_um;
+
+// Obstacle data
+extern uint8_t lst_obs_search_mode; // Search mode (begin, barrel, etc.)
+extern uint8_t lst_obs_mode; // Obstacle mode (BT, Lap)
+extern uint8_t lst_obs_lap_mode; // Lap mode (barrel, corner, etc.)
+extern uint8_t lst_obs_corner_stage;
+extern uint8_t lst_obs_train_stage;
+extern uint8_t lst_obs_drone_stage;
+extern uint8_t lst_obs_convoy_stage;
+extern uint8_t lst_obs_roundabout_stage;
+extern uint8_t lst_obs_barrel_stage;
+
 
 // Fast lap variables as diag data
 extern uint8_t lst_fast_q1_mode;

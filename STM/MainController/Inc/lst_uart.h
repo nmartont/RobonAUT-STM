@@ -18,14 +18,14 @@
 /* Private defines -----------------------------------------------------------*/
 #define LST_UART1_RX_BUFFER_SIZE 1
 #define LST_UART2_RX_BUFFER_SIZE 1
-#define LST_UART2_TX_BUFFER_SIZE 256
+#define LST_UART2_TX_BUFFER_SIZE 320
 
 #define LST_UART_TX_NOTCPLT 0
 #define LST_UART_TX_CPLT    1
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_UART_Init();
-void LST_UART_BT_Send_Bytes(uint8_t data_bytes);
+void LST_UART_BT_Send_Bytes(uint16_t data_bytes);
 extern void LST_BT_Process_Incoming_Byte();
 extern void LST_Radio_Process_Incoming_Byte();
 void LST_UART_Receive_Byte_UART1();

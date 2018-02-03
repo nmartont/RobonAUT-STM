@@ -97,7 +97,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 /**
  * @brief Sends an UART BT message
  */
-void LST_UART_BT_Send_Bytes(uint8_t data_bytes) {
+void LST_UART_BT_Send_Bytes(uint16_t data_bytes) {
   /* Data byes below 2 are errors */
   if(data_bytes < 2) return;
 
@@ -106,7 +106,7 @@ void LST_UART_BT_Send_Bytes(uint8_t data_bytes) {
   }
   
   /* Swap 0xFF for 0xFE */
-  uint8_t i = 0;
+  uint16_t i = 0;
   for (i = 1; i < data_bytes - 1; i++) {
     if (lst_uart_buffer_tx[i] == 0xFF) {
       lst_uart_buffer_tx[i] = 0xFE;
