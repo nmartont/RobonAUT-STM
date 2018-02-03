@@ -115,7 +115,7 @@ int16_t lst_obs_tra_crossingTimer;
 #define LST_OBS_TRA_CROSSINGTIMER_PERIOD		60
 
 /* Obs End */
-#define LST_OBS_END_DISTANCE_MM             500
+#define LST_OBS_END_DISTANCE_MM             300
 
 /* External variables --------------------------------------------------------*/
 

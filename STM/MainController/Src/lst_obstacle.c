@@ -151,6 +151,11 @@ static void LST_Obs_Lap(){
  * @brief Mode for searching obstacles
  */
 static void LST_Obs_Search(){
+  // Follow the line
+  LST_Steering_Follow();
+
+  // Go slowly
+  LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
   if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_BEGIN){
     // Line detection
@@ -930,8 +935,8 @@ static void LST_Obs_Trainstop(){
 static void LST_Obs_End(){
   // ToDo TEST
 
-  // Go forward like 50cm
-  if (!LST_Distance_Measure_mm(LST_OBS_END_DISTANCE_MM)) // 500
+  // Go forward like 30cm
+  if (!LST_Distance_Measure_mm(LST_OBS_END_DISTANCE_MM)) // 300
   {
     LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
   }
