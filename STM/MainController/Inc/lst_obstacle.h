@@ -135,14 +135,47 @@ int16_t lst_obs_train_crossingTimer;
 
 // Stages
 uint8_t lst_obs_convoy_stage;
-#define LST_OBS_CON_STAGE_APPROACH
-#define LST_OBS_CON_STAGE_WATCH
-#define LST_OBS_CON_STAGE_WAIT
-#define LST_OBS_CON_STAGE_COUNT
-#define LST_OBS_CON_STAGE_TURN
-#define LST_OBS_CON_STAGE_JOIN
-#define LST_OBS_CON_STAGE_FOLLOW
-#define LST_OBS_CON_STAGE_
+#define LST_OBS_CON_STAGE_APPROACH			0 // does nothing
+#define LST_OBS_CON_STAGE_WATCH					1
+#define LST_OBS_CON_STAGE_WAIT					2
+#define LST_OBS_CON_STAGE_COUNT					3
+#define LST_OBS_CON_STAGE_TURNIN				4
+#define LST_OBS_CON_STAGE_FINDIN				5
+#define LST_OBS_CON_STAGE_ATTACH				6
+#define LST_OBS_CON_STAGE_FOLLOW				7 // Bang-bang type control
+#define LST_OBS_CON_STAGE_TURNOUT				8
+#define LST_OBS_CON_STAGE_FINDOUT				9
+#define LST_OBS_CON_STAGE_EXIT					10
+
+// Sharp
+#define LST_OBS_CON_SHARP_DIST_CAR			350 // Small-range sensor!
+#define LST_OBS_CON_SHARP_FOLLOW_LOW		300
+#define LST_OBS_CON_SHARP_FOLLOW_HIGH		500
+uint8_t lst_obs_convoy_follow_state;
+
+// Timing
+int16_t lst_obs_convoy_lastCarTimer;
+#define LST_OBS_CON_LASTCARTIMER_PERIOD	200
+int16_t lst_obs_convoy_turnTimer;
+#define LST_OBS_CON_TURNTIMER_PERIOD		50
+int16_t lst_obs_convoy_attachTimer;
+#define LST_OBS_CON_ATTACHTIMER_PERIOD	50
+
+// Steering
+#define LST_OBS_CON_STEERINGLOCK_RIGHT	-1000
+#define LST_OBS_CON_STEERINGLOCK_LEFT 	1000// TODO two-directional
+
+// Steering watch
+#define LST_OBS_CON_STEERING_P 12000
+#define LST_OBS_CON_STEERING_D 4000
+#define LST_OBS_CON_STEERINGWATCH_HIGH	600
+#define LST_OBS_CON_STEERINGWATCH_LOW		300
+uint8_t lst_obs_con_steeringCount;
+uint8_t lst_obs_con_steeringState;
+uint8_t lst_obs_con_steeringHigh;
+uint8_t lst_obs_con_steeringLow;
+#define LST_OBS_CON_STEERING_THRESHOLD	10
+#define LST_OBS_CON_STEERING_COUNT			4
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;

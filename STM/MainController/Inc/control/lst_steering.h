@@ -25,6 +25,9 @@ int16_t lst_control_steering;
 uint8_t 	lst_steering_type;
 int16_t		lst_steering_lockedPosition;
 
+// Steering watch
+
+
 // Functions
 void LST_Steering_Set();
 void LST_Steering_Lock(int16_t steeringValue);

@@ -733,20 +733,324 @@ static void LST_Obs_Corner(){
 /**
  * @brief Mode for the convoy
  */
+// TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// MAKE IT WORK TWO DIRECTIONS !!!!!!!!!!!!!!!!!!!!!!!!
 static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
   // ToDo TEST 2018. 02. 01.
 
-	LST_Steering_Follow();
-	LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
-	/*
 	switch (lst_obs_convoy_stage)
 	{
 
-	case
+	case LST_OBS_CON_STAGE_APPROACH:
+
+		lst_obs_convoy_stage = LST_OBS_CON_STAGE_WATCH;
+
+		break;
+
+	case LST_OBS_CON_STAGE_WATCH:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Stop();
+
+		// Wait for one car
+		if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+		{
+
+			// Jump to next
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_WAIT;
+
+			// Init variable
+			lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+
+		}
+
+
+		break;
+
+	case LST_OBS_CON_STAGE_WAIT:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Stop();
+
+		// Wait until no car is seen
+		if (LST_Sharp_GetRightDistance_mm() > LST_OBS_CON_SHARP_DIST_CAR)
+			{
+
+				// Jump to next
+				lst_obs_convoy_stage = LST_OBS_CON_STAGE_COUNT;
+
+				// Init variable
+				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+
+			}
+
+		break;
+
+	case LST_OBS_CON_STAGE_COUNT:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Stop();
+
+		// If sufficient time has elapsed without a car seen, then
+		// it is safe to proceed, else wait more
+		if (lst_obs_convoy_lastCarTimer <= 0)
+		{
+
+			// Jump to next
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_TURNIN;
+
+			// Init variable
+			lst_obs_convoy_turnTimer = LST_OBS_CON_TURNTIMER_PERIOD;
+
+		}
+		else
+		{
+
+			// Reset counter if another car appears
+			if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+			{
+
+				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+
+			}
+			else
+			{
+
+				lst_obs_convoy_lastCarTimer--;
+
+			}
+
+		}
+
+		break;
+
+	case LST_OBS_CON_STAGE_TURNIN:
+
+		LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+
+		if (lst_obs_convoy_turnTimer <= 0)
+		{
+
+			// Jump to next
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_FINDIN;
+
+
+		}
+		else
+		{
+
+			lst_obs_convoy_turnTimer--;
+
+		}
+
+		break;
+
+	case LST_OBS_CON_STAGE_FINDIN:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		if (lst_control_line_no > 0)
+		{
+
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_ATTACH;
+
+			// Init variable
+			lst_obs_convoy_attachTimer = LST_OBS_CON_ATTACHTIMER_PERIOD;
+
+		}
+
+
+		break;
+
+	case LST_OBS_CON_STAGE_ATTACH:
+
+		// Move a bit forward to stabilise so car can start steering watch
+
+		LST_Steering_Follow();
+
+		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+
+		if (lst_obs_convoy_attachTimer <= 0)
+		{
+
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_FOLLOW;
+
+			// Init variables
+			lst_obs_con_steeringCount = 0;
+			lst_obs_con_steeringState = 0;
+			lst_obs_con_steeringHigh = 0;
+			lst_obs_con_steeringLow = 0;
+
+		}
+		else
+		{
+
+			lst_obs_convoy_attachTimer--;
+
+		}
+
+		break;
+
+	case LST_OBS_CON_STAGE_FOLLOW:
+
+		LST_Steering_Follow();
+
+		// Hysteresis speed control
+
+		if (lst_obs_convoy_follow_state)
+			LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+		else LST_Movement_Stop();
+
+		// Moving forward
+		if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_CON_SHARP_FOLLOW_LOW)
+		{
+
+			lst_obs_convoy_follow_state = 0;
+
+		}
+
+		if (LST_Sharp_GetFrontDistance_mm() > LST_OBS_CON_SHARP_FOLLOW_HIGH)
+		{
+
+			lst_obs_convoy_follow_state = 1;
+
+		}
+
+
+		// Find exit point, watch turns
+
+		// Use other control variables for proper steering watch operation
+		lst_control_steeringP = LST_OBS_CON_STEERING_P;
+		lst_control_steeringD = LST_OBS_CON_STEERING_D;
+
+		// Watch straight
+		if (abs(lst_control_steering) < LST_OBS_CON_STEERINGWATCH_LOW)
+		{
+
+			lst_obs_con_steeringLow++;
+
+			// Detected straight
+			if (lst_obs_con_steeringLow > LST_OBS_CON_STEERING_THRESHOLD)
+			{
+
+				// If previous state was turn, then increase
+				if (lst_obs_con_steeringState)
+				{
+
+					lst_obs_con_steeringCount++;
+					lst_obs_con_steeringState = 0;
+
+				}
+
+			}
+
+		}
+		else
+		{
+
+			lst_obs_con_steeringLow = 0;
+
+		}
+
+		// Watch turn
+		if (abs(lst_control_steering) > LST_OBS_CON_STEERINGWATCH_HIGH)
+		{
+
+			lst_obs_con_steeringHigh++;
+
+			// Detected turn
+			if (lst_obs_con_steeringHigh > LST_OBS_CON_STEERING_THRESHOLD)
+			{
+
+				// If previous state was straight, then increase
+				if (!lst_obs_con_steeringState)
+				{
+
+					lst_obs_con_steeringCount++;
+					lst_obs_con_steeringState = 1;
+
+				}
+
+			}
+
+		}
+		else
+		{
+
+			lst_obs_con_steeringHigh = 0;
+
+		}
+
+		// If enough turns have elapsed, exit
+		if (lst_obs_con_steeringCount >= LST_OBS_CON_STEERING_COUNT)
+		{
+
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_TURNOUT;
+
+			// Init variable
+			lst_obs_convoy_turnTimer = LST_OBS_CON_TURNTIMER_PERIOD;
+
+		}
+
+		break;
+
+	case LST_OBS_CON_STAGE_TURNOUT:
+
+		lst_control_steeringP = LST_OBS_STEERING_P;
+		lst_control_steeringD = LST_OBS_STEERING_D;
+
+		LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+
+		if (lst_obs_convoy_turnTimer <= 0)
+		{
+
+			// Jump to next
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_FINDOUT;
+
+		}
+		else
+		{
+
+			lst_obs_convoy_turnTimer--;
+
+		}
+
+		break;
+
+	case LST_OBS_CON_STAGE_FINDOUT:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		if (lst_control_line_no > 0)
+		{
+
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_EXIT;
+
+		}
+
+		break;
+
+	case LST_OBS_CON_STAGE_EXIT:
+
+		// Search mode
+		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+		break;
 
 	}
-*/
+
 }
 
 /**
@@ -755,15 +1059,10 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 static void LST_Obs_Barrel(){
   // ToDo
 
+	// TEST ONLY
 	LST_Steering_Follow();
-	LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+	LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
-  // TODO TEST
-/*
-	LST_Steering_Lock(0);
-
-	LST_Movement_Stop();
-*/
 }
 
 /**
