@@ -22,7 +22,7 @@ uint8_t lst_control_line_no          = 0;
 uint8_t lst_control_line_no_input    = 0;
 
 /* Speed filter */
-float lst_control_speed_array[LST_CONTROL_SPEED_FILTER_ORDER] = {0.0f};
+//float lst_control_speed_array[LST_CONTROL_SPEED_FILTER_ORDER] = {0.0f};
 
 /* Line positions for steering PID controller */
 float lst_control_linePos =     0.0f;
@@ -38,6 +38,8 @@ uint16_t lst_control_speedP = LST_CONTROL_SPEED_P;
 uint16_t lst_control_speedD = LST_CONTROL_SPEED_D;
 uint16_t lst_control_speedI = LST_CONTROL_SPEED_I;
 
+int32_t speed_cntrl_result_previous = 0;
+
 /* Other controller variables */
 int16_t lst_control_errorSignal_steering = 0;
 int16_t lst_control_errorSignalOld_steering = 0;
@@ -50,10 +52,8 @@ int32_t lst_control_errorSignalSum_speed =  0;
 // LST_SETTINGS Servo offset TODO move
 
 /* Motor and steering variables */
-int16_t lst_control_steering = 0;
-int16_t lst_control_motor = 0;
+// MOVED TO LST_MOVEMENT, LST_STEERING
 int16_t lst_control_steering_offset = -115; // negative: left
-float lst_control_speed_encoder = 0.0f;
 
 /* Declare variables for steering controller interpolation */
 // ToDo calibrate interpolation for steering controller parameters
@@ -109,7 +109,8 @@ void LST_Control_Commons(){
   LST_ADC_StartSharpADC();
 
   /* Calculate and normalize speed from encoder */
-  lst_control_speed_encoder = LST_Control_CalculateSpeed();
+  //lst_control_speed_encoder = LST_Control_CalculateSpeed();
+  // !! moved to separate task
 
   /* Wait for ADC */
   LST_ADC_WaitForSharpADC();
@@ -157,9 +158,9 @@ static uint8_t LST_Control_Check_Lost_Line(){
 static void LST_Control_Resolve_Line(){
   /* Check for 0xFF control byte at the first byte of the SPI Rx buffer */
   // ToDo change control byte so that it's not FF, but say 0F
-  if(lst_spi_master1_rx[0] != LST_SPI_LINECNTR_CONTROL_BYTE){
+  if(lst_spi_master1_rx[0] < 254){ // FixMe last bit is bugged
     lst_spi_linecontroller_lost = 1;
-    return;
+    // return;
   }
   lst_spi_linecontroller_lost = 0;
 
@@ -241,11 +242,11 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
   /*    PD Controller    */
   if(!use_interpolation){
     /* Divide PD parameters into float */
-    floatP = lst_control_steeringP / LST_CONTROL_STEERING_P_DIVIDER;
-    floatD = lst_control_steeringD / LST_CONTROL_STEERING_D_DIVIDER;
+    floatP = (float)lst_control_steeringP / LST_CONTROL_STEERING_P_DIVIDER;
+    floatD = (float)lst_control_steeringD / LST_CONTROL_STEERING_D_DIVIDER;
   }else{
     float* interpol_result;
-    interpol_result = LST_Utils_Interpolate_Table_PD(&steering_pd_table, lst_control_speed_encoder);
+    interpol_result = LST_Utils_Interpolate_Table_PD(&steering_pd_table, lst_encoder_speed);
     floatP = *(interpol_result);
     floatD = *(interpol_result + 1);
     /* Set P and D in memory for debugging */
@@ -305,11 +306,15 @@ int32_t LST_Control_SpeedController(int16_t reference){
   /* Divide PID parameters into float */
   float floatP = lst_control_speedP / LST_CONTROL_SPEED_P_DIVIDER;
   float floatD = lst_control_speedD / LST_CONTROL_SPEED_D_DIVIDER;
+#ifndef LST_CONTROL_MOTOR_NOINTEGRATOR
   float floatI = lst_control_speedI / LST_CONTROL_SPEED_I_DIVIDER;
+#else
+  float floatI = 0;
+#endif
 
   /* Error signal */
   lst_control_errorSignalOld_speed = lst_control_errorSignal_speed;
-  lst_control_errorSignal_speed = reference - lst_control_speed_encoder;
+  lst_control_errorSignal_speed = reference - lst_encoder_speed;
 
   /* Integrator */
   uint32_t new_i = lst_control_errorSignalSum_speed + lst_control_errorSignal_speed;
@@ -354,6 +359,39 @@ int32_t LST_Control_SpeedController(int16_t reference){
     lst_control_errorSignalSum_speed = new_i;
   }
 
+  // Rate limiter to prevent oscillation due to mechanical hysteresis
+  // TODO TEST 2018. 02. 01.
+
+  // Limit rise
+  if (speed_cntrl_result_previous <
+  		(speed_cntrl_result - LST_CONTROL_SPEED_RATELIMIT))
+  {
+
+  	speed_cntrl_result = speed_cntrl_result_previous +
+  			LST_CONTROL_SPEED_RATELIMIT;
+
+  }
+
+  // Limit fall
+  if (speed_cntrl_result_previous >
+    		(speed_cntrl_result + LST_CONTROL_SPEED_RATELIMIT))
+	{
+
+		speed_cntrl_result = speed_cntrl_result_previous -
+				LST_CONTROL_SPEED_RATELIMIT;
+
+	}
+/*
+  // Apply reverse lock if needed TODO TEST 2018. 02. 02.
+  if (lst_control_speed_reverseLock)
+  {
+
+  	if (speed_cntrl_result > 0) speed_cntrl_result = 0;
+
+  }
+*/
+  speed_cntrl_result_previous = speed_cntrl_result;
+
   return speed_cntrl_result;
 }
 
@@ -376,9 +414,8 @@ void LST_Control_ServoAndMotor(){
 #endif
 }
 
-/**
- * @brief Function that calculates speed
- */
+/*
+// TODO PURGE
 float LST_Control_CalculateSpeed(){
   // ToDo test
 
@@ -400,3 +437,7 @@ float LST_Control_CalculateSpeed(){
 
   return sum/(float)(LST_CONTROL_SPEED_FILTER_ORDER + 1);
 }
+*/
+
+// TODO TEMP 2018. 01. 30. functions for task migration
+

@@ -9,11 +9,11 @@
 
 /* Defines -------------------------------------------------------------------*/
 #ifdef LST_CONFIG_LINECONTROLLER_VERBOSE_DATA
-#define LST_BT_VARLIST_FASTLAP_DATALEN  238
-#define LST_BT_VARLIST_OBSTACLE_DATALEN 238
+#define LST_BT_VARLIST_FASTLAP_DATALEN  250
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 250
 #else
-#define LST_BT_VARLIST_FASTLAP_DATALEN  78
-#define LST_BT_VARLIST_OBSTACLE_DATALEN 78
+#define LST_BT_VARLIST_FASTLAP_DATALEN  86
+#define LST_BT_VARLIST_OBSTACLE_DATALEN 86
 #endif
 
 /* Private variables ---------------------------------------------------------*/
@@ -55,9 +55,11 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x02, 'S', '1', LST_BT_VARTYPE_UINT16,     // Sharp1
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
+		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_UINT16, // Distance MSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
-    0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
+    0x02, 'L', '1', LST_BT_VARTYPE_INT16,// Line position
     0x02, 'L', '2', LST_BT_VARTYPE_UINT16,// Line position repeated
     0x03, 'V', '0', '0', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '0', '1', LST_BT_VARTYPE_UINT8,
@@ -110,6 +112,8 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x02, 'S', '1', LST_BT_VARTYPE_UINT16,     // Sharp1
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
+		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -145,7 +149,7 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x03, 'V', '2', '8', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '2', '9', LST_BT_VARTYPE_UINT8,
     0x03, 'V', '3', '0', LST_BT_VARTYPE_UINT8,
-    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8,
+    0x03, 'V', '3', '1', LST_BT_VARTYPE_UINT8
 };
 #else
 static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
@@ -165,6 +169,8 @@ static const uint8_t buffer_varlist_fastlap[LST_BT_VARLIST_FASTLAP_DATALEN] = {
     0x02, 'S', '1', LST_BT_VARTYPE_UINT16,     // Sharp1
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
+		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -187,6 +193,8 @@ static const uint8_t buffer_varlist_obstacle[LST_BT_VARLIST_OBSTACLE_DATALEN] = 
     0x02, 'S', '1', LST_BT_VARTYPE_UINT16,     // Sharp1
     0x02, 'S', '2', LST_BT_VARTYPE_UINT16,     // Sharp2
     0x02, 'S', '3', LST_BT_VARTYPE_UINT16,     // Sharp3
+		0x04, 'D', 'S', 'T', 'M', LST_BT_VARTYPE_INT16, // Distance MSBS
+		0x04, 'D', 'S', 'T', 'L', LST_BT_VARTYPE_UINT16, // Distance LSBS
     0x02, 'F', 'F', LST_BT_VARTYPE_UINT8, // 0xFF control byte
     0x01, 'L', LST_BT_VARTYPE_UINT8,      // Line number from SPI
     0x02, 'L', '1', LST_BT_VARTYPE_UINT16,// Line position
@@ -491,7 +499,13 @@ void LST_BT_Send_VarValues() {
   lst_uart_buffer_tx[0] = LST_BT_MSGTYPE_VARVALUES;
   
   /* Send P, D, Motor, Steering */
-  int16_t temp = lst_control_speed_encoder;
+  int16_t temp = lst_encoder_speed;
+  int16_t distance_msb = (lst_encoder_distance_um >> 16);
+  int16_t distance_lsb = (lst_encoder_distance_um & 0xffff);
+
+  // BT 0xff fix
+  if (distance_msb == -1) distance_msb = -10000;
+  if (distance_lsb == -1) distance_lsb = -2;
   if(temp<0){
     // Speed can't be a small negative number because of BT 0xFF bit
     temp = temp*-1 + 10000;
@@ -530,8 +544,12 @@ void LST_BT_Send_VarValues() {
     lst_uart_buffer_tx[28]=(lst_adc_sharp_result[1] >> 8);
     lst_uart_buffer_tx[29]=lst_adc_sharp_result[2] & 0xff;
     lst_uart_buffer_tx[30]=(lst_adc_sharp_result[2] >> 8);
+    lst_uart_buffer_tx[31]=(distance_msb & 0xff);
+		lst_uart_buffer_tx[32]=(distance_msb >> 8);
+		lst_uart_buffer_tx[33]=(distance_lsb & 0xff);
+		lst_uart_buffer_tx[34]=(distance_lsb >> 8);
   }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
-    extra_bytes = 19;
+    extra_bytes = 23;
     lst_uart_buffer_tx[12]=lst_obs_lap_mode;
     lst_uart_buffer_tx[13]=lst_i2c_master1_rx[0];
     lst_uart_buffer_tx[14]=lst_i2c_master1_rx[1];
@@ -553,12 +571,16 @@ void LST_BT_Send_VarValues() {
     lst_uart_buffer_tx[29]=lst_adc_sharp_result[2] & 0xff;
     lst_uart_buffer_tx[30]=(lst_adc_sharp_result[2] >> 8);
      */
-    lst_uart_buffer_tx[25]=LST_Sharp_GetLeftDistance() & 0xff;
-    lst_uart_buffer_tx[26]=(LST_Sharp_GetLeftDistance() >> 8);
-    lst_uart_buffer_tx[27]=LST_Sharp_GetFrontDistance() & 0xff;
-    lst_uart_buffer_tx[28]=(LST_Sharp_GetFrontDistance() >> 8);
-    lst_uart_buffer_tx[29]=LST_Sharp_GetRightDistance() & 0xff;
-    lst_uart_buffer_tx[30]=(LST_Sharp_GetRightDistance() >> 8);
+    lst_uart_buffer_tx[25]=(LST_Sharp_GetLeftDistance_mm() & 0xff);
+    lst_uart_buffer_tx[26]=(LST_Sharp_GetLeftDistance_mm() >> 8);
+    lst_uart_buffer_tx[27]=LST_Sharp_GetFrontDistance_mm() & 0xff;
+    lst_uart_buffer_tx[28]=(LST_Sharp_GetFrontDistance_mm() >> 8);
+    lst_uart_buffer_tx[29]=LST_Sharp_GetRightDistance_mm() & 0xff;
+    lst_uart_buffer_tx[30]=(LST_Sharp_GetRightDistance_mm() >> 8);
+    lst_uart_buffer_tx[31]=(distance_msb & 0xff);
+		lst_uart_buffer_tx[32]=(distance_msb >> 8);
+		lst_uart_buffer_tx[33]=(distance_lsb & 0xff);
+		lst_uart_buffer_tx[34]=(distance_lsb >> 8);
   }
 
   /* Copy source buffer to TX buffer */

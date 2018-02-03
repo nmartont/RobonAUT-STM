@@ -43,6 +43,9 @@
 #define LST_CONTROL_SPEED_I           300
 #define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
 
+#define LST_CONTROL_SPEED_RATELIMIT		10
+uint8_t lst_control_speed_reverseLock;
+
 /* Float denums for dividing steering and servo control values */
 #define LST_CONTROL_BT_STEERING_DENUM -21.487f
 
@@ -75,15 +78,17 @@
 #define LST_CONTROL_STEERING_DENUM    21.487f
 #define LST_CONTROL_SPEED_DENUM       1.0f
 
+// LST_SETTINGS MOTOR CONTROL INTEGRATOR
+#define LST_CONTROL_MOTOR_NOINTEGRATOR
+
 /* Defines for lost line detection */
 #define LST_CONTROL_LOST_LINES_THRESHOLD       20
-#define LST_CONTROL_NEW_LINE_FILTER_THRESHOLD  4
+#define LST_CONTROL_NEW_LINE_FILTER_THRESHOLD  3
 
 /* Interpolation */
 #define LST_CONTROL_PD_INTERPOL_POINTS  5
 
-/* Speed filter order */
-#define LST_CONTROL_SPEED_FILTER_ORDER  3
+
 
 // LST_SETTINGS Servo invert
 
@@ -98,7 +103,7 @@ int16_t LST_Control_Servo_BT();
 int32_t LST_Control_SteeringController(uint8_t use_interpolation);
 int32_t LST_Control_SpeedController(int16_t reference);
 void LST_Control_ServoAndMotor();
-float LST_Control_CalculateSpeed();
+//float LST_Control_CalculateSpeed(); // !! moved to another task
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -112,8 +117,14 @@ extern uint16_t lst_control_speedP;
 extern uint16_t lst_control_speedD;
 extern uint16_t lst_control_speedI;
 extern int16_t  lst_control_motor;
-extern float    lst_control_speed_encoder;
+extern float    lst_encoder_speed;
 extern int16_t  lst_control_steering_offset;
 extern uint8_t  lst_control_line_no;
+extern float lst_encoder_speed;
+extern int16_t lst_control_motor;
+extern int16_t lst_control_steering;
+
+// TODO TEMP 2018. 01. 30. functions for task migration
+// None
 
 #endif /* LST_CONTROL_H_ */

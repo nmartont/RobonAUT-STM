@@ -17,6 +17,7 @@
 #include "lst_utils.h"
 #include "lst_uart.h"
 #include "lst_spi.h"
+#include "tasks/lst_encoder.h"
 
 /* Defines -------------------------------------------------------------------*/
 /* Buffer defines */
@@ -148,8 +149,9 @@ extern int16_t  lst_control_steering;
 extern int16_t  lst_control_motor;
 extern int16_t  lst_control_steering_offset;
 extern uint8_t  lst_control_line_no;
-extern float    lst_control_speed_encoder;
+extern float    lst_encoder_speed;
 extern uint16_t lst_adc_sharp_result[3];
+extern int32_t lst_encoder_distance_um;
 
 // Fast lap variables as diag data
 extern uint8_t lst_fast_q1_mode;

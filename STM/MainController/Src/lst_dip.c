@@ -22,7 +22,7 @@ void LST_DIP_Read(uint8_t position)
 {
 
 	lst_dip_settings[lst_dip_map[position]] =
-			HAL_GPIO_ReadPin(DIP_GPIO_Port, DIP_Pin);
+			!HAL_GPIO_ReadPin(DIP_GPIO_Port, DIP_Pin);
 
 }
 

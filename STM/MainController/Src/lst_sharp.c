@@ -14,7 +14,7 @@
 
 // TODO Refactor according to naming conventions
 
-uint16_t LST_Sharp_GetLeftDistance()
+uint16_t LST_Sharp_GetLeftDistance_mm()
 {
 
 	if (LST_Sharp_LeftSensorType)
@@ -30,7 +30,7 @@ uint16_t LST_Sharp_GetLeftDistance()
 
 }
 
-uint16_t LST_Sharp_GetFrontDistance()
+uint16_t LST_Sharp_GetFrontDistance_mm()
 {
 
 	if (LST_Sharp_FrontSensorType)
@@ -46,7 +46,7 @@ uint16_t LST_Sharp_GetFrontDistance()
 
 }
 
-uint16_t LST_Sharp_GetRightDistance()
+uint16_t LST_Sharp_GetRightDistance_mm()
 {
 
 	if (LST_Sharp_RightSensorType)
