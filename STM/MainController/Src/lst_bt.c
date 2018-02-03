@@ -425,7 +425,7 @@ void LST_BT_Send_StatusError(uint8_t *error_msg, uint8_t error_msg_len) {
   
   /* Copy source buffer to TX buffer */
   if (error_msg_len > 0) {
-    LST_Utils_Memory_Copy((uint16_t *) &lst_uart_buffer_tx[1], (uint16_t *) &error_msg[0],
+    LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &error_msg[0],
         error_msg_len);
   }
   
@@ -472,7 +472,7 @@ void LST_BT_Send_VarList() {
   /* Handle FASTLAP/OBSTACLE modes */
   if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
     /* Copy source buffer to TX buffer */
-    LST_Utils_Memory_Copy((uint16_t *) &lst_uart_buffer_tx[1], (uint16_t *) &buffer_varlist_fastlap,
+    LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_fastlap,
         LST_BT_VARLIST_FASTLAP_DATALEN);
 
     /* Put message end character at the end of the message */
@@ -482,7 +482,7 @@ void LST_BT_Send_VarList() {
     LST_UART_BT_Send_Bytes(2 + LST_BT_VARLIST_FASTLAP_DATALEN);
   }else if(lst_bt_diag_mode == LST_BT_DIAG_MODE_OBSTACLE){
     /* Copy source buffer to TX buffer */
-    LST_Utils_Memory_Copy((uint16_t *) &lst_uart_buffer_tx[1], (uint16_t *) &buffer_varlist_obstacle,
+    LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[1], (uint8_t *) &buffer_varlist_obstacle,
         LST_BT_VARLIST_OBSTACLE_DATALEN);
 
     /* Put message end character at the end of the message */
@@ -600,7 +600,7 @@ void LST_BT_Send_VarValues() {
   }
 
   /* Copy source buffer to TX buffer */
-  LST_Utils_Memory_Copy((uint16_t *) &lst_uart_buffer_tx[12 + extra_bytes], (uint16_t *) &lst_spi_master1_rx,
+  LST_Utils_Memory_Copy((uint8_t *) &lst_uart_buffer_tx[12 + extra_bytes], (uint8_t *) &lst_spi_master1_rx,
       LST_SPI_BUFFER1_SIZE);
   
   /* Put message end character at the end of the message */
