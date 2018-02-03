@@ -623,7 +623,10 @@ static void LST_Obs_Corner(){
 		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
-		if (LST_Sharp_GetRawRightDistance() > lst_obs_cor_rightSharp_previous)
+		// Rising Sharp values AND close enough to wall
+		// Otherwise it detects the far corner
+		if ((LST_Sharp_GetRawRightDistance() > lst_obs_cor_rightSharp_previous)
+				&& (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
 		{
 
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
@@ -641,27 +644,10 @@ static void LST_Obs_Corner(){
 		}
 
 		break;
-/*
-	// STAGE: Back up a bit more to align better TODO NOT NEEDED?
-	case LST_OBS_COR_STAGE_BACKING_THIRD:
 
-		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
-
-		// Back up a bit to lose the wall to the right
-		if (LST_Distance_Measure_mm(0))
-		{
-
-			// Next stage
-			lst_obs_corner_stage = lst_obs_corner_stage =
-					LST_OBS_COR_STAGE_OUTGOING;
-
-		}
-
-		break;
-*/
 	case LST_OBS_COR_STAGE_OUTGOING:
 
-		if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
+		if (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
 		{
 
 			// TODO STEERING CONTROL W/ SHARP
@@ -678,13 +664,30 @@ static void LST_Obs_Corner(){
 		// Slow speed
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL) &&
-				(LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL))
+		if ((LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL) &&
+				(LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL))
 		{
 
-			// Between outgoing walls, heading for exit
+			// In the center of the intersection
 			lst_obs_corner_stage =
-								LST_OBS_COR_STAGE_ALIGNMENT;
+								LST_OBS_COR_STAGE_CENTER;
+
+		}
+
+		break;
+
+	case LST_OBS_COR_STAGE_CENTER:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		// If between two walls (only check one! other can be far)
+		if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL) ||
+				((LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)))
+		{
+
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_ALIGNMENT;
 
 		}
 
@@ -708,7 +711,7 @@ static void LST_Obs_Corner(){
 		}
 
 		// Override previous if one sharp is too far from the wall
-		// Because of the sensor characteristics
+		// Because of the sensor characteristics, if a side is to close
 		if (LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_FAR_WALL)
 		{
 

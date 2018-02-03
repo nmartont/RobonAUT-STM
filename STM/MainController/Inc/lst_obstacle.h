@@ -93,8 +93,8 @@ uint8_t lst_obs_corner_stage;
 #define LST_OBS_COR_STAGE_CURVEDLINEFOUND 		2
 #define LST_OBS_COR_STAGE_BACKING_FIRST				3
 #define LST_OBS_COR_STAGE_BACKING_SECOND			4
-#define LST_OBS_COR_STAGE_BACKING_THIRD				5
-#define LST_OBS_COR_STAGE_OUTGOING						6
+#define LST_OBS_COR_STAGE_OUTGOING						5
+#define LST_OBS_COR_STAGE_CENTER							6
 #define LST_OBS_COR_STAGE_ALIGNMENT						7
 #define LST_OBS_COR_STAGE_EXIT								8
 
@@ -106,10 +106,11 @@ uint8_t lst_obs_corner_stage;
 // Sharp
 uint16_t lst_obs_cor_rightSharp_previous;
 #define LST_OBS_COR_SHARP_DIST_WALL						340 // 280 was too low
-#define LST_OBS_COR_SHARP_FAR_WALL						200
+#define LST_OBS_COR_SHARP_FAR_WALL						300
+#define LST_OBS_COR_SHARP_BACKING_WALL				200
 
 // Distance
-#define LST_OBS_COR_BACKING_DISTANCE					-1100 // was -800, found corner...
+#define LST_OBS_COR_BACKING_DISTANCE					-900 // was -800, found corner...
 
 /* Obs_Trainstop */
 
