@@ -538,18 +538,56 @@ static void LST_Obs_Corner(){
 		if (lst_control_line_no > 1)
 			{
 
-			// Advance a certain distance to prepare for backing up
-			// (start the measurement)
-			//LST_Distance_Measure_mm(300); // NEXT STAGE A VERSION !!!
-
 			// Next stage
 			lst_obs_corner_stage =
-					LST_OBS_COR_STAGE_CURVEDLINEFOUND;
+					LST_OBS_COR_STAGE_GETNEARWALL;
 
 			LST_Steering_Lock(0); // Curved line would pull the steering
 
+			// Init variable
+			lst_obs_corner_junctionTimer = LST_OBS_COR_JUNCTIONTIMER_PERIOD;
+
 			}
 
+		break;
+
+	case LST_OBS_COR_STAGE_GETNEARWALL:
+
+		// Move forward more so the center of the junction is not identified
+		// as the point to start backing up. Multiple tests showed if the
+		// Wall is even 0.5cm closer to the junction center, then the car
+		// starts backing up there.
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+
+		if (lst_obs_corner_junctionTimer <= 0)
+		{
+
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_CURVEDLINEFOUND;
+
+			// Save direction control
+			if (LST_Sharp_GetRightDistance_mm() < LST_Sharp_GetLeftDistance_mm())
+			{
+
+				lst_obs_corner_directionControl = LST_OBS_COR_DIR_LEFT;
+
+			}
+			else
+			{
+
+				lst_obs_corner_directionControl = LST_OBS_COR_DIR_RIGHT;
+
+			}
+
+		}
+		else
+		{
+
+			lst_obs_corner_junctionTimer--;
+
+		}
 
 		break;
 
@@ -558,30 +596,11 @@ static void LST_Obs_Corner(){
 		// Lock because curved line interferes
 		LST_Steering_Lock(0);
 
-		/* A VERSION
-		// Continue ahead until the distance is reached
-		if (!LST_Distance_Measure_mm(0))
-		{
-
-			LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
-
-		}
-		else
-		{
-
-			LST_Movement_Stop(); // Not really needed
-
-			// Next stage
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING;
-
-		}
-		*/
-
-		// B VERSION - move until wall ends
-
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-		if (LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL)
+		// Direction control (AND)
+		if ((LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL)
+				&& (LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL))
 		{
 
 			LST_Movement_Stop(); // Not really needed
@@ -594,10 +613,15 @@ static void LST_Obs_Corner(){
 		break;
 
 
-	// STAGE: back up until the wall to the right is lost
+	// STAGE: back up until the wall to the right/left is lost
 	case LST_OBS_COR_STAGE_BACKING_FIRST:
 
-		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
+
+		// Direction control
+		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_LEFT);
+		else
+			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_RIGHT);
 
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
@@ -609,7 +633,7 @@ static void LST_Obs_Corner(){
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_SECOND;
 
 			// Init var for next
-			lst_obs_cor_rightSharp_previous = 50000;
+			lst_obs_cor_backingSharp_previous = 50000;
 
 		}
 
@@ -618,30 +642,52 @@ static void LST_Obs_Corner(){
 	// STAGE: Back up until the right Sharp distance is increasing again
 	case LST_OBS_COR_STAGE_BACKING_SECOND:
 
-		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
+		// Direction control
+		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_LEFT);
+		else
+			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_RIGHT);
 
-		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
+
+		// Direction control
 
 		// Rising Sharp values AND close enough to wall
 		// Otherwise it detects the far corner
-		if ((LST_Sharp_GetRawRightDistance() > lst_obs_cor_rightSharp_previous)
-				&& (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
-		{
+		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+			if ((LST_Sharp_GetRawRightDistance() > lst_obs_cor_backingSharp_previous)
+					&& (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
+			{
 
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
+				lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
 
-			LST_Steering_Lock(0);
+				LST_Steering_Lock(0);
 
-			//LST_Distance_Measure_mm(-150);
+				//LST_Distance_Measure_mm(-150);
 
-		}
+			}
+			else
+			{
+
+				lst_obs_cor_backingSharp_previous = LST_Sharp_GetRawRightDistance();
+
+			}
 		else
-		{
+			if ((LST_Sharp_GetRawLeftDistance() > lst_obs_cor_backingSharp_previous)
+					&& (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
+			{
 
-			lst_obs_cor_rightSharp_previous = LST_Sharp_GetRawRightDistance();
+				lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
 
-		}
+				LST_Steering_Lock(0);
+
+			}
+			else
+			{
+
+				lst_obs_cor_backingSharp_previous = LST_Sharp_GetRawLeftDistance();
+
+			}
 
 		break;
 
@@ -651,6 +697,7 @@ static void LST_Obs_Corner(){
 		{
 
 			// TODO STEERING CONTROL W/ SHARP
+			// TODO ADD direction control if implemented
 			LST_Steering_Lock(0);
 
 		}

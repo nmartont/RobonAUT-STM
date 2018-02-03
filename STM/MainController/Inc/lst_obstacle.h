@@ -90,27 +90,38 @@ int16_t lst_obs_drone_takeoffTimer;
 uint8_t lst_obs_corner_stage;
 #define LST_OBS_COR_STAGE_APPROACH						0
 #define LST_OBS_COR_STAGE_PASSEDJUNCTION 			1
-#define LST_OBS_COR_STAGE_CURVEDLINEFOUND 		2
-#define LST_OBS_COR_STAGE_BACKING_FIRST				3
-#define LST_OBS_COR_STAGE_BACKING_SECOND			4
-#define LST_OBS_COR_STAGE_OUTGOING						5
-#define LST_OBS_COR_STAGE_CENTER							6
-#define LST_OBS_COR_STAGE_ALIGNMENT						7
-#define LST_OBS_COR_STAGE_EXIT								8
+#define LST_OBS_COR_STAGE_GETNEARWALL					2
+#define LST_OBS_COR_STAGE_CURVEDLINEFOUND 		3
+#define LST_OBS_COR_STAGE_BACKING_FIRST				4
+#define LST_OBS_COR_STAGE_BACKING_SECOND			5
+#define LST_OBS_COR_STAGE_OUTGOING						6
+#define LST_OBS_COR_STAGE_CENTER							7
+#define LST_OBS_COR_STAGE_ALIGNMENT						8
+#define LST_OBS_COR_STAGE_EXIT								9
+
+// Direction control
+uint8_t lst_obs_corner_directionControl;
+#define LST_OBS_COR_DIR_LEFT									0
+#define LST_OBS_COR_DIR_RIGHT									1
 
 // Steering
-#define LST_OBS_COR_STEERINGLOCK							1100 // Steering turned left
+#define LST_OBS_COR_STEERINGLOCK_LEFT					1100
+#define LST_OBS_COR_STEERINGLOCK_RIGHT				-900
 #define LST_OBS_COR_RIGHT_LOCK								-500
 #define LST_OBS_COR_LEFT_LOCK									500
 
 // Sharp
-uint16_t lst_obs_cor_rightSharp_previous;
+uint16_t lst_obs_cor_backingSharp_previous;
 #define LST_OBS_COR_SHARP_DIST_WALL						340 // 280 was too low
 #define LST_OBS_COR_SHARP_FAR_WALL						300
 #define LST_OBS_COR_SHARP_BACKING_WALL				340
 
 // Distance
 #define LST_OBS_COR_BACKING_DISTANCE					-900 // was -800, found corner...
+
+// Timing
+int16_t lst_obs_corner_junctionTimer;
+#define LST_OBS_COR_JUNCTIONTIMER_PERIOD			50
 
 /* Obs_Trainstop */
 
