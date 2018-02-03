@@ -21,6 +21,7 @@
 #include "control/lst_distance.h"
 #include "control/lst_movement.h"
 #include "lst_sharp.h"
+#include "stdlib.h" // abs function
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_OBS_STEERING_P 17000
@@ -104,7 +105,11 @@ uint8_t lst_obs_corner_stage;
 
 // Sharp
 uint16_t lst_obs_cor_rightSharp_previous;
-#define LST_OBS_COR_SHARP_DIST_WALL						280
+#define LST_OBS_COR_SHARP_DIST_WALL						340 // 280 was too low
+#define LST_OBS_COR_SHARP_FAR_WALL						200
+
+// Distance
+#define LST_OBS_COR_BACKING_DISTANCE					-1100 // was -800, found corner...
 
 /* Obs_Trainstop */
 

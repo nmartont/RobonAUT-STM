@@ -313,7 +313,7 @@ static void LST_Obs_Search(){
       else{ // If long line detected
         // if there were at least 2 non-long lines between long lines
         if (lst_obs_search_cntr > LST_OBS_SEARCH_ONE_LINE_BETWEEN_LONGS_THRESHOLD){ // 1
-          // found double lines, traintracks
+          // found double lines, train tracks
           lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
           lst_obs_lap_mode = LST_OBS_LAP_MODE_TRAINSTOP;
         }
@@ -546,6 +546,8 @@ static void LST_Obs_Corner(){
 			lst_obs_corner_stage =
 					LST_OBS_COR_STAGE_CURVEDLINEFOUND;
 
+			LST_Steering_Lock(0); // Curved line would pull the steering
+
 			}
 
 
@@ -579,15 +581,13 @@ static void LST_Obs_Corner(){
 
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-		if (LST_Sharp_GetRightDistance_mm() > 200)
+		if (LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL)
 		{
 
 			LST_Movement_Stop(); // Not really needed
 
 			// Next stage
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
-
-			LST_Distance_Measure_mm(-800);
 
 		}
 
@@ -599,18 +599,17 @@ static void LST_Obs_Corner(){
 
 		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
 
-		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
 		// Back up a bit to lose the wall to the right
-		if (LST_Distance_Measure_mm(0))
+		if (LST_Distance_Measure_mm(LST_OBS_COR_BACKING_DISTANCE))
 		{
 
 			// Next stage
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_SECOND;
 
 			// Init var for next
-			lst_obs_cor_rightSharp_previous = 10000;
+			lst_obs_cor_rightSharp_previous = 50000;
 
 		}
 
@@ -624,17 +623,20 @@ static void LST_Obs_Corner(){
 		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
-		if (LST_Sharp_GetRightDistance_mm() > lst_obs_cor_rightSharp_previous)
+		if (LST_Sharp_GetRawRightDistance() > lst_obs_cor_rightSharp_previous)
 		{
 
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
+
+			LST_Steering_Lock(0);
+
 			//LST_Distance_Measure_mm(-150);
 
 		}
 		else
 		{
 
-			lst_obs_cor_rightSharp_previous = LST_Sharp_GetRightDistance_mm();
+			lst_obs_cor_rightSharp_previous = LST_Sharp_GetRawRightDistance();
 
 		}
 
@@ -699,6 +701,22 @@ static void LST_Obs_Corner(){
 
 		}
 		else
+		{
+
+			LST_Steering_Lock(LST_OBS_COR_RIGHT_LOCK);
+
+		}
+
+		// Override previous if one sharp is too far from the wall
+		// Because of the sensor characteristics
+		if (LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_FAR_WALL)
+		{
+
+			LST_Steering_Lock(LST_OBS_COR_LEFT_LOCK);
+
+		}
+
+		if (LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_FAR_WALL)
 		{
 
 			LST_Steering_Lock(LST_OBS_COR_RIGHT_LOCK);
