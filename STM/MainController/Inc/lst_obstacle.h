@@ -121,7 +121,7 @@ uint8_t lst_obs_corner_directionControl;
 #define LST_OBS_COR_DIR_RIGHT									1
 
 // Steering
-#define LST_OBS_COR_STEERINGLOCK_LEFT					900 // 1100
+#define LST_OBS_COR_STEERINGLOCK_LEFT					1000 // 900 1100
 #define LST_OBS_COR_STEERINGLOCK_RIGHT				-900
 #define LST_OBS_COR_RIGHT_LOCK								-500
 #define LST_OBS_COR_LEFT_LOCK									500
@@ -131,6 +131,7 @@ uint16_t lst_obs_cor_backingSharp_previous;
 #define LST_OBS_COR_SHARP_DIST_WALL						340 // 280 was too low
 #define LST_OBS_COR_SHARP_FAR_WALL						300
 #define LST_OBS_COR_SHARP_BACKING_WALL				340
+#define LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE		1500
 
 // Distance
 #define LST_OBS_COR_BACKING_DISTANCE					-900 // was -800, found corner...

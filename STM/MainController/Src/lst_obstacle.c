@@ -741,7 +741,13 @@ static void LST_Obs_Corner(){
 
 			// TODO STEERING CONTROL W/ SHARP
 			// TODO ADD direction control if implemented
-			LST_Steering_Lock(0);
+			//LST_Steering_Lock(0);
+
+			if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+				LST_Steering_Sharp(1, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
+			else
+				LST_Steering_Sharp(0, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
+
 
 		}
 		else
