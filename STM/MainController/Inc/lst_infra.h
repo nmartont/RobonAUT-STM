@@ -18,7 +18,7 @@
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_INFRA_NOT_AVAILABLE   0
-#define LST_INFRA_VAILABLE        1
+#define LST_INFRA_AVAILABLE        1
 
 #define LST_INFRA_DIR_LEFT        0
 #define LST_INFRA_DIR_RIGHT       1

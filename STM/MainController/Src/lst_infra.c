@@ -112,8 +112,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
           for (int i = 0; i < 14; i++)
             RC5Word += (RC5BitsBuffer[13 - i] << i);
           infraAddress = (RC5Word>>6) & 0x1F;
-          if (infraAddress == 0x0D)
+          if (infraAddress == 0x0D){
+            lst_infra_is_available = LST_INFRA_AVAILABLE;
             infraCommand = RC5Word & 0x3F;
+          }
           RC5Reset();
         }
       }
