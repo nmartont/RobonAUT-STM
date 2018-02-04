@@ -233,7 +233,7 @@ uint8_t lst_obs_roundabout_cntr;
 #define LST_OBS_RND_STAGE_LAST_TURN       3
 #define LST_OBS_RND_STAGE_FINISH          4
 
-#define LST_OBS_RND_SHARP_DIST_APPROACH   400
+#define LST_OBS_RND_SHARP_DIST_APPROACH   900 // bad reflection? really 30cm
 #define LST_OBS_RND_INFRA_ERROR_MAX       200
 
 #define LST_OBS_RND_FIRST_LEFT_TURN_VALUE  -1000 // ToDo is the sign correct??
@@ -241,15 +241,19 @@ uint8_t lst_obs_roundabout_cntr;
 #define LST_OBS_RND_LAST_LEFT_TURN_VALUE   -1000
 #define LST_OBS_RND_LAST_RIGHT_TURN_VALUE  1000
 
-#define LST_OBS_RND_FIRST_TURN_DISTANCE   300
+#define LST_OBS_RND_FIRST_TURN_DISTANCE   350
 
-#define LST_OBS_RND_TRAVEL_DISTANCE_ONE   500
-#define LST_OBS_RND_TRAVEL_DISTANCE_TWO   750
-#define LST_OBS_RND_TRAVEL_DISTANCE_THREE 1000
+#define LST_OBS_RND_TRAVEL_DISTANCE_ONE   1000
+#define LST_OBS_RND_TRAVEL_DISTANCE_TWO   2000
+#define LST_OBS_RND_TRAVEL_DISTANCE_THREE 3200
 
 #define LST_OBS_RND_FINISH_DISTANCE     400
 
 #define LST_OBS_RND_SHARP_SIDE_DIST     600 // Raw shortSharp value
+
+// Timing
+int16_t lst_obs_roundabout_turnInTimer;
+#define LST_OBS_RND_TURNINTIMER_PERIOD	180
 
 /* Obs End */
 #define LST_OBS_END_DISTANCE_MM             300

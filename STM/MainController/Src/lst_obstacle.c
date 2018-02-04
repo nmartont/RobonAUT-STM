@@ -1325,6 +1325,7 @@ static void LST_Obs_Roundabout(){
       // Check if Infra is available
       if(lst_infra_is_available){
         lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FIRST_TURN;
+        lst_obs_roundabout_turnInTimer = LST_OBS_RND_TURNINTIMER_PERIOD;
         lst_obs_roundabout_direction = LST_Infra_Get_Direction();
         lst_obs_roundabout_exit = LST_Infra_Get_Exit();
       }
@@ -1333,8 +1334,9 @@ static void LST_Obs_Roundabout(){
         if(lst_obs_roundabout_cntr>LST_OBS_RND_INFRA_ERROR_MAX){ // 200
           // Set default values and hope for the best
           lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FIRST_TURN;
+          lst_obs_roundabout_turnInTimer = LST_OBS_RND_TURNINTIMER_PERIOD;
           lst_obs_roundabout_direction = LST_INFRA_DIR_LEFT;
-          lst_obs_roundabout_exit = LST_INFRA_EXIT_ONE;
+          lst_obs_roundabout_exit = LST_INFRA_EXIT_THREE;
         }
       }
     }
@@ -1356,6 +1358,17 @@ static void LST_Obs_Roundabout(){
       break;
     }
 
+    // Try with time measurement
+    if (lst_obs_roundabout_turnInTimer <= 0)
+    {
+    	lst_obs_roundabout_stage = LST_OBS_RND_STAGE_TRAVEL;
+    }
+    else
+    {
+    	lst_obs_roundabout_turnInTimer--;
+    }
+
+    /*
     // Go forward like 30cm
     if (!LST_Distance_Measure_mm(LST_OBS_RND_FIRST_TURN_DISTANCE)){
       LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
@@ -1364,6 +1377,7 @@ static void LST_Obs_Roundabout(){
     // Switch to travel mode
       lst_obs_roundabout_stage = LST_OBS_RND_STAGE_TRAVEL;
     }
+    */
     break;
 
   case LST_OBS_RND_STAGE_TRAVEL:
