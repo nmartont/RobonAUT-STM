@@ -8,7 +8,7 @@
 #include "control/lst_steering.h"
 
 uint8_t lst_steering_sharp_dir = 0; // 0: left; 1: right
-float lst_steering_distance_mm = 0.0f;
+uint16_t lst_steering_distance = 0;
 
 void LST_Steering_Set()
 {
@@ -26,7 +26,7 @@ void LST_Steering_Set()
 
 		case LST_STEERING_SHARP:
 		  lst_control_steering = LST_Control_SteeringControllerSharp(
-		      lst_steering_sharp_dir, lst_steering_distance_mm);
+		      lst_steering_sharp_dir, lst_steering_distance);
 		  break;
 
 		case LST_STEERING_FOLLOW:
@@ -52,12 +52,12 @@ void LST_Steering_Follow()
 
 }
 
-void LST_Steering_Sharp(uint8_t sharp_dir, uint16_t distance_mm)
+void LST_Steering_Sharp(uint8_t sharp_dir, uint16_t distance)
 {
 
   lst_steering_type = LST_STEERING_SHARP;
   lst_steering_sharp_dir = sharp_dir;
-  lst_steering_distance_mm = distance_mm;
+  lst_steering_distance = distance;
 
 }
 
