@@ -37,6 +37,8 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN 0 */
+#include "lst_infra.h"
+
 extern uint8_t lst_inertial_data_ready;
 /* USER CODE END 0 */
 
@@ -102,6 +104,44 @@ void EXTI1_IRQHandler(void)
   LST_Inertial_WaitForSensorData();
 
   /* USER CODE END EXTI1_IRQn 1 */
+}
+
+/**
+* @brief This function handles EXTI line 4 interrupt.
+*/
+void EXTI4_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI4_IRQn 0 */
+  if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_4))  //PB4 láb éle
+  {
+    if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4))  //felfutó él
+    {
+      pulse = TIM8->CNT;
+      TIM8->CNT = 0;
+      infraPulses[infraPulseCounter] = pulse;
+      infraPulseCounter++;
+    }
+    else            //lefutó él
+    {
+      pulse = TIM8->CNT;
+      TIM8->CNT = 0;
+      infraPulses[infraPulseCounter] = - 1.0 * (double)pulse;
+      infraPulseCounter++;
+    }
+    if (RC5BitsCounter == 14)   //kiolvastuk az utolsó bitet is
+    {
+      RC5Word = 0;
+      for (int i = 0; i < 14; i++)
+        RC5Word += (RC5BitsBuffer[13 - i] << i);
+      RC5Reset();
+    }
+  }
+
+  /* USER CODE END EXTI4_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
+  /* USER CODE BEGIN EXTI4_IRQn 1 */
+
+  /* USER CODE END EXTI4_IRQn 1 */
 }
 
 /**

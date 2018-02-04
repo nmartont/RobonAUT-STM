@@ -31,8 +31,28 @@
 void LST_Infra_Init();
 uint8_t LST_Infra_Get_Direction();
 uint8_t LST_Infra_Get_Exit();
+void RC5Reset();
+uint8_t RC5CurrentBit(uint8_t edge, uint8_t lastBit, uint32_t pulse);
 
 /* External variables --------------------------------------------------------*/
 extern uint8_t lst_infra_is_available;
+
+extern uint32_t inputCapture;
+extern uint32_t ICValue1;
+extern uint32_t ICValue2;
+extern uint32_t highPulse;
+extern uint32_t lowPulse;
+extern uint32_t pulse;
+extern uint32_t infraT;
+extern uint32_t infraTolerance;
+extern uint8_t RC5BitsBuffer[20];
+extern uint8_t RC5BitsCounter;
+extern uint8_t RC5Bit;
+extern uint8_t RC5LastBit;
+extern uint16_t RC5Word;
+extern uint8_t infraAddress;
+extern uint8_t infraCommand;
+extern double infraPulses[100];
+extern uint8_t infraPulseCounter;
 
 #endif /* LST_INFRA_H_ */
