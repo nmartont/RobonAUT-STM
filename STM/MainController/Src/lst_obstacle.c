@@ -1638,3 +1638,22 @@ static void LST_Obs_GamePadHandler(){
     lst_obs_lap_mode = LST_OBS_LAP_MODE_TRAINSTOP;
   }
 }
+
+/**
+ * @brief DIP handler at the start
+ */
+void LST_Obs_DIP_Handler_Start(){
+  if(lst_dip_settings[1] == 1){
+    lst_obs_mode = LST_OBS_MODE_BT;
+  }
+  else{
+    lst_obs_mode = LST_OBS_MODE_LAP;
+  }
+
+  if(lst_dip_settings[2] == 1){
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+  }
+  else{
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_START;
+  }
+}
