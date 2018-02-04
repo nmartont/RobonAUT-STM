@@ -627,7 +627,7 @@ static void MX_TIM8_Init(void)
   TIM_IC_InitTypeDef sConfigIC;
 
   htim8.Instance = TIM8;
-  htim8.Init.Prescaler = 83;
+  htim8.Init.Prescaler = 166;
   htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim8.Init.Period = 5000;
   htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -805,6 +805,9 @@ static void MX_GPIO_Init(void)
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI1_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
 }
 
