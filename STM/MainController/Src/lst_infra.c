@@ -31,14 +31,7 @@ void LST_Infra_Init() {
 
 }
 
-/**
- * @brief Function that handles the timer capture callback
- */
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
-  if (htim == &htim8) {
 
-  }
-}
 
 uint8_t LST_Infra_Get_Direction(){
   return LST_INFRA_DIR_LEFT; // ToDo
