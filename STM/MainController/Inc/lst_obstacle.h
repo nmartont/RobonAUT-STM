@@ -22,6 +22,7 @@
 #include "control/lst_movement.h"
 #include "lst_sharp.h"
 #include "lst_infra.h"
+#include "stdlib.h" // abs function
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_OBS_STEERING_P 17000
@@ -62,7 +63,7 @@ void LST_Obs_Logic();
 #define LST_OBS_SEARCH_LINE_ERROR_THRESHOLD             100
 #define LST_OBS_SEARCH_LONG_LINE_THRESHOLD              20
 #define LST_OBS_SEARCH_ONE_LINE_BETWEEN_LONGS_THRESHOLD 1
-#define LST_OBS_SEARCH_SHARP_THRESHOLD                  50
+#define LST_OBS_SEARCH_SHARP_THRESHOLD                  30 //50
 #define LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD         300
 #define LST_OBS_SEARCH_LED_THRESHOLD                    150 //110
 #define LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD         7 //6
@@ -90,22 +91,38 @@ int16_t lst_obs_drone_takeoffTimer;
 uint8_t lst_obs_corner_stage;
 #define LST_OBS_COR_STAGE_APPROACH						0
 #define LST_OBS_COR_STAGE_PASSEDJUNCTION 			1
-#define LST_OBS_COR_STAGE_CURVEDLINEFOUND 		2
-#define LST_OBS_COR_STAGE_BACKING_FIRST				3
-#define LST_OBS_COR_STAGE_BACKING_SECOND			4
-#define LST_OBS_COR_STAGE_BACKING_THIRD				5
+#define LST_OBS_COR_STAGE_GETNEARWALL					2
+#define LST_OBS_COR_STAGE_CURVEDLINEFOUND 		3
+#define LST_OBS_COR_STAGE_BACKING_FIRST				4
+#define LST_OBS_COR_STAGE_BACKING_SECOND			5
 #define LST_OBS_COR_STAGE_OUTGOING						6
-#define LST_OBS_COR_STAGE_ALIGNMENT						7
-#define LST_OBS_COR_STAGE_EXIT								8
+#define LST_OBS_COR_STAGE_CENTER							7
+#define LST_OBS_COR_STAGE_ALIGNMENT						8
+#define LST_OBS_COR_STAGE_EXIT								9
+
+// Direction control
+uint8_t lst_obs_corner_directionControl;
+#define LST_OBS_COR_DIR_LEFT									0
+#define LST_OBS_COR_DIR_RIGHT									1
 
 // Steering
-#define LST_OBS_COR_STEERINGLOCK							1100 // Steering turned left
+#define LST_OBS_COR_STEERINGLOCK_LEFT					1100
+#define LST_OBS_COR_STEERINGLOCK_RIGHT				-900
 #define LST_OBS_COR_RIGHT_LOCK								-500
 #define LST_OBS_COR_LEFT_LOCK									500
 
 // Sharp
-uint16_t lst_obs_cor_rightSharp_previous;
-#define LST_OBS_COR_SHARP_DIST_WALL						280
+uint16_t lst_obs_cor_backingSharp_previous;
+#define LST_OBS_COR_SHARP_DIST_WALL						340 // 280 was too low
+#define LST_OBS_COR_SHARP_FAR_WALL						300
+#define LST_OBS_COR_SHARP_BACKING_WALL				340
+
+// Distance
+#define LST_OBS_COR_BACKING_DISTANCE					-900 // was -800, found corner...
+
+// Timing
+int16_t lst_obs_corner_junctionTimer;
+#define LST_OBS_COR_JUNCTIONTIMER_PERIOD			50
 
 /* Obs_Trainstop */
 
@@ -146,7 +163,13 @@ uint8_t lst_obs_convoy_stage;
 #define LST_OBS_CON_STAGE_FOLLOW				7 // Bang-bang type control
 #define LST_OBS_CON_STAGE_TURNOUT				8
 #define LST_OBS_CON_STAGE_FINDOUT				9
-#define LST_OBS_CON_STAGE_EXIT					10
+#define LST_OBS_CON_STAGE_LEAVELINE			10 // Leave that perpendicular line which fucks up the search mode
+#define LST_OBS_CON_STAGE_EXIT					11
+
+// Direction control
+uint8_t lst_obs_convoy_wallDirection; // Set in 'LST_Obs_Search_Sharp_Detection'
+#define LST_OBS_CON_WALLDIRECTION_LEFT	0
+#define LST_OBS_CON_WALLDIRECTION_RIGHT	1
 
 // Sharp
 #define LST_OBS_CON_SHARP_DIST_CAR			350 // Small-range sensor!
@@ -177,6 +200,9 @@ uint8_t lst_obs_con_steeringHigh;
 uint8_t lst_obs_con_steeringLow;
 #define LST_OBS_CON_STEERING_THRESHOLD	10
 #define LST_OBS_CON_STEERING_COUNT			4 //3
+
+// Distance
+#define LST_OBS_CON_DISTANCE_LEAVELINE	1200
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;

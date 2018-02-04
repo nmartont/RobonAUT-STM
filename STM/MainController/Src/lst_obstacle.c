@@ -315,7 +315,7 @@ static void LST_Obs_Search(){
       else{ // If long line detected
         // if there were at least 2 non-long lines between long lines
         if (lst_obs_search_cntr > LST_OBS_SEARCH_ONE_LINE_BETWEEN_LONGS_THRESHOLD){ // 1
-          // found double lines, traintracks
+          // found double lines, train tracks
           lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
           lst_obs_lap_mode = LST_OBS_LAP_MODE_TRAINSTOP;
         }
@@ -402,6 +402,17 @@ static void LST_Obs_Search_Reset(){
 
 static uint8_t LST_Obs_Search_Sharp_Detection(uint8_t sharp_number){
   if(sharp_number == 1){
+
+  	// Convoy direction control set
+  	if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD)
+  	{
+  		lst_obs_convoy_wallDirection = LST_OBS_CON_WALLDIRECTION_LEFT;
+  	}
+  	if (LST_Sharp_GetRightDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD)
+  	{
+  		lst_obs_convoy_wallDirection = LST_OBS_CON_WALLDIRECTION_RIGHT;
+  	}
+
     return
        (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD   &&
         LST_Sharp_GetRightDistance_mm() > LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD) ||
@@ -540,16 +551,56 @@ static void LST_Obs_Corner(){
 		if (lst_control_line_no > 1)
 			{
 
-			// Advance a certain distance to prepare for backing up
-			// (start the measurement)
-			//LST_Distance_Measure_mm(300); // NEXT STAGE A VERSION !!!
-
 			// Next stage
 			lst_obs_corner_stage =
-					LST_OBS_COR_STAGE_CURVEDLINEFOUND;
+					LST_OBS_COR_STAGE_GETNEARWALL;
+
+			LST_Steering_Lock(0); // Curved line would pull the steering
+
+			// Init variable
+			lst_obs_corner_junctionTimer = LST_OBS_COR_JUNCTIONTIMER_PERIOD;
 
 			}
 
+		break;
+
+	case LST_OBS_COR_STAGE_GETNEARWALL:
+
+		// Move forward more so the center of the junction is not identified
+		// as the point to start backing up. Multiple tests showed if the
+		// Wall is even 0.5cm closer to the junction center, then the car
+		// starts backing up there.
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+
+		if (lst_obs_corner_junctionTimer <= 0)
+		{
+
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_CURVEDLINEFOUND;
+
+			// Save direction control
+			if (LST_Sharp_GetRightDistance_mm() < LST_Sharp_GetLeftDistance_mm())
+			{
+
+				lst_obs_corner_directionControl = LST_OBS_COR_DIR_LEFT;
+
+			}
+			else
+			{
+
+				lst_obs_corner_directionControl = LST_OBS_COR_DIR_RIGHT;
+
+			}
+
+		}
+		else
+		{
+
+			lst_obs_corner_junctionTimer--;
+
+		}
 
 		break;
 
@@ -558,30 +609,11 @@ static void LST_Obs_Corner(){
 		// Lock because curved line interferes
 		LST_Steering_Lock(0);
 
-		/* A VERSION
-		// Continue ahead until the distance is reached
-		if (!LST_Distance_Measure_mm(0))
-		{
-
-			LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
-
-		}
-		else
-		{
-
-			LST_Movement_Stop(); // Not really needed
-
-			// Next stage
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING;
-
-		}
-		*/
-
-		// B VERSION - move until wall ends
-
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-		if (LST_Sharp_GetRightDistance_mm() > 200)
+		// Direction control (AND)
+		if ((LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL)
+				&& (LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL))
 		{
 
 			LST_Movement_Stop(); // Not really needed
@@ -589,30 +621,32 @@ static void LST_Obs_Corner(){
 			// Next stage
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
 
-			LST_Distance_Measure_mm(-800);
-
 		}
 
 		break;
 
 
-	// STAGE: back up until the wall to the right is lost
+	// STAGE: back up until the wall to the right/left is lost
 	case LST_OBS_COR_STAGE_BACKING_FIRST:
 
-		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
 
-		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+		// Direction control
+		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_LEFT);
+		else
+			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_RIGHT);
+
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
 		// Back up a bit to lose the wall to the right
-		if (LST_Distance_Measure_mm(0))
+		if (LST_Distance_Measure_mm(LST_OBS_COR_BACKING_DISTANCE))
 		{
 
 			// Next stage
 			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_SECOND;
 
 			// Init var for next
-			lst_obs_cor_rightSharp_previous = 10000;
+			lst_obs_cor_backingSharp_previous = 50000;
 
 		}
 
@@ -621,50 +655,62 @@ static void LST_Obs_Corner(){
 	// STAGE: Back up until the right Sharp distance is increasing again
 	case LST_OBS_COR_STAGE_BACKING_SECOND:
 
-		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
+		// Direction control
+		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_LEFT);
+		else
+			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_RIGHT);
 
-		//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
 		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
-		if (LST_Sharp_GetRightDistance_mm() > lst_obs_cor_rightSharp_previous)
-		{
+		// Direction control
 
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
-			//LST_Distance_Measure_mm(-150);
+		// Rising Sharp values AND close enough to wall
+		// Otherwise it detects the far corner
+		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+			if ((LST_Sharp_GetRawRightDistance() > lst_obs_cor_backingSharp_previous)
+					&& (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
+			{
 
-		}
+				lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
+
+				LST_Steering_Lock(0);
+
+				//LST_Distance_Measure_mm(-150);
+
+			}
+			else
+			{
+
+				lst_obs_cor_backingSharp_previous = LST_Sharp_GetRawRightDistance();
+
+			}
 		else
-		{
+			if ((LST_Sharp_GetRawLeftDistance() > lst_obs_cor_backingSharp_previous)
+					&& (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
+			{
 
-			lst_obs_cor_rightSharp_previous = LST_Sharp_GetRightDistance_mm();
+				lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
 
-		}
+				LST_Steering_Lock(0);
 
-		break;
-/*
-	// STAGE: Back up a bit more to align better TODO NOT NEEDED?
-	case LST_OBS_COR_STAGE_BACKING_THIRD:
+			}
+			else
+			{
 
-		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK);
+				lst_obs_cor_backingSharp_previous = LST_Sharp_GetRawLeftDistance();
 
-		// Back up a bit to lose the wall to the right
-		if (LST_Distance_Measure_mm(0))
-		{
-
-			// Next stage
-			lst_obs_corner_stage = lst_obs_corner_stage =
-					LST_OBS_COR_STAGE_OUTGOING;
-
-		}
+			}
 
 		break;
-*/
+
 	case LST_OBS_COR_STAGE_OUTGOING:
 
-		if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
+		if (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
 		{
 
 			// TODO STEERING CONTROL W/ SHARP
+			// TODO ADD direction control if implemented
 			LST_Steering_Lock(0);
 
 		}
@@ -678,13 +724,30 @@ static void LST_Obs_Corner(){
 		// Slow speed
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL) &&
-				(LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL))
+		if ((LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL) &&
+				(LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL))
 		{
 
-			// Between outgoing walls, heading for exit
+			// In the center of the intersection
 			lst_obs_corner_stage =
-								LST_OBS_COR_STAGE_ALIGNMENT;
+								LST_OBS_COR_STAGE_CENTER;
+
+		}
+
+		break;
+
+	case LST_OBS_COR_STAGE_CENTER:
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		// If between two walls (only check one! other can be far)
+		if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL) ||
+				((LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)))
+		{
+
+			lst_obs_corner_stage = LST_OBS_COR_STAGE_ALIGNMENT;
 
 		}
 
@@ -701,6 +764,22 @@ static void LST_Obs_Corner(){
 
 		}
 		else
+		{
+
+			LST_Steering_Lock(LST_OBS_COR_RIGHT_LOCK);
+
+		}
+
+		// Override previous if one sharp is too far from the wall
+		// Because of the sensor characteristics, if a side is to close
+		if (LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_FAR_WALL)
+		{
+
+			LST_Steering_Lock(LST_OBS_COR_LEFT_LOCK);
+
+		}
+
+		if (LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_FAR_WALL)
 		{
 
 			LST_Steering_Lock(LST_OBS_COR_RIGHT_LOCK);
@@ -756,18 +835,34 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 
 		LST_Movement_Stop();
 
+		// Direction control
 		// Wait for one car
-		if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
 		{
+			if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+			{
 
-			// Jump to next
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_WAIT;
+				// Jump to next
+				lst_obs_convoy_stage = LST_OBS_CON_STAGE_WAIT;
 
-			// Init variable
-			lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+				// Init variable
+				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
 
+			}
 		}
+		else
+		{
+			if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+			{
 
+				// Jump to next
+				lst_obs_convoy_stage = LST_OBS_CON_STAGE_WAIT;
+
+				// Init variable
+				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+
+			}
+		}
 
 		break;
 
@@ -777,8 +872,11 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 
 		LST_Movement_Stop();
 
+		// Direction control
 		// Wait until no car is seen
-		if (LST_Sharp_GetRightDistance_mm() > LST_OBS_CON_SHARP_DIST_CAR)
+		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+		{
+			if (LST_Sharp_GetRightDistance_mm() > LST_OBS_CON_SHARP_DIST_CAR)
 			{
 
 				// Jump to next
@@ -788,6 +886,20 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
 
 			}
+		}
+		else
+		{
+			if (LST_Sharp_GetLeftDistance_mm() > LST_OBS_CON_SHARP_DIST_CAR)
+			{
+
+				// Jump to next
+				lst_obs_convoy_stage = LST_OBS_CON_STAGE_COUNT;
+
+				// Init variable
+				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+
+			}
+		}
 
 		break;
 
@@ -812,19 +924,34 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 		else
 		{
 
+			// Direction control
 			// Reset counter if another car appears
-			if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
-			{
+			if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+				if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+				{
 
-				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+					lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
 
-			}
+				}
+				else
+				{
+
+					lst_obs_convoy_lastCarTimer--;
+
+				}
 			else
-			{
+				if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+				{
 
-				lst_obs_convoy_lastCarTimer--;
+					lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
 
-			}
+				}
+				else
+				{
+
+					lst_obs_convoy_lastCarTimer--;
+
+				}
 
 		}
 
@@ -832,7 +959,11 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 
 	case LST_OBS_CON_STAGE_TURNIN:
 
-		LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
+		// Direction control
+		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
+		else
+			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
 
 		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
@@ -1009,7 +1140,11 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 		lst_control_steeringP = LST_OBS_STEERING_P;
 		lst_control_steeringD = LST_OBS_STEERING_D;
 
-		LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
+		// Direction control
+		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
+		else
+			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
 
 		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
@@ -1036,6 +1171,21 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
 		if (lst_control_line_no > 0)
+		{
+
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_LEAVELINE;
+
+		}
+
+		break;
+
+	case LST_OBS_CON_STAGE_LEAVELINE:
+
+		LST_Steering_Follow();
+
+		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+
+		if (LST_Distance_Measure_mm(LST_OBS_CON_DISTANCE_LEAVELINE))
 		{
 
 			lst_obs_convoy_stage = LST_OBS_CON_STAGE_EXIT;
