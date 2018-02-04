@@ -22,6 +22,7 @@
 #include "control/lst_movement.h"
 #include "lst_sharp.h"
 #include "lst_infra.h"
+#include "lst_dip.h"
 #include "stdlib.h" // abs function
 
 /* Defines -------------------------------------------------------------------*/
@@ -45,6 +46,7 @@
 /* Function prototypes -------------------------------------------------------*/
 void LST_Obs_Init();
 void LST_Obs_Logic();
+void LST_Obs_DIP_Handler_Start();
 
 /* Private variables ---------------------------------------------------------*/
 
