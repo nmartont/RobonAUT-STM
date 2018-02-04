@@ -22,10 +22,12 @@
 #define LST_MOVEMENT_FB_SLOW							70
 #define LST_MOVEMENT_FB_MEDIUM						100
 #define LST_MOVEMENT_FB_FAST							120
+#define LST_MOVEMENT_FB_UFAST							250
 #define LST_MOVEMENT_FB_BACKING_SLOWEST   -80
 
 #define LST_MOVEMENT_BACKING_SLOW					-440
 #define LST_MOVEMENT_FAST									600
+#define LST_MOVEMENT_BRAKING							-800
 
 // Variables
 

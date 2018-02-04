@@ -1345,7 +1345,7 @@ static void LST_Obs_Barrel(){
 			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_ONTHERAMP;
 
 			// Init variable
-			lst_obs_barrel_rampTimer = LST_OBS_BRL_RAMPTIMER_PERIOD;
+			lst_obs_barrel_rampSafetyTimer = LST_OBS_BRL_RAMPSAFETYTIMER_PERIOD;
 
 		}
 		else
@@ -1365,19 +1365,30 @@ static void LST_Obs_Barrel(){
 
 		LST_Steering_Lock(0);
 
-		if (lst_obs_barrel_rampTimer <= 0)
+		if (lst_obs_barrel_rampSafetyTimer <= 0)
 		{
 
 			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_INTHETUBE;
 
 			// Init variable
-			lst_obs_barrel_tubeTimer = LST_OBS_BRL_TUBETIMER_PERIOD;
+			lst_obs_barrel_tubeSafetyTimer = LST_OBS_BRL_TUBESAFETYTIMER_PERIOD;
 
 		}
 		else
 		{
 
-			lst_obs_barrel_rampTimer--;
+			lst_obs_barrel_rampSafetyTimer--;
+
+			if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_BRL_SHARP_INTHETUBE)
+					&& (LST_Sharp_GetRightDistance_mm() < LST_OBS_BRL_SHARP_INTHETUBE))
+			{
+
+				lst_obs_barrel_stage = LST_OBS_BRL_STAGE_INTHETUBE;
+
+				// Init variable
+				lst_obs_barrel_tubeSafetyTimer = LST_OBS_BRL_TUBESAFETYTIMER_PERIOD;
+
+			}
 
 		}
 
@@ -1389,23 +1400,41 @@ static void LST_Obs_Barrel(){
 
 		LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_FAST);
+		//LST_Movement_Move(LST_MOVEMENT_FB_UFAST);
 
-		if (lst_obs_barrel_tubeTimer <= 0)
+		LST_Movement_Move_Encoderless(LST_MOVEMENT_FAST);
+
+		if (lst_obs_barrel_tubeSafetyTimer <= 0)
 		{
 
-			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
+			//lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE; // TODO SAFETY STOP
+
+			lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
 
 		}
 		else
 		{
 
-			lst_obs_barrel_tubeTimer--;
+			lst_obs_barrel_tubeSafetyTimer--;
+
+			// TODO softer detection?
+			if ((LST_Sharp_GetLeftDistance_mm() > LST_OBS_BRL_SHARP_INTHETUBE)
+					|| (LST_Sharp_GetRightDistance_mm() > LST_OBS_BRL_SHARP_INTHETUBE))
+			{
+
+				//lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
+				lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE;// TODO SAFETY STOP
+
+				lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
+
+			}
 
 		}
 
 		break;
 
+		// TODO SKIPPED FOR NOW
 	case LST_OBS_BRL_STAGE_OUTGOING:
 
 		// On the exit ramp
@@ -1423,10 +1452,36 @@ static void LST_Obs_Barrel(){
 
 		break;
 
+	case LST_OBS_BRL_STAGE_BRAKE:
+
+		LST_Steering_Lock(0);
+		LST_Movement_Move_Encoderless(LST_MOVEMENT_BRAKING);
+
+		if (lst_obs_barrel_brakeTimer <= 0)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_EXIT;
+
+		}
+		else
+		{
+
+			lst_obs_barrel_brakeTimer--;
+
+		}
+
+		break;
+
 	case LST_OBS_BRL_STAGE_EXIT:
 
 		// Search mode
-		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+		//lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+		// Stop
+		LST_Movement_Stop();
+		LST_Steering_Lock(0);
+
+		lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
 
 		break;
 

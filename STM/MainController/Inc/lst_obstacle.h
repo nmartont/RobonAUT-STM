@@ -233,15 +233,21 @@ uint8_t lst_obs_barrel_stage;
 #define LST_OBS_BRL_STAGE_ONTHERAMP				2
 #define LST_OBS_BRL_STAGE_INTHETUBE				3
 #define LST_OBS_BRL_STAGE_OUTGOING				4
-#define LST_OBS_BRL_STAGE_EXIT						5
+#define LST_OBS_BRL_STAGE_BRAKE						5
+#define LST_OBS_BRL_STAGE_EXIT						6
 
 // Timing
 int16_t lst_obs_barrel_approachTimer;
-#define LST_OBS_BRL_APPROACHTIMER_PERIOD	300 // 200
-int16_t lst_obs_barrel_rampTimer;
-#define LST_OBS_BRL_RAMPTIMER_PERIOD			50 // 0.5s
-int16_t lst_obs_barrel_tubeTimer;
-#define LST_OBS_BRL_TUBETIMER_PERIOD			200
+#define LST_OBS_BRL_APPROACHTIMER_PERIOD			300 // 200
+int16_t lst_obs_barrel_rampSafetyTimer;
+#define LST_OBS_BRL_RAMPSAFETYTIMER_PERIOD		130
+int16_t lst_obs_barrel_tubeSafetyTimer;
+#define LST_OBS_BRL_TUBESAFETYTIMER_PERIOD		200
+int16_t lst_obs_barrel_brakeTimer;
+#define LST_OBS_BRL_BRAKETIMER_PERIOD					80
+
+// Sharp
+#define LST_OBS_BRL_SHARP_INTHETUBE						370
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;
@@ -256,7 +262,7 @@ uint8_t lst_obs_roundabout_cntr;
 #define LST_OBS_RND_STAGE_EXIT						6
 
 #define LST_OBS_RND_SHARP_DIST_APPROACH   900 // bad reflection? really 30cm
-#define LST_OBS_RND_INFRA_ERROR_MAX       0 // FixMe NMT
+#define LST_OBS_RND_INFRA_ERROR_MAX       300 // FixMe NMT
 
 #define LST_OBS_RND_FIRST_LEFT_TURN_VALUE  1000 // ToDo is the sign correct??
 #define LST_OBS_RND_FIRST_RIGHT_TURN_VALUE -1000
