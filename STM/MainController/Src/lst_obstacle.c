@@ -1183,7 +1183,7 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 
 		LST_Steering_Follow();
 
-		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
 		if (LST_Distance_Measure_mm(LST_OBS_CON_DISTANCE_LEAVELINE))
 		{
@@ -1209,13 +1209,6 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
  * @brief Mode for the barrel
  */
 static void LST_Obs_Barrel(){
-  // ToDo
-
-	// TEST ONLY
-	LST_Steering_Sharp(0, LST_OBS_RND_SHARP_SIDE_DIST);
-	LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
-
-	return; // TODO REMOVE AFTER TESTS
 
 	// Barrel code
 
@@ -1263,7 +1256,7 @@ static void LST_Obs_Barrel(){
 
 		// Power through the ramp
 
-		LST_Movement_Move_EncoderLess(LST_MOVEMENT_FAST);
+		LST_Movement_Move_Encoderless(LST_MOVEMENT_FAST);
 
 		LST_Steering_Lock(0);
 
@@ -1271,6 +1264,9 @@ static void LST_Obs_Barrel(){
 		{
 
 			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_INTHETUBE;
+
+			// Init variable
+			lst_obs_barrel_tubeTimer = LST_OBS_BRL_TUBETIMER_PERIOD;
 
 		}
 		else
@@ -1286,13 +1282,39 @@ static void LST_Obs_Barrel(){
 
 		// Quickly through the tube
 
+		LST_Steering_Lock(0);
+
 		LST_Movement_Move(LST_MOVEMENT_FB_FAST);
+
+		if (lst_obs_barrel_tubeTimer <= 0)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
+
+		}
+		else
+		{
+
+			lst_obs_barrel_tubeTimer--;
+
+		}
 
 		break;
 
 	case LST_OBS_BRL_STAGE_OUTGOING:
 
 		// On the exit ramp
+
+		LST_Steering_Lock(0);
+
+		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+
+		if (lst_control_line_no == 1)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_EXIT;
+
+		}
 
 		break;
 
@@ -1335,7 +1357,7 @@ static void LST_Obs_Roundabout(){
           // Set default values and hope for the best
           lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FIRST_TURN;
           lst_obs_roundabout_turnInTimer = LST_OBS_RND_TURNINTIMER_PERIOD;
-          lst_obs_roundabout_direction = LST_INFRA_DIR_LEFT;
+          lst_obs_roundabout_direction = LST_INFRA_DIR_RIGHT;
           lst_obs_roundabout_exit = LST_INFRA_EXIT_THREE;
         }
       }

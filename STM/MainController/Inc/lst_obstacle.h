@@ -183,7 +183,7 @@ uint8_t lst_obs_convoy_follow_state;
 int16_t lst_obs_convoy_lastCarTimer;
 #define LST_OBS_CON_LASTCARTIMER_PERIOD	200
 int16_t lst_obs_convoy_turnTimer;
-#define LST_OBS_CON_TURNTIMER_PERIOD		80 //50
+#define LST_OBS_CON_TURNTIMER_PERIOD		60 // 80, was too sharp angle
 int16_t lst_obs_convoy_attachTimer;
 #define LST_OBS_CON_ATTACHTIMER_PERIOD	400 //50 Attach until curve is reached
 
@@ -222,6 +222,8 @@ int16_t lst_obs_barrel_approachTimer;
 #define LST_OBS_BRL_APPROACHTIMER_PERIOD	200 // 2s
 int16_t lst_obs_barrel_rampTimer;
 #define LST_OBS_BRL_RAMPTIMER_PERIOD			50 // 0.5s
+int16_t lst_obs_barrel_tubeTimer;
+#define LST_OBS_BRL_TUBETIMER_PERIOD			100
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;
