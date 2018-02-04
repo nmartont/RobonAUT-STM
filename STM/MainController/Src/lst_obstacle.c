@@ -1362,6 +1362,8 @@ static void LST_Obs_Roundabout(){
     if (lst_obs_roundabout_turnInTimer <= 0)
     {
     	lst_obs_roundabout_stage = LST_OBS_RND_STAGE_TRAVEL;
+    	// Init variable for the stage after the next
+    	lst_obs_roundabout_turnOutTimer = LST_OBS_RND_TURNOUTTIMER_PERIOD;
     }
     else
     {
@@ -1428,13 +1430,33 @@ static void LST_Obs_Roundabout(){
     case LST_INFRA_DIR_RIGHT:
       LST_Steering_Lock(LST_OBS_RND_LAST_RIGHT_TURN_VALUE); // -1000
       break;
+
     }
 
-    // Travel until the car hits a line
-    if(lst_control_line_no == 1){
-      lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FINISH;
-    }
+		if (lst_obs_roundabout_turnOutTimer<=0)
+		{
+			lst_obs_roundabout_stage = LST_OBS_RND_STAGE_ALIGN;
+		}
+		else
+		{
+			lst_obs_roundabout_turnOutTimer--;
+		}
+
     break;
+
+  case LST_OBS_RND_STAGE_ALIGN:
+
+  	// Lock straight until line found
+
+  	LST_Steering_Lock(0);
+  	LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+  	// Travel until the car hits a line
+		if(lst_control_line_no == 1){
+			lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FINISH;
+		}
+
+  	break;
 
   case LST_OBS_RND_STAGE_FINISH:
     // Line follow, Go slowly
@@ -1443,10 +1465,16 @@ static void LST_Obs_Roundabout(){
 
     // Go forward like 400mm, then go into SEARCH mode
     if (LST_Distance_Measure_mm(LST_OBS_RND_FINISH_DISTANCE)){ // 400
-      // Search mode
-      lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    	lst_obs_roundabout_stage = LST_OBS_RND_STAGE_EXIT;
     }
     break;
+
+  case LST_OBS_RND_STAGE_EXIT:
+
+  	 // Search mode
+	 lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+	 break;
   }
 }
 

@@ -231,7 +231,9 @@ uint8_t lst_obs_roundabout_cntr;
 #define LST_OBS_RND_STAGE_FIRST_TURN      1
 #define LST_OBS_RND_STAGE_TRAVEL          2
 #define LST_OBS_RND_STAGE_LAST_TURN       3
-#define LST_OBS_RND_STAGE_FINISH          4
+#define LST_OBS_RND_STAGE_ALIGN						4
+#define LST_OBS_RND_STAGE_FINISH          5
+#define LST_OBS_RND_STAGE_EXIT						6
 
 #define LST_OBS_RND_SHARP_DIST_APPROACH   900 // bad reflection? really 30cm
 #define LST_OBS_RND_INFRA_ERROR_MAX       0 // FixMe NMT
@@ -243,8 +245,8 @@ uint8_t lst_obs_roundabout_cntr;
 
 #define LST_OBS_RND_FIRST_TURN_DISTANCE   350
 
-#define LST_OBS_RND_TRAVEL_DISTANCE_ONE   1000
-#define LST_OBS_RND_TRAVEL_DISTANCE_TWO   2000
+#define LST_OBS_RND_TRAVEL_DISTANCE_ONE   500
+#define LST_OBS_RND_TRAVEL_DISTANCE_TWO   1800
 #define LST_OBS_RND_TRAVEL_DISTANCE_THREE 3200
 
 #define LST_OBS_RND_FINISH_DISTANCE     400
@@ -254,6 +256,8 @@ uint8_t lst_obs_roundabout_cntr;
 // Timing
 int16_t lst_obs_roundabout_turnInTimer;
 #define LST_OBS_RND_TURNINTIMER_PERIOD	180
+int16_t lst_obs_roundabout_turnOutTimer;
+#define LST_OBS_RND_TURNOUTTIMER_PERIOD	50
 
 /* Obs End */
 #define LST_OBS_END_DISTANCE_MM             300
