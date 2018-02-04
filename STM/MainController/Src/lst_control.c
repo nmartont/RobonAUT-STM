@@ -276,6 +276,33 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
 }
 
 /**
+ * @brief P controller for the Sharps
+ */
+int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist){
+  uint16_t error_signal = 0;
+  int32_t str_cntrl_result = 0;
+
+  // ToDo test
+
+  if(sharp_dir == 0){ // left
+    error_signal = dist - LST_Sharp_GetLeftDistance_mm();
+  }else{              // right
+    error_signal = -(dist - LST_Sharp_GetRightDistance_mm());
+  }
+
+  /* System input */
+  int32_t system_input = LST_CONTROL_SHARP_P*error_signal; // Todo is this good?
+
+  str_cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
+
+  /* Max/Min */
+  if (str_cntrl_result < LST_TIM_SERVO_PWM_MIN) str_cntrl_result = LST_TIM_SERVO_PWM_MIN;
+  if (str_cntrl_result > LST_TIM_SERVO_PWM_MAX) str_cntrl_result = LST_TIM_SERVO_PWM_MAX;
+
+  return str_cntrl_result;
+}
+
+/**
  * @brief PID controller for the speed
  */
 int32_t LST_Control_SpeedController(int16_t reference){

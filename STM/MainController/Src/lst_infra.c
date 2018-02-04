@@ -11,6 +11,7 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
+uint8_t lst_infra_is_available = LST_INFRA_NOT_AVAILABLE;
 
 /* External variables --------------------------------------------------------*/
 
@@ -37,4 +38,12 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
   if (htim == &htim8) {
 
   }
+}
+
+uint8_t LST_Infra_Get_Direction(){
+  return LST_INFRA_DIR_LEFT; // ToDo
+}
+
+uint8_t LST_Infra_Get_Exit(){
+  return LST_INFRA_EXIT_ONE; // ToDo
 }

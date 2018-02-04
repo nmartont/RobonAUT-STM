@@ -17,10 +17,22 @@
 #include "lst_timer.h"
 
 /* Defines -------------------------------------------------------------------*/
+#define LST_INFRA_NOT_AVAILABLE   0
+#define LST_INFRA_VAILABLE        1
+
+#define LST_INFRA_DIR_LEFT        0
+#define LST_INFRA_DIR_RIGHT       1
+
+#define LST_INFRA_EXIT_ONE        1
+#define LST_INFRA_EXIT_TWO        2
+#define LST_INFRA_EXIT_THREE      3
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Infra_Init();
+uint8_t LST_Infra_Get_Direction();
+uint8_t LST_Infra_Get_Exit();
 
 /* External variables --------------------------------------------------------*/
+extern uint8_t lst_infra_is_available;
 
 #endif /* LST_INFRA_H_ */

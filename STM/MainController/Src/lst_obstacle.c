@@ -19,6 +19,8 @@ uint8_t lst_obs_search_mode =       LST_OBS_SEARCH_MODE_BEGIN;
 uint8_t lst_obs_search_cntr =       0;
 uint8_t lst_obs_search_line_no =    0;
 
+uint8_t lst_obs_roundabout_direction = LST_INFRA_DIR_LEFT;
+uint8_t lst_obs_roundabout_exit =      LST_INFRA_EXIT_ONE;
 
 /* External variables --------------------------------------------------------*/
 
@@ -1069,12 +1071,129 @@ static void LST_Obs_Barrel(){
  * @brief Mode for the roundabout
  */
 static void LST_Obs_Roundabout(){
-	// ToDo TEST 2018. 02. 02.
+	// ToDo TEST
 
-	LST_Steering_Lock(0);
+  LST_Steering_Follow();
+  LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-	LST_Movement_Stop();
+  switch (lst_obs_roundabout_stage){
+  case LST_OBS_RND_STAGE_APPROACH:
+    // Approach the roundabout with Sharps
+    if(LST_Sharp_GetFrontDistance_mm() < LST_OBS_RND_SHARP_DIST_APPROACH){ // 400
+      // Stop, wait for Infra
+      LST_Movement_Stop();
+      // Check if Infra is available
+      if(lst_infra_is_available){
+        lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FIRST_TURN;
+        lst_obs_roundabout_direction = LST_Infra_Get_Direction();
+        lst_obs_roundabout_exit = LST_Infra_Get_Exit();
+      }
+      else{
+        lst_obs_roundabout_cntr++;
+        if(lst_obs_roundabout_cntr>LST_OBS_RND_INFRA_ERROR_MAX){ // 200
+          // Set default values and hope for the best
+          lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FIRST_TURN;
+          lst_obs_roundabout_direction = LST_INFRA_DIR_LEFT;
+          lst_obs_roundabout_exit = LST_INFRA_EXIT_ONE;
+        }
+      }
+    }
+    break;
 
+  case LST_OBS_RND_STAGE_FIRST_TURN:
+    // Go slowly
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+    // Check direction for the turn
+    switch (lst_obs_roundabout_direction){
+    case LST_INFRA_DIR_LEFT:
+      // Lock steering to the left
+      LST_Steering_Lock(LST_OBS_RND_FIRST_LEFT_TURN_VALUE);  // -1000
+      break;
+    case LST_INFRA_DIR_RIGHT:
+      // Lock steering to the right
+      LST_Steering_Lock(LST_OBS_RND_FIRST_RIGHT_TURN_VALUE); // +1000
+      break;
+    }
+
+    // Go forward like 30cm
+    if (!LST_Distance_Measure_mm(LST_OBS_RND_FIRST_TURN_DISTANCE)){
+      LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    }
+    else{
+    // Switch to travel mode
+      lst_obs_roundabout_stage = LST_OBS_RND_STAGE_TRAVEL;
+    }
+    break;
+
+  case LST_OBS_RND_STAGE_TRAVEL:
+    // Go slowly
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+    // Based on direction, control steering to left/right sharp sensor
+    switch (lst_obs_roundabout_direction){
+    case LST_INFRA_DIR_LEFT:
+      // Control to left Sharp sensor
+      LST_Steering_Sharp(0, LST_OBS_RND_SHARP_SIDE_DIST);
+      break;
+    case LST_INFRA_DIR_RIGHT:
+      // Control to right Sharp sensor
+      LST_Steering_Sharp(0, LST_OBS_RND_SHARP_SIDE_DIST);
+      break;
+    }
+
+    // Based on exit, travel some distance
+    switch (lst_obs_roundabout_exit){
+    case LST_INFRA_EXIT_ONE:
+      if (LST_Distance_Measure_mm(LST_OBS_RND_TRAVEL_DISTANCE_ONE)){
+        lst_obs_roundabout_stage = LST_OBS_RND_STAGE_LAST_TURN;
+      }
+      break;
+    case LST_INFRA_EXIT_TWO:
+      if (LST_Distance_Measure_mm(LST_OBS_RND_TRAVEL_DISTANCE_TWO)){
+        lst_obs_roundabout_stage = LST_OBS_RND_STAGE_LAST_TURN;
+      }
+      break;
+    case LST_INFRA_EXIT_THREE:
+      if (LST_Distance_Measure_mm(LST_OBS_RND_TRAVEL_DISTANCE_THREE)){
+        lst_obs_roundabout_stage = LST_OBS_RND_STAGE_LAST_TURN;
+      }
+      break;
+    }
+    break;
+
+  case LST_OBS_RND_STAGE_LAST_TURN:
+    // Go slowly
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+    // Based on direction, fix steering
+    switch (lst_obs_roundabout_direction){
+    case LST_INFRA_DIR_LEFT:
+      LST_Steering_Lock(LST_OBS_RND_LAST_LEFT_TURN_VALUE);  // -1000
+      break;
+    case LST_INFRA_DIR_RIGHT:
+      LST_Steering_Lock(LST_OBS_RND_LAST_RIGHT_TURN_VALUE); // +1000
+      break;
+    }
+
+    // Travel until the car hits a line
+    if(lst_control_line_no == 1){
+      lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FINISH;
+    }
+    break;
+
+  case LST_OBS_RND_STAGE_FINISH:
+    // Line follow, Go slowly
+    LST_Steering_Follow();
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+    // Go forward like 400mm, then go into SEARCH mode
+    if (LST_Distance_Measure_mm(LST_OBS_RND_FINISH_DISTANCE)){ // 400
+      // Search mode
+      lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    }
+    break;
+  }
 }
 
 /**
@@ -1321,6 +1440,8 @@ static void LST_Obs_ResetStateMachine(){
   lst_obs_convoy_stage = 0;
   lst_obs_roundabout_stage = 0;
   lst_obs_barrel_stage = 0;
+
+  lst_obs_roundabout_cntr = 0;
 
   // ToDo reset other variables
   LST_Obs_Search_Reset();

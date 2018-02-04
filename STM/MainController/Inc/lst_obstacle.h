@@ -21,6 +21,7 @@
 #include "control/lst_distance.h"
 #include "control/lst_movement.h"
 #include "lst_sharp.h"
+#include "lst_infra.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_OBS_STEERING_P 17000
@@ -179,6 +180,31 @@ uint8_t lst_obs_con_steeringLow;
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;
+uint8_t lst_obs_roundabout_cntr;
+
+#define LST_OBS_RND_STAGE_APPROACH        0
+#define LST_OBS_RND_STAGE_FIRST_TURN      1
+#define LST_OBS_RND_STAGE_TRAVEL          2
+#define LST_OBS_RND_STAGE_LAST_TURN       3
+#define LST_OBS_RND_STAGE_FINISH          4
+
+#define LST_OBS_RND_SHARP_DIST_APPROACH   400
+#define LST_OBS_RND_INFRA_ERROR_MAX       200
+
+#define LST_OBS_RND_FIRST_LEFT_TURN_VALUE  -1000 // ToDo is the sign correct??
+#define LST_OBS_RND_FIRST_RIGHT_TURN_VALUE 1000
+#define LST_OBS_RND_LAST_LEFT_TURN_VALUE   -1000
+#define LST_OBS_RND_LAST_RIGHT_TURN_VALUE  1000
+
+#define LST_OBS_RND_FIRST_TURN_DISTANCE   300
+
+#define LST_OBS_RND_TRAVEL_DISTANCE_ONE   500
+#define LST_OBS_RND_TRAVEL_DISTANCE_TWO   750
+#define LST_OBS_RND_TRAVEL_DISTANCE_THREE 1000
+
+#define LST_OBS_RND_FINISH_DISTANCE     400
+
+#define LST_OBS_RND_SHARP_SIDE_DIST     200
 
 /* Obs_Barrel */
 uint8_t lst_obs_barrel_stage;
