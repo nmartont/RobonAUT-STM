@@ -204,6 +204,23 @@ uint8_t lst_obs_con_steeringLow;
 // Distance
 #define LST_OBS_CON_DISTANCE_LEAVELINE	1200
 
+/* Obs_Barrel */
+
+// Stages
+uint8_t lst_obs_barrel_stage;
+#define LST_OBS_BRL_STAGE_APPROACH				0
+#define LST_OBS_BRL_STAGE_APPROACHRAMP		1
+#define LST_OBS_BRL_STAGE_ONTHERAMP				2
+#define LST_OBS_BRL_STAGE_INTHETUBE				3
+#define LST_OBS_BRL_STAGE_OUTGOING				4
+#define LST_OBS_BRL_STAGE_EXIT						5
+
+// Timing
+int16_t lst_obs_barrel_approachTimer;
+#define LST_OBS_BRL_APPROACHTIMER_PERIOD	200 // 2s
+int16_t lst_obs_barrel_rampTimer;
+#define LST_OBS_BRL_RAMPTIMER_PERIOD			50 // 0.5s
+
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;
 uint8_t lst_obs_roundabout_cntr;
@@ -231,9 +248,6 @@ uint8_t lst_obs_roundabout_cntr;
 #define LST_OBS_RND_FINISH_DISTANCE     400
 
 #define LST_OBS_RND_SHARP_SIDE_DIST     600
-
-/* Obs_Barrel */
-uint8_t lst_obs_barrel_stage;
 
 /* Obs End */
 #define LST_OBS_END_DISTANCE_MM             300
