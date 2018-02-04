@@ -90,20 +90,20 @@ int16_t LST_TIM_CalculateSpeed(){
   return speed;
 }
 
-/**
- * @brief Function that handles the timer elapsed callback
- */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-
-	// Infra timer
-	if (htim == &htim8)
-	{
-
-
-
-	}
-
-}
+///**
+// * @brief Function that handles the timer elapsed callback
+// */
+//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+//
+//	// Infra timer
+//	if (htim == &htim8)
+//	{
+//
+//
+//
+//	}
+//
+//}
 
 /**
  * @brief Function that handles the timer capture callback
