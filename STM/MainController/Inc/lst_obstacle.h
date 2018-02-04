@@ -34,6 +34,7 @@
 #define LST_OBS_MODE_NO_CONTROL     2
 
 #define LST_OBS_LAP_MODE_START      10
+#define LST_OBS_LAP_MODE_STARTER		19
 #define LST_OBS_LAP_MODE_SEARCH     11
 #define LST_OBS_LAP_MODE_DRONE      12
 #define LST_OBS_LAP_MODE_CORNER     13
@@ -69,6 +70,18 @@ void LST_Obs_DIP_Handler_Start();
 #define LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD         300
 #define LST_OBS_SEARCH_LED_THRESHOLD                    150 //110
 #define LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD         7 //6
+
+/* Obs_Start */
+
+// Stages
+uint8_t lst_obs_starter_stage;
+#define LST_OBS_STA_STAGE_PREPARE							0
+#define LST_OBS_STA_STAGE_FORWARD							1
+#define LST_OBS_STA_STAGE_EXIT								2
+
+// Timing
+int16_t lst_obs_starter_forwardTimer;
+#define LST_OBS_STA_FORWARDTIMER_PERIOD				250
 
 /* Obs_Drone */
 

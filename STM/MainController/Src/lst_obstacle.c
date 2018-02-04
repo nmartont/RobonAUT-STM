@@ -29,6 +29,7 @@ static void LST_Obs_ResetStateMachine();
 static void LST_Obs_GamePadHandler();
 static void LST_Obs_StateMachine();
 static void LST_Obs_Lap();
+static void LST_Obs_Starter();
 static void LST_Obs_Search();
 static void LST_Obs_Drone();
 static void LST_Obs_Corner();
@@ -118,9 +119,12 @@ static void LST_Obs_Lap(){
     /* Return if the radio hasn't received the start message */
     if(lst_radio_msg_0_received != LST_RADIO_MSG_RECEIVED) return;
 
-    /* Switch to SEARCH mode */
-    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    /* Switch to STARTER mode (leave gate) */
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_STARTER;
     break;
+  case LST_OBS_LAP_MODE_STARTER:
+  	LST_Obs_Starter();
+  	break;
   case LST_OBS_LAP_MODE_SEARCH:
     LST_Obs_Search();
     break;
@@ -148,6 +152,35 @@ static void LST_Obs_Lap(){
   default:
     break;
   }
+}
+
+static void LST_Obs_Starter(){
+
+	switch (lst_obs_starter_stage)
+	{
+
+	case LST_OBS_STA_STAGE_PREPARE:
+		lst_obs_starter_forwardTimer = LST_OBS_STA_FORWARDTIMER_PERIOD;
+		lst_obs_starter_stage = LST_OBS_STA_STAGE_FORWARD;
+		break;
+	case LST_OBS_STA_STAGE_FORWARD:
+		LST_Steering_Follow();
+		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+		if (lst_obs_starter_forwardTimer <= 0)
+		{
+			lst_obs_starter_stage = LST_OBS_STA_STAGE_EXIT;
+		}
+		else
+		{
+			lst_obs_starter_forwardTimer--;
+		}
+		break;
+	case LST_OBS_STA_STAGE_EXIT:
+		// Search mode
+		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+		break;
+	}
+
 }
 
 /**
@@ -1802,6 +1835,7 @@ static void LST_Obs_ResetStateMachine(){
   lst_obs_convoy_stage = 0;
   lst_obs_roundabout_stage = 0;
   lst_obs_barrel_stage = 0;
+  lst_obs_starter_stage = 0;
 
   lst_obs_roundabout_cntr = 0;
 
