@@ -287,7 +287,7 @@ int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist){
   if(sharp_dir == 0){ // left
     error_signal = -(dist - LST_Sharp_GetRawLeftDistance()); // Raw: inverted
   }else{              // right
-    error_signal = dist - LST_Sharp_GetRightDistance_mm();
+    error_signal = dist - LST_Sharp_GetRawRightDistance();
   }
 
   /* System input */

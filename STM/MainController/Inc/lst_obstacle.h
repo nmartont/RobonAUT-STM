@@ -249,7 +249,7 @@ uint8_t lst_obs_roundabout_cntr;
 
 #define LST_OBS_RND_FINISH_DISTANCE     400
 
-#define LST_OBS_RND_SHARP_SIDE_DIST     600
+#define LST_OBS_RND_SHARP_SIDE_DIST     600 // Raw shortSharp value
 
 /* Obs End */
 #define LST_OBS_END_DISTANCE_MM             300
