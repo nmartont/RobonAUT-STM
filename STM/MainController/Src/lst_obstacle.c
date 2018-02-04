@@ -1350,11 +1350,11 @@ static void LST_Obs_Roundabout(){
     switch (lst_obs_roundabout_direction){
     case LST_INFRA_DIR_LEFT:
       // Lock steering to the left
-      LST_Steering_Lock(LST_OBS_RND_FIRST_LEFT_TURN_VALUE);  // -1000
+      LST_Steering_Lock(LST_OBS_RND_FIRST_LEFT_TURN_VALUE);  // +1000
       break;
     case LST_INFRA_DIR_RIGHT:
       // Lock steering to the right
-      LST_Steering_Lock(LST_OBS_RND_FIRST_RIGHT_TURN_VALUE); // +1000
+      LST_Steering_Lock(LST_OBS_RND_FIRST_RIGHT_TURN_VALUE); // -1000
       break;
     }
 
@@ -1387,12 +1387,12 @@ static void LST_Obs_Roundabout(){
     // Based on direction, control steering to left/right sharp sensor
     switch (lst_obs_roundabout_direction){
     case LST_INFRA_DIR_LEFT:
-      // Control to left Sharp sensor
-      LST_Steering_Sharp(0, LST_OBS_RND_SHARP_SIDE_DIST);
+      // Control to RIGHT Sharp sensor
+      LST_Steering_Sharp(1, LST_OBS_RND_SHARP_SIDE_DIST);
       break;
     case LST_INFRA_DIR_RIGHT:
-      // Control to right Sharp sensor
-      LST_Steering_Sharp(1, LST_OBS_RND_SHARP_SIDE_DIST);
+      // Control to LEFT Sharp sensor
+      LST_Steering_Sharp(0, LST_OBS_RND_SHARP_SIDE_DIST);
       break;
     }
 
@@ -1423,10 +1423,10 @@ static void LST_Obs_Roundabout(){
     // Based on direction, fix steering
     switch (lst_obs_roundabout_direction){
     case LST_INFRA_DIR_LEFT:
-      LST_Steering_Lock(LST_OBS_RND_LAST_LEFT_TURN_VALUE);  // -1000
+      LST_Steering_Lock(LST_OBS_RND_LAST_LEFT_TURN_VALUE);  // 1000
       break;
     case LST_INFRA_DIR_RIGHT:
-      LST_Steering_Lock(LST_OBS_RND_LAST_RIGHT_TURN_VALUE); // +1000
+      LST_Steering_Lock(LST_OBS_RND_LAST_RIGHT_TURN_VALUE); // -1000
       break;
     }
 
