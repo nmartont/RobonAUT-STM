@@ -622,7 +622,7 @@ static void MX_TIM6_Init(void)
 static void MX_TIM8_Init(void)
 {
 
-  TIM_SlaveConfigTypeDef sSlaveConfig;
+  TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
   TIM_IC_InitTypeDef sConfigIC;
 
@@ -637,14 +637,13 @@ static void MX_TIM8_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  if (HAL_TIM_IC_Init(&htim8) != HAL_OK)
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim8, &sClockSourceConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_RESET;
-  sSlaveConfig.InputTrigger = TIM_TS_ITR0;
-  if (HAL_TIM_SlaveConfigSynchronization(&htim8, &sSlaveConfig) != HAL_OK)
+  if (HAL_TIM_IC_Init(&htim8) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
