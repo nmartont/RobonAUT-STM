@@ -532,7 +532,7 @@ void LST_BT_Send_VarValues() {
   /* Handle FASTLAP/OBSTACLE modes */
   uint8_t extra_bytes = 0;
   if(lst_bt_diag_mode == LST_BT_DIAG_MODE_FASTLAP){
-    extra_bytes = 19;
+    extra_bytes = 23;
     lst_uart_buffer_tx[12]=lst_fast_q1_mode;
     lst_uart_buffer_tx[13]=lst_i2c_master1_rx[0];
     lst_uart_buffer_tx[14]=lst_i2c_master1_rx[1];
