@@ -185,7 +185,7 @@ uint8_t lst_obs_convoy_follow_state;
 int16_t lst_obs_convoy_lastCarTimer;
 #define LST_OBS_CON_LASTCARTIMER_PERIOD	200
 int16_t lst_obs_convoy_turnTimer;
-#define LST_OBS_CON_TURNTIMER_PERIOD		60 // 80, was too sharp angle
+#define LST_OBS_CON_TURNTIMER_PERIOD		40 //60 same // 80, was too sharp angle
 int16_t lst_obs_convoy_attachTimer;
 #define LST_OBS_CON_ATTACHTIMER_PERIOD	400 //50 Attach until curve is reached
 int16_t lst_obs_convoy_closeInTimer;

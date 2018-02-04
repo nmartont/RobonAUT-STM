@@ -158,7 +158,7 @@ static void LST_Obs_Search(){
   LST_Steering_Follow();
 
   // Go slowly
-  LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM); // TODO TEST 2018. 02. 03.
+  LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
   if(lst_obs_search_mode == LST_OBS_SEARCH_MODE_BEGIN){
     // Line detection
@@ -446,7 +446,6 @@ static uint8_t LST_Obs_Search_Long_Line_Detected(){
 }
 
 static void LST_Obs_Drone(){
-  // ToDo TEST 2018. 02. 01.
 
 	switch (lst_obs_drone_stage)
 	{
@@ -520,8 +519,6 @@ static void LST_Obs_Drone(){
  * @brief Mode for the corner
  */
 
-// TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// MAKE IT WORK TWO DIRECTIONS !!!!!!!!!!!!!!!!!!!!!!!!
 static void LST_Obs_Corner(){
 
 	switch (lst_obs_corner_stage)
@@ -1576,9 +1573,14 @@ static void LST_Obs_Trainstop(){
 		lst_obs_train_repeatedCrossing = 0;
 
 		// Jump to next
-		lst_obs_train_stage = LST_OBS_TRA_STAGE_APPROACH;
+		//lst_obs_train_stage = LST_OBS_TRA_STAGE_APPROACH;
+		lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
 
 		break;
+
+		// TODO !!!!!!!!!!!!!!!!!!!! SKIPPED -> TEST OK, still too close
+		// to track
+		// !!!!!!!!!!!!!!!!!!!!!!!!!
 
 	case LST_OBS_TRA_STAGE_APPROACH:
 
@@ -1592,7 +1594,6 @@ static void LST_Obs_Trainstop(){
 		if (lst_control_line_no < 1)
 		{
 
-			// Lock now! TODO TEST 2018.02.02.
 			// also implement for corner
 			LST_Steering_Lock(0);
 
@@ -1683,12 +1684,10 @@ static void LST_Obs_Trainstop(){
 
 	case LST_OBS_TRA_STAGE_CROSS:
 
-		LST_Steering_Lock(0); // TODO Test: perpendicular line pulls steering in
-		// the right direction if not aligned, but is it better than
-		// locking at 0?
+		LST_Steering_Lock(0);
 
 		// Quickly through
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW); // TODO MEDIUM !!!!!!!!!!!!!!!
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
 		// Reached perpendicular line (train track)
 		if (LST_Obs_Search_Long_Line_Detected()) // TEEEEEEEEEEEEEEST
@@ -1708,7 +1707,7 @@ static void LST_Obs_Trainstop(){
 
 		LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW); // TODO MEDIUM !!!!!!!!!!!!!!!
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
 		// Delay a bit to get to the no line part
 		if (lst_obs_train_crossingTimer <= 0)
@@ -1770,7 +1769,6 @@ static void LST_Obs_Trainstop(){
  * @brief Mode for the End of the course :^)
  */
 static void LST_Obs_End(){
-  // ToDo TEST
 
   // Go forward like 30cm
   if (!LST_Distance_Measure_mm(LST_OBS_END_DISTANCE_MM))
