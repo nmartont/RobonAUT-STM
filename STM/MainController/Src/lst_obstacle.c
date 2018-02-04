@@ -1215,6 +1215,96 @@ static void LST_Obs_Barrel(){
 	LST_Steering_Sharp(0, LST_OBS_RND_SHARP_SIDE_DIST);
 	LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
+	return; // TODO REMOVE AFTER TESTS
+
+	// Barrel code
+
+	switch (lst_obs_barrel_stage)
+	{
+
+	case LST_OBS_BRL_STAGE_APPROACH:
+
+		// Init variable
+		lst_obs_barrel_approachTimer = LST_OBS_BRL_APPROACHTIMER_PERIOD;
+
+		// Next stage
+		lst_obs_barrel_stage = LST_OBS_BRL_STAGE_APPROACHRAMP;
+
+		break;
+
+	case LST_OBS_BRL_STAGE_APPROACHRAMP:
+
+		// Approach slowly until front is stuck
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+
+		LST_Steering_Follow();
+
+		if (lst_obs_barrel_approachTimer <= 0)
+		{
+
+			// Jump to next stage
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_ONTHERAMP;
+
+			// Init variable
+			lst_obs_barrel_rampTimer = LST_OBS_BRL_RAMPTIMER_PERIOD;
+
+		}
+		else
+		{
+
+			lst_obs_barrel_approachTimer--;
+
+		}
+
+		break;
+
+	case LST_OBS_BRL_STAGE_ONTHERAMP:
+
+		// Power through the ramp
+
+		LST_Movement_Move_EncoderLess(LST_MOVEMENT_FAST);
+
+		LST_Steering_Lock(0);
+
+		if (lst_obs_barrel_rampTimer <= 0)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_INTHETUBE;
+
+		}
+		else
+		{
+
+			lst_obs_barrel_rampTimer--;
+
+		}
+
+		break;
+
+	case LST_OBS_BRL_STAGE_INTHETUBE:
+
+		// Quickly through the tube
+
+		LST_Movement_Move(LST_MOVEMENT_FB_FAST);
+
+		break;
+
+	case LST_OBS_BRL_STAGE_OUTGOING:
+
+		// On the exit ramp
+
+		break;
+
+	case LST_OBS_BRL_STAGE_EXIT:
+
+		// Search mode
+		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+		break;
+
+	}
+
 }
 
 /**
