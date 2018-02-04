@@ -1288,7 +1288,7 @@ static void LST_Obs_Roundabout(){
       break;
     case LST_INFRA_DIR_RIGHT:
       // Control to right Sharp sensor
-      LST_Steering_Sharp(0, LST_OBS_RND_SHARP_SIDE_DIST);
+      LST_Steering_Sharp(1, LST_OBS_RND_SHARP_SIDE_DIST);
       break;
     }
 
