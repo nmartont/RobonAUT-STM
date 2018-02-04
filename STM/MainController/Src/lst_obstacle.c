@@ -735,27 +735,36 @@ static void LST_Obs_Corner(){
 		break;
 
 	case LST_OBS_COR_STAGE_OUTGOING:
+/*
+		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+			if (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
+			{
 
-		if (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
-		{
+					LST_Steering_Sharp(1, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
 
-			// TODO STEERING CONTROL W/ SHARP
-			// TODO ADD direction control if implemented
-			//LST_Steering_Lock(0);
-
-			if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
-				LST_Steering_Sharp(1, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
+			}
 			else
-				LST_Steering_Sharp(0, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
+			{
 
+				LST_Steering_Lock(0);
 
-		}
+			}
 		else
-		{
+			if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
+			{
 
-			LST_Steering_Lock(0);
+					LST_Steering_Sharp(0, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
 
-		}
+			}
+			else
+			{
+
+				LST_Steering_Lock(0);
+
+			}
+			*/ // NOT REALLY WORKING
+
+		LST_Steering_Lock(0);
 
 		// Slow speed
 		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);

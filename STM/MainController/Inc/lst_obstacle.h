@@ -131,7 +131,7 @@ uint16_t lst_obs_cor_backingSharp_previous;
 #define LST_OBS_COR_SHARP_DIST_WALL						340 // 280 was too low
 #define LST_OBS_COR_SHARP_FAR_WALL						300
 #define LST_OBS_COR_SHARP_BACKING_WALL				340
-#define LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE		1500
+#define LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE		600
 
 // Distance
 #define LST_OBS_COR_BACKING_DISTANCE					-900 // was -800, found corner...
