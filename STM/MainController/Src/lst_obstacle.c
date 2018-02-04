@@ -1212,8 +1212,8 @@ static void LST_Obs_Barrel(){
   // ToDo
 
 	// TEST ONLY
-	LST_Steering_Follow();
-	LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+	LST_Steering_Sharp(0, LST_OBS_RND_SHARP_SIDE_DIST);
+	LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
 }
 

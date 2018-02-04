@@ -230,7 +230,7 @@ uint8_t lst_obs_roundabout_cntr;
 
 #define LST_OBS_RND_FINISH_DISTANCE     400
 
-#define LST_OBS_RND_SHARP_SIDE_DIST     200
+#define LST_OBS_RND_SHARP_SIDE_DIST     600
 
 /* Obs_Barrel */
 uint8_t lst_obs_barrel_stage;
