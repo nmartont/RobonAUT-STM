@@ -117,6 +117,9 @@ void LST_Task_FastLap(void const * argument) {
   /* Send VarList to the PC */
   LST_BT_Send_VarList();
 
+  /* Check lap mode at start based on DIP switches */
+  LST_Fast_DIP_Handler_Start();
+
   /* Record starting timestamp */
   TickType_t xLastWakeTime = xTaskGetTickCount();
 

@@ -11,18 +11,16 @@
 void LST_Movement_LockReverse();
 void LST_Movement_UnlockReverse();
 
+uint16_t lst_movement_distance = 0;
+
 void LST_Movement_Set()
 {
-
 	// Handle reverse start
-	if (lst_movement_reverse_start)
-	{
-
+	if (lst_movement_reverse_start){
 		lst_movement_reverse_counter = 0;
 		lst_movement_repetition_counter = 0;
 		lst_movement_reverse_stage = LST_MOVEMENT_REVERSE_NUL;
 		lst_movement_reverse_start = 0;
-
 	}
 
 	// Handle reverse transition
@@ -81,9 +79,7 @@ void LST_Movement_Set()
 	case LST_MOVEMENT_REVERSE_NONE:
 	default:
 		break;
-
 	}
-
 
 	switch (lst_movement_type)
 	{
@@ -101,6 +97,12 @@ void LST_Movement_Set()
 		// Call speed controller
 		lst_control_motor = LST_Control_SpeedController(lst_movement_speed);
 		break;
+
+	case LST_MOVEMENT_SPEEDCONTROL_SHARP:
+	  // Call speed controller
+    lst_control_motor = LST_Control_SpeedControllerSharp(
+        lst_movement_speed, lst_movement_distance);
+	  break;
 
 	case LST_MOVEMENT_STOP:
 	default:
@@ -128,6 +130,15 @@ void LST_Movement_Move(int16_t speed)
 	// If a positive value is given, reverse has to be initiated
 	// again next time
 	if (lst_movement_speed > 0) lst_movement_reverse_ongoing = 0;
+
+}
+
+void LST_Movement_Move_Sharp(int16_t speed, uint16_t distance)
+{
+
+  lst_movement_speed = speed;
+  lst_movement_distance = distance;
+  lst_movement_type = LST_MOVEMENT_SPEEDCONTROL_SHARP;
 
 }
 

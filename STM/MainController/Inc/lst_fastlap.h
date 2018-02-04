@@ -67,6 +67,7 @@
 /* Function prototypes -------------------------------------------------------*/
 void LST_Fast_Init();
 void LST_Fast_Logic();
+void LST_Fast_DIP_Handler_Start();
 
 /* Private variables ---------------------------------------------------------*/
 

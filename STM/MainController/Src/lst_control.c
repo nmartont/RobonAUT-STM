@@ -422,6 +422,13 @@ int32_t LST_Control_SpeedController(int16_t reference){
   return speed_cntrl_result;
 }
 
+// ToDo test
+int32_t LST_Control_SpeedControllerSharp(
+    int16_t reference, uint16_t distance){
+  return 0;
+  // ToDo
+}
+
 /**
  * @brief Sets the control for the servo and the motor
  */

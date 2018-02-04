@@ -105,6 +105,7 @@ int32_t LST_Control_SpeedController(int16_t reference);
 void LST_Control_ServoAndMotor();
 //float LST_Control_CalculateSpeed(); // !! moved to another task
 int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist);
+int32_t LST_Control_SpeedControllerSharp(int16_t reference, uint16_t distance);
 
 /* Private variables ---------------------------------------------------------*/
 

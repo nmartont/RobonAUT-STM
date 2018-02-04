@@ -14,7 +14,7 @@
 uint8_t lst_fast_mode = LST_FAST_MODE_BT;
 
 uint8_t cntr_brake                   = 0;
-uint16_t cntr_temp                    = 0;
+uint16_t cntr_temp                   = 0;
 int16_t iiii = 250;
 
 float lst_fast_q1_accel_plus_p       = 0.0f;
@@ -104,6 +104,7 @@ static void LST_Fast_State_Machine(){
   case LST_FAST_MODE_SPEED_CONTROL:
     LST_Fast_Reset_State_Machine();
 
+    /* ToDo temp comment, accidentally doing this measurement is bad
     if(cntr_temp<800){
       cntr_temp++;
       lst_control_motor = iiii;
@@ -116,9 +117,11 @@ static void LST_Fast_State_Machine(){
       iiii = iiii+50;
       cntr_temp = 0;
     }
+    */
 
     lst_control_steering = LST_Control_Servo_BT();
     break;
+
   case LST_FAST_MODE_LINE_FOLLOW:
     LST_Fast_Reset_State_Machine();
 
@@ -127,12 +130,16 @@ static void LST_Fast_State_Machine(){
     /* Get line position from the data */
     lst_control_steering = LST_Control_SteeringController(0);
     break;
+
   case LST_FAST_MODE_Q1:
     /* Q1 logic */
+    // Periodic controls
+    LST_Movement_Set();
+    LST_Steering_Set();
+
     LST_Fast_Q1_Logic();
-    /* Controlled steering*/
-    lst_control_steering = LST_Control_SteeringController(0);
     break;
+
   case LST_FAST_MODE_STOP:
     /* Set steering to 0 */
     lst_control_steering = 0;
@@ -366,5 +373,24 @@ static void LST_Fast_Gamepad_Handler(){
   }
   if(lst_bt_gamepad_values[LST_GAMEPAD_DPAD] == LST_GAMEPAD_DPAD_EAST){
     lst_control_steeringP += 20;
+  }
+}
+
+/**
+ * @brief DIP handler at the start
+ */
+void LST_Fast_DIP_Handler_Start(){
+  if(lst_dip_settings[1] == 1){
+    lst_fast_mode = LST_FAST_MODE_BT;
+  }
+  else{
+    lst_fast_mode = LST_FAST_MODE_Q1;
+  }
+
+  if(lst_dip_settings[2] == 1){
+    lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
+  }
+  else{
+    lst_fast_q1_mode = LST_FAST_MODE_Q1_START;
   }
 }

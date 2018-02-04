@@ -1263,7 +1263,7 @@ static void LST_Obs_Barrel(){
 
 		// Power through the ramp
 
-		LST_Movement_Move_EncoderLess(LST_MOVEMENT_FAST);
+	  LST_Movement_Move_Encoderless(LST_MOVEMENT_FAST);
 
 		LST_Steering_Lock(0);
 
