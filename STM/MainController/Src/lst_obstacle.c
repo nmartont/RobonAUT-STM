@@ -825,7 +825,67 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 
 	case LST_OBS_CON_STAGE_APPROACH:
 
-		lst_obs_convoy_stage = LST_OBS_CON_STAGE_WATCH;
+		lst_obs_convoy_stage = LST_OBS_CON_STAGE_CLOSEINONE;
+
+		// Init variable
+		lst_obs_convoy_closeInTimer = LST_OBS_CON_CLOSEINTIMER_PERIOD;
+
+		break;
+
+	case LST_OBS_CON_STAGE_CLOSEINONE:
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		// Direction control
+		// Close in #1
+		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+		{
+			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
+		}
+		else
+		{
+			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
+		}
+
+		if (lst_obs_convoy_closeInTimer <= 0)
+		{
+
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_CLOSEINTWO;
+
+			// Init for next
+			lst_obs_convoy_closeInTimer = LST_OBS_CON_CLOSEINTIMER_PERIOD;
+
+		}
+		else
+		{
+			lst_obs_convoy_closeInTimer--;
+		}
+
+		break;
+
+	case LST_OBS_CON_STAGE_CLOSEINTWO:
+
+		// Direction control
+		// Close in #2
+		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+		{
+			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
+		}
+		else
+		{
+			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
+		}
+
+		if (lst_obs_convoy_closeInTimer <= 0)
+		{
+
+			lst_obs_convoy_stage = LST_OBS_CON_STAGE_WATCH;
+
+		}
+		else
+		{
+			lst_obs_convoy_closeInTimer--;
+		}
 
 		break;
 

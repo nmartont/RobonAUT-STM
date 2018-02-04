@@ -108,7 +108,7 @@ uint8_t lst_obs_corner_directionControl;
 #define LST_OBS_COR_DIR_RIGHT									1
 
 // Steering
-#define LST_OBS_COR_STEERINGLOCK_LEFT					1100
+#define LST_OBS_COR_STEERINGLOCK_LEFT					900 // 1100
 #define LST_OBS_COR_STEERINGLOCK_RIGHT				-900
 #define LST_OBS_COR_RIGHT_LOCK								-500
 #define LST_OBS_COR_LEFT_LOCK									500
@@ -156,17 +156,19 @@ int16_t lst_obs_train_crossingTimer;
 // Stages
 uint8_t lst_obs_convoy_stage;
 #define LST_OBS_CON_STAGE_APPROACH			0 // does nothing
-#define LST_OBS_CON_STAGE_WATCH					1
-#define LST_OBS_CON_STAGE_WAIT					2
-#define LST_OBS_CON_STAGE_COUNT					3
-#define LST_OBS_CON_STAGE_TURNIN				4
-#define LST_OBS_CON_STAGE_FINDIN				5
-#define LST_OBS_CON_STAGE_ATTACH				6
-#define LST_OBS_CON_STAGE_FOLLOW				7 // Bang-bang type control
-#define LST_OBS_CON_STAGE_TURNOUT				8
-#define LST_OBS_CON_STAGE_FINDOUT				9
-#define LST_OBS_CON_STAGE_LEAVELINE			10 // Leave that perpendicular line which fucks up the search mode
-#define LST_OBS_CON_STAGE_EXIT					11
+#define LST_OBS_CON_STAGE_CLOSEINONE		1
+#define LST_OBS_CON_STAGE_CLOSEINTWO		2
+#define LST_OBS_CON_STAGE_WATCH					3
+#define LST_OBS_CON_STAGE_WAIT					4
+#define LST_OBS_CON_STAGE_COUNT					5
+#define LST_OBS_CON_STAGE_TURNIN				6
+#define LST_OBS_CON_STAGE_FINDIN				7
+#define LST_OBS_CON_STAGE_ATTACH				8
+#define LST_OBS_CON_STAGE_FOLLOW				9 // Bang-bang type control
+#define LST_OBS_CON_STAGE_TURNOUT				10
+#define LST_OBS_CON_STAGE_FINDOUT				11
+#define LST_OBS_CON_STAGE_LEAVELINE			12 // Leave that perpendicular line which fucks up the search mode
+#define LST_OBS_CON_STAGE_EXIT					13
 
 // Direction control
 uint8_t lst_obs_convoy_wallDirection; // Set in 'LST_Obs_Search_Sharp_Detection'
@@ -186,6 +188,8 @@ int16_t lst_obs_convoy_turnTimer;
 #define LST_OBS_CON_TURNTIMER_PERIOD		60 // 80, was too sharp angle
 int16_t lst_obs_convoy_attachTimer;
 #define LST_OBS_CON_ATTACHTIMER_PERIOD	400 //50 Attach until curve is reached
+int16_t lst_obs_convoy_closeInTimer;
+#define LST_OBS_CON_CLOSEINTIMER_PERIOD	50
 
 // Steering
 #define LST_OBS_CON_STEERINGLOCK_RIGHT	-1000
@@ -219,11 +223,11 @@ uint8_t lst_obs_barrel_stage;
 
 // Timing
 int16_t lst_obs_barrel_approachTimer;
-#define LST_OBS_BRL_APPROACHTIMER_PERIOD	200 // 2s
+#define LST_OBS_BRL_APPROACHTIMER_PERIOD	300 // 200
 int16_t lst_obs_barrel_rampTimer;
 #define LST_OBS_BRL_RAMPTIMER_PERIOD			50 // 0.5s
 int16_t lst_obs_barrel_tubeTimer;
-#define LST_OBS_BRL_TUBETIMER_PERIOD			100
+#define LST_OBS_BRL_TUBETIMER_PERIOD			200
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;
