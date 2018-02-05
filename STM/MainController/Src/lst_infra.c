@@ -51,15 +51,15 @@ void LST_Infra_Turn_On(){
   HAL_TIM_Base_Start_IT(&htim8);  //infra számlálójának indítása
 
   // Start EXTI4
-  HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 }
 
 void LST_Infra_Turn_Off(){
   HAL_TIM_Base_Stop(&htim8);  // Timer stop
 
   // Stop EXTI4
-  HAL_NVIC_DisableIRQ(EXTI4_IRQn);
+  HAL_NVIC_DisableIRQ(EXTI2_IRQn);
 }
 
 // nii ja naa
