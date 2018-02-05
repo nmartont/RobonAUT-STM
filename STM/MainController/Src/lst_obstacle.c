@@ -1478,13 +1478,7 @@ static void LST_Obs_Barrel(){
 	case LST_OBS_BRL_STAGE_EXIT:
 
 		// Search mode
-		//lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
-
-		// Stop
-		LST_Movement_Stop();
-		LST_Steering_Lock(0);
-
-		lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
+		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
 		break;
 
