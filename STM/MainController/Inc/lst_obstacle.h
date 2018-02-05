@@ -157,7 +157,7 @@ uint8_t lst_obs_train_stage;
 uint8_t lst_obs_train_repeatedCrossing;
 
 // Sharp
-#define LST_OBS_TRA_SHARP_DIST_CAR					900 //500
+#define LST_OBS_TRA_SHARP_DIST_CAR					500
 
 // Timing
 int16_t lst_obs_train_lastCarTimer;
