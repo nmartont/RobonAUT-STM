@@ -152,15 +152,18 @@ uint8_t lst_obs_train_stage;
 #define LST_OBS_TRA_STAGE_CROSS							5
 #define LST_OBS_TRA_STAGE_CROSSING					6
 #define LST_OBS_TRA_STAGE_CROSSED						7
-#define LST_OBS_TRA_STAGE_EXIT							8
+#define LST_OBS_TRA_STAGE_LEAVECROSSING			8
+#define LST_OBS_TRA_STAGE_EXIT							9
 uint8_t lst_obs_train_repeatedCrossing;
 
 // Sharp
-#define LST_OBS_TRA_SHARP_DIST_CAR					500
+#define LST_OBS_TRA_SHARP_DIST_CAR					900 //500
 
 // Timing
 int16_t lst_obs_train_lastCarTimer;
 #define LST_OBS_TRA_LASTCARTIMER_PERIOD			300 // T = 10ms -> 3s
+int16_t lst_obs_train_leaveTimer;
+#define LST_OBS_TRA_LEAVETIMER_PERIOD				300
 
 int16_t lst_obs_train_crossingTimer;
 #define LST_OBS_TRA_CROSSINGTIMER_PERIOD		60
@@ -271,7 +274,7 @@ uint16_t lst_obs_roundabout_cntr;
 
 #define LST_OBS_RND_FIRST_TURN_DISTANCE   350
 
-#define LST_OBS_RND_TRAVEL_DISTANCE_ONE   350 // 500
+#define LST_OBS_RND_TRAVEL_DISTANCE_ONE   200 // 300 ?? // 500 way too long
 #define LST_OBS_RND_TRAVEL_DISTANCE_TWO   1600 // 1800
 #define LST_OBS_RND_TRAVEL_DISTANCE_THREE 3000 //3200
 

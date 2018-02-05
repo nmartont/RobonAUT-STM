@@ -1323,14 +1323,14 @@ static void LST_Obs_Barrel(){
 	case LST_OBS_BRL_STAGE_APPROACH:
 
 		// TODO SAFETY REMOVE!
-		lst_obs_lap_mode = LST_OBS_LAP_MODE_END;
-/*
+		//lst_obs_lap_mode = LST_OBS_LAP_MODE_END;
+
 		// Init variable
 		lst_obs_barrel_approachTimer = LST_OBS_BRL_APPROACHTIMER_PERIOD;
 
 		// Next stage
 		lst_obs_barrel_stage = LST_OBS_BRL_STAGE_APPROACHRAMP;
-*/
+
 		break;
 
 	case LST_OBS_BRL_STAGE_APPROACHRAMP:
@@ -1723,9 +1723,6 @@ static void LST_Obs_Trainstop(){
 			// Jump to next
 			lst_obs_train_stage = LST_OBS_TRA_STAGE_WAIT;
 
-			// Init variable
-			lst_obs_train_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
-
 		}
 
 
@@ -1854,9 +1851,33 @@ static void LST_Obs_Trainstop(){
 			else
 			{
 
-				lst_obs_train_stage = LST_OBS_TRA_STAGE_EXIT;
+				lst_obs_train_stage = LST_OBS_TRA_STAGE_LEAVECROSSING;
+
+				// Init variable
+				lst_obs_train_leaveTimer = LST_OBS_TRA_LEAVETIMER_PERIOD;
 
 			}
+
+		}
+
+		break;
+
+	case LST_OBS_TRA_STAGE_LEAVECROSSING:
+
+		LST_Steering_Follow();
+
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+		if (lst_obs_train_leaveTimer <= 0)
+		{
+
+			lst_obs_train_stage = LST_OBS_TRA_STAGE_EXIT;
+
+		}
+		else
+		{
+
+			lst_obs_train_leaveTimer--;
 
 		}
 
@@ -1866,6 +1887,8 @@ static void LST_Obs_Trainstop(){
 
 		// Search mode
 		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+		break;
 
 	}
 
