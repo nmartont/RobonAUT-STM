@@ -24,7 +24,7 @@ uint32_t ICValue2 = 0;
 uint32_t highPulse = 0;
 uint32_t lowPulse = 0;
 uint32_t pulse = 0;
-uint32_t infraT = 1780;
+uint32_t infraT = 900;
 uint32_t infraTolerance = 300;
 uint8_t RC5BitsBuffer[20];
 uint8_t RC5BitsCounter = 0;
@@ -57,9 +57,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       //feldolgozás jön ide
       for (int i = 0; i < 100; i++)
       {
-        if (infraPulses[i] > 0.0)               //felfutó él
+        if ((i % 2) == 1) //infraPulses[i] > 0.0)               //felfutó él
         {
-          pulse = infraPulses[i];
+          pulse = abs(infraPulses[i]);
           RC5Bit = RC5CurrentBit(1, RC5LastBit, pulse);
           if (RC5Bit == 0)  //logikai 0 érkezett
           {
@@ -80,7 +80,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         }
         else                        //lefutó él
         {
-          pulse = - 1.0 * infraPulses[i];
+          pulse = abs(infraPulses[i]);
           RC5Bit = RC5CurrentBit(0, RC5LastBit, pulse);
           if (RC5Bit == 0)  //logikai 0 érkezett
           {

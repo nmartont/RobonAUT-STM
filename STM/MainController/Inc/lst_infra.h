@@ -15,6 +15,7 @@
 #include "cmsis_os.h"
 #include "main.h"
 #include "lst_timer.h"
+#include "stdlib.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define LST_INFRA_NOT_AVAILABLE   0
