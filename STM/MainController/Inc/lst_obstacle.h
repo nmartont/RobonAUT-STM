@@ -193,7 +193,7 @@ uint8_t lst_obs_convoy_wallDirection; // Set in 'LST_Obs_Search_Sharp_Detection'
 #define LST_OBS_CON_WALLDIRECTION_RIGHT	1
 
 // Sharp
-#define LST_OBS_CON_SHARP_DIST_CAR			350 // Small-range sensor!
+#define LST_OBS_CON_SHARP_DIST_CAR			200 //300 // 350 // Small-range sensor!
 #define LST_OBS_CON_SHARP_FOLLOW_LOW		300
 #define LST_OBS_CON_SHARP_FOLLOW_HIGH		500
 uint8_t lst_obs_convoy_follow_state;
@@ -206,7 +206,8 @@ int16_t lst_obs_convoy_turnTimer;
 int16_t lst_obs_convoy_attachTimer;
 #define LST_OBS_CON_ATTACHTIMER_PERIOD	400 //50 Attach until curve is reached
 int16_t lst_obs_convoy_closeInTimer;
-#define LST_OBS_CON_CLOSEINTIMER_PERIOD	50
+#define LST_OBS_CON_CLOSEINTIMER_PERIOD	90 //50
+#define LST_OBS_CON_CLOSEINTIMER_ADD		20
 
 // Steering
 #define LST_OBS_CON_STEERINGLOCK_RIGHT	-1000

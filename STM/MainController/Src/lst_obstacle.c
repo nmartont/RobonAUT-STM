@@ -898,7 +898,8 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 			lst_obs_convoy_stage = LST_OBS_CON_STAGE_CLOSEINTWO;
 
 			// Init for next
-			lst_obs_convoy_closeInTimer = LST_OBS_CON_CLOSEINTIMER_PERIOD;
+			lst_obs_convoy_closeInTimer = LST_OBS_CON_CLOSEINTIMER_PERIOD +
+					LST_OBS_CON_CLOSEINTIMER_ADD;
 
 		}
 		else
