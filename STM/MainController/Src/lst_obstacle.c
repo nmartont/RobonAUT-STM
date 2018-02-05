@@ -1682,7 +1682,7 @@ static void LST_Obs_Trainstop(){
 
 	case LST_OBS_TRA_STAGE_WATCH:
 
-		LST_Steering_Lock(0);
+		LST_Steering_Follow();
 
 		LST_Movement_Stop();
 
@@ -1700,7 +1700,7 @@ static void LST_Obs_Trainstop(){
 
 	case LST_OBS_TRA_STAGE_WAIT:
 
-		LST_Steering_Lock(0);
+		LST_Steering_Follow();
 
 		LST_Movement_Stop();
 
@@ -1721,7 +1721,7 @@ static void LST_Obs_Trainstop(){
 
 	case LST_OBS_TRA_STAGE_COUNT:
 
-		LST_Steering_Lock(0);
+		LST_Steering_Follow();
 
 		LST_Movement_Stop();
 
