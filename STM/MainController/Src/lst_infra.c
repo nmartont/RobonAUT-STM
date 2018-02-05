@@ -48,8 +48,6 @@ void LST_Infra_Init() {
 }
 
 void LST_Infra_Turn_On(){
-  lst_infra_is_available = LST_INFRA_NOT_AVAILABLE;
-
   HAL_TIM_Base_Start_IT(&htim8);
 
   // Start EXTI4
@@ -58,6 +56,8 @@ void LST_Infra_Turn_On(){
 }
 
 void LST_Infra_Turn_Off(){
+  lst_infra_is_available = LST_INFRA_NOT_AVAILABLE; // Reset available state
+
   HAL_TIM_Base_Stop(&htim8);  // Timer stop
 
   // Stop EXTI4
