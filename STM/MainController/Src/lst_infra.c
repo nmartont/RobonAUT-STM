@@ -48,6 +48,8 @@ void LST_Infra_Init() {
 }
 
 void LST_Infra_Turn_On(){
+  lst_infra_is_available = LST_INFRA_NOT_AVAILABLE;
+
   HAL_TIM_Base_Start_IT(&htim8);
 
   // Start EXTI4
