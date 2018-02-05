@@ -134,7 +134,7 @@ uint16_t LST_Sharp_ConvertShortValueToDistance(uint16_t value)
 void LST_Sharp_Init()
 {
 
-	for (uint8_t i=0; i<LST_Sharp_ShortRangeTable_Length; i++)
+	for (uint8_t i=0; i<LST_Sharp_ShortRangeTable_Length - 1; i++)
 	{
 
 		LST_Sharp_ShortRangeTable[0][i] = LST_Sharp_ShortRangeTable_Base[0][i];
@@ -145,7 +145,7 @@ void LST_Sharp_Init()
 
 	}
 
-	for (uint8_t i=0; i<LST_Sharp_LongRangeTable_Length; i++)
+	for (uint8_t i=0; i<LST_Sharp_LongRangeTable_Length - 1; i++)
 	{
 
 		LST_Sharp_LongRangeTable[0][i] = LST_Sharp_LongRangeTable_Base[0][i];
