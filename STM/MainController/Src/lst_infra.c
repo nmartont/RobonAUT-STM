@@ -45,9 +45,6 @@ uint8_t infraPulseCounter = 0;
  */
 void LST_Infra_Init() {
   LST_Infra_Turn_Off();
-
-  // Stop EXTI4
-  HAL_NVIC_DisableIRQ(EXTI4_IRQn);
 }
 
 void LST_Infra_Turn_On(){
@@ -60,6 +57,9 @@ void LST_Infra_Turn_On(){
 
 void LST_Infra_Turn_Off(){
   HAL_TIM_Base_Stop(&htim8);  // Timer stop
+
+  // Stop EXTI4
+  HAL_NVIC_DisableIRQ(EXTI4_IRQn);
 }
 
 // nii ja naa
