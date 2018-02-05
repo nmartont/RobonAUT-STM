@@ -949,43 +949,6 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 			{
 
 				// Jump to next
-				lst_obs_convoy_stage = LST_OBS_CON_STAGE_WAIT;
-
-				// Init variable
-				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
-
-			}
-		}
-		else
-		{
-			if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
-			{
-
-				// Jump to next
-				lst_obs_convoy_stage = LST_OBS_CON_STAGE_WAIT;
-
-				// Init variable
-				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
-
-			}
-		}
-
-		break;
-
-	case LST_OBS_CON_STAGE_WAIT:
-
-		LST_Steering_Lock(0);
-
-		LST_Movement_Stop();
-
-		// Direction control
-		// Wait until no car is seen
-		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
-		{
-			if (LST_Sharp_GetRightDistance_mm() > LST_OBS_CON_SHARP_DIST_CAR)
-			{
-
-				// Jump to next
 				lst_obs_convoy_stage = LST_OBS_CON_STAGE_COUNT;
 
 				// Init variable
@@ -995,7 +958,7 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
 		}
 		else
 		{
-			if (LST_Sharp_GetLeftDistance_mm() > LST_OBS_CON_SHARP_DIST_CAR)
+			if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
 			{
 
 				// Jump to next

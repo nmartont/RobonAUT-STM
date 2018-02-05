@@ -176,7 +176,7 @@ uint8_t lst_obs_convoy_stage;
 #define LST_OBS_CON_STAGE_CLOSEINONE		1
 #define LST_OBS_CON_STAGE_CLOSEINTWO		2
 #define LST_OBS_CON_STAGE_WATCH					3
-#define LST_OBS_CON_STAGE_WAIT					4
+//#define LST_OBS_CON_STAGE_WAIT					4
 #define LST_OBS_CON_STAGE_COUNT					5
 #define LST_OBS_CON_STAGE_TURNIN				6
 #define LST_OBS_CON_STAGE_FINDIN				7
@@ -206,7 +206,7 @@ int16_t lst_obs_convoy_turnTimer;
 int16_t lst_obs_convoy_attachTimer;
 #define LST_OBS_CON_ATTACHTIMER_PERIOD	400 //50 Attach until curve is reached
 int16_t lst_obs_convoy_closeInTimer;
-#define LST_OBS_CON_CLOSEINTIMER_PERIOD	90 //50
+#define LST_OBS_CON_CLOSEINTIMER_PERIOD	60
 #define LST_OBS_CON_CLOSEINTIMER_ADD		20
 
 // Steering
