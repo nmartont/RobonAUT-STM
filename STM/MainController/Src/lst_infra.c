@@ -44,7 +44,22 @@ uint8_t infraPulseCounter = 0;
  * @brief Initializes the Infra module
  */
 void LST_Infra_Init() {
+  LST_Infra_Turn_Off();
+
+  // Stop EXTI4
+  HAL_NVIC_DisableIRQ(EXTI4_IRQn);
+}
+
+void LST_Infra_Turn_On(){
   HAL_TIM_Base_Start_IT(&htim8);  //infra számlálójának indítása
+
+  // Start EXTI4
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+}
+
+void LST_Infra_Turn_Off(){
+  HAL_TIM_Base_Stop(&htim8);  // Timer stop
 }
 
 // nii ja naa

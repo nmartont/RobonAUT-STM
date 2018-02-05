@@ -264,8 +264,8 @@ uint16_t lst_obs_roundabout_cntr;
 #define LST_OBS_RND_STAGE_FINISH          5
 #define LST_OBS_RND_STAGE_EXIT						6
 
-#define LST_OBS_RND_SHARP_DIST_APPROACH   600//900 // bad reflection? really 30cm
-#define LST_OBS_RND_INFRA_ERROR_MAX       300 // FixMe NMT
+#define LST_OBS_RND_SHARP_DIST_APPROACH   600 //900 // bad reflection? really 30cm
+#define LST_OBS_RND_INFRA_ERROR_MAX       200 // FixMe NMT
 
 #define LST_OBS_RND_FIRST_LEFT_TURN_VALUE  1000 // ToDo is the sign correct??
 #define LST_OBS_RND_FIRST_RIGHT_TURN_VALUE -1000

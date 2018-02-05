@@ -34,6 +34,8 @@ uint8_t LST_Infra_Get_Direction();
 uint8_t LST_Infra_Get_Exit();
 void RC5Reset();
 uint8_t RC5CurrentBit(uint8_t edge, uint8_t lastBit, uint32_t pulse);
+void LST_Infra_Turn_On();
+void LST_Infra_Turn_Off();
 
 /* External variables --------------------------------------------------------*/
 extern uint8_t lst_infra_is_available;

@@ -1497,6 +1497,9 @@ static void LST_Obs_Roundabout(){
 
   switch (lst_obs_roundabout_stage){
   case LST_OBS_RND_STAGE_APPROACH:
+    // Turn on Infra
+    LST_Infra_Turn_On();
+
     // Approach the roundabout with Sharps
     if(LST_Sharp_GetFrontDistance_mm() < LST_OBS_RND_SHARP_DIST_APPROACH){ // 400
       // Stop, wait for Infra
@@ -1522,6 +1525,9 @@ static void LST_Obs_Roundabout(){
     break;
 
   case LST_OBS_RND_STAGE_FIRST_TURN:
+    // Turn off Infra
+    LST_Infra_Turn_Off();
+
     // Go slowly
     LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
