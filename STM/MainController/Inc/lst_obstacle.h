@@ -251,7 +251,7 @@ int16_t lst_obs_barrel_brakeTimer;
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;
-uint8_t lst_obs_roundabout_cntr;
+uint16_t lst_obs_roundabout_cntr;
 
 #define LST_OBS_RND_STAGE_APPROACH        0
 #define LST_OBS_RND_STAGE_FIRST_TURN      1

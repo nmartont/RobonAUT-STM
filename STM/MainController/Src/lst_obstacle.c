@@ -1322,12 +1322,15 @@ static void LST_Obs_Barrel(){
 
 	case LST_OBS_BRL_STAGE_APPROACH:
 
+		// TODO SAFETY REMOVE!
+		lst_obs_lap_mode = LST_OBS_LAP_MODE_END;
+/*
 		// Init variable
 		lst_obs_barrel_approachTimer = LST_OBS_BRL_APPROACHTIMER_PERIOD;
 
 		// Next stage
 		lst_obs_barrel_stage = LST_OBS_BRL_STAGE_APPROACHRAMP;
-
+*/
 		break;
 
 	case LST_OBS_BRL_STAGE_APPROACHRAMP:
