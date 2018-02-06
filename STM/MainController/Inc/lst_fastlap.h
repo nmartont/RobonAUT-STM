@@ -48,11 +48,13 @@
 
 /* Speed values */
 #ifdef LST_FAST_MODE_ENCODERLESS
+#define LST_FAST_Q1_APPROACH_MOTOR_SPEED  200
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED      295
 #define LST_FAST_Q1_FAST_MOTOR_SPEED      460
-#define LST_FAST_Q1_START_MOTOR_SPEED     500
+#define LST_FAST_Q1_START_MOTOR_SPEED     350
 #else
 // ToDo calibrate these values
+#define LST_FAST_Q1_APPROACH_MOTOR_SPEED  100
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED      130
 #define LST_FAST_Q1_FAST_MOTOR_SPEED      250
 #define LST_FAST_Q1_START_MOTOR_SPEED     130
@@ -69,7 +71,7 @@
 #define LST_FAST_Q1_BRAKE_STEERING_D      10000
 
 /* Start defines */
-#define LST_FAST_Q1_START_TIME         20
+#define LST_FAST_Q1_START_TIME         5
 
 /* Approach defines */
 #define LST_FAST_Q1_APPROACH_DIST   600 // ADC value (12bits)

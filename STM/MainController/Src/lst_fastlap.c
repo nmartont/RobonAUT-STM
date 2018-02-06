@@ -228,7 +228,7 @@ static void LST_Fast_Q1_Logic(){
 				lst_fast_q1_mode = LST_FAST_MODE_Q1_APPROACH;
 
 				/* Set motor value */
-				LST_Movement_Move_Encoderless(LST_FAST_Q1_SLOW_MOTOR_SPEED);
+				LST_Movement_Move_Encoderless(LST_FAST_Q1_APPROACH_MOTOR_SPEED);
 
 				cntr_q1_start = 0;
 			}
@@ -246,9 +246,9 @@ static void LST_Fast_Q1_Logic(){
 		case LST_FAST_MODE_Q1_APPROACH:
 		  /* Set motor value */
 #ifdef LST_FAST_MODE_ENCODERLESS
-		  LST_Movement_Move_Encoderless(LST_FAST_Q1_SLOW_MOTOR_SPEED);
+		  LST_Movement_Move_Encoderless(LST_FAST_Q1_APPROACH_MOTOR_SPEED);
 #else
-		  LST_Movement_Move(LST_FAST_Q1_SLOW_MOTOR_SPEED);
+		  LST_Movement_Move(LST_FAST_Q1_APPROACH_MOTOR_SPEED);
 #endif
 
       /* Check if safety car is within like 40cm */
@@ -382,10 +382,12 @@ static void LST_Fast_Q1_Logic(){
 
 			/* Linearly increase everything from slow to fast */
 			if(cntr_q1_accel < LST_FAST_Q1_ACCEL_TIME){
-				lst_control_steeringP  += lst_fast_q1_accel_plus_p;
-				lst_control_steeringD  += lst_fast_q1_accel_plus_d;
+			  if(!lst_fast_steering_interpol){
+          lst_control_steeringP  += lst_fast_q1_accel_plus_p;
+          lst_control_steeringD  += lst_fast_q1_accel_plus_d;
+			  }
 				lst_fast_motor_float   += lst_fast_q1_accel_plus_motor;
-				LST_Movement_Move_Encoderless(lst_fast_motor_float);
+				LST_Movement_Move_Encoderless((int16_t)lst_fast_motor_float);
 
 				cntr_q1_accel++;
 			}
@@ -465,13 +467,13 @@ static void LST_Fast_Q1_Logic(){
 			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 11*LST_FAST_BRAKE_DELAY){
 				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
 				cntr_q1_brake++;
-	//    }
-	//    else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 14*LST_FAST_BRAKE_DELAY){
-	//      lst_fast_motor = 0;
-	//      cntr_q1_brake++;
-	//    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 16*LST_FAST_BRAKE_DELAY){
-	//        lst_fast_motor = LST_FAST_Q1_BRAKE_MOTOR;
-	//        cntr_q1_brake++;
+	    }
+	    else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 14*LST_FAST_BRAKE_DELAY){
+	      lst_control_motor = 0;
+	      cntr_q1_brake++;
+	    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 16*LST_FAST_BRAKE_DELAY){
+	      lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
+	        cntr_q1_brake++;
 			}else{
 				lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
 
