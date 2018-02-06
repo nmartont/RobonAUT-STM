@@ -72,16 +72,16 @@
 #define LST_FAST_Q1_START_TIME         20
 
 /* Approach defines */
-#define LST_FAST_Q1_APPROACH_DIST   400 // mm
+#define LST_FAST_Q1_APPROACH_DIST   600 // ADC value (12bits)
 #define LST_FAST_Q1_APPROACH_MIN    5   // consecutive Sharp measurements
 
 /* Wait for follow defines */
-#define LST_FAST_Q1_WAIT_FOLLOW_DIST  600 // mm
+#define LST_FAST_Q1_WAIT_FOLLOW_DIST  400 // ADC value (12bits)
 #define LST_FAST_Q1_WAIT_MIN          30  // 300ms
 
 /* Follow defines */
-#define LST_FAST_Q1_FOLLOW_DIST               500  // mm
-#define LST_FAST_Q1_FOLLOW_END_DIST           1500 // mm
+#define LST_FAST_Q1_FOLLOW_DIST               800 // ADC value (12bits)
+#define LST_FAST_Q1_FOLLOW_END_DIST           100 // ADC value (12bits)
 #define LST_FAST_Q1_FOLLOW_FILTER_THRESHOLD   1
 #define LST_FAST_Q1_FOLLOW_LINES_THRESHOLD    2
 

@@ -70,7 +70,7 @@ uint8_t lst_control_speed_reverseLock;
 #define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
 
 #define LST_CONTROL_SHARP_SPEED_MIN   0
-#define LST_CONTROL_SHARP_SPEED_MAX   250
+#define LST_CONTROL_SHARP_SPEED_MAX   300 //250
 #endif
 
 #define LST_CONTROL_STEERING_DENUM    21.487f
@@ -88,7 +88,7 @@ uint8_t lst_control_speed_reverseLock;
 
 #define LST_CONTROL_SHARP_P   80.0f
 
-#define LST_CONTROL_SPEED_SHARP_P 80.0f
+#define LST_CONTROL_SPEED_SHARP_P 160.0f //80.0f
 
 
 // LST_SETTINGS Servo invert

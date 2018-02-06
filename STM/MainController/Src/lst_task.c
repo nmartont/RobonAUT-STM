@@ -120,6 +120,9 @@ void LST_Task_FastLap(void const * argument) {
   /* Check lap mode at start based on DIP switches */
   LST_Fast_DIP_Handler_Start();
 
+  // Random delay (same as before obstacle mode)
+  vTaskDelay(2000); // 2s
+
   /* Record starting timestamp */
   TickType_t xLastWakeTime = xTaskGetTickCount();
 

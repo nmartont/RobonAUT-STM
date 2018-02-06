@@ -252,7 +252,7 @@ static void LST_Fast_Q1_Logic(){
 #endif
 
       /* Check if safety car is within like 40cm */
-      if(LST_Sharp_GetFrontDistance_mm() < LST_FAST_Q1_APPROACH_DIST){ // 400mm
+      if(LST_Sharp_GetRawFrontDistance() < LST_FAST_Q1_APPROACH_DIST){ // 400mm
         cntr_q1++;
 
         if(cntr_q1 > LST_FAST_Q1_APPROACH_MIN){
@@ -271,7 +271,7 @@ static void LST_Fast_Q1_Logic(){
 		  LST_Movement_Stop();
 
 		  /* Check if safety car is within like 60cm */
-      if(LST_Sharp_GetFrontDistance_mm() > LST_FAST_Q1_WAIT_FOLLOW_DIST){ // 600mm
+      if(LST_Sharp_GetRawFrontDistance() > LST_FAST_Q1_WAIT_FOLLOW_DIST){ // 600mm
         cntr_q1++;
 
         if(cntr_q1 > LST_FAST_Q1_WAIT_MIN){
@@ -298,7 +298,7 @@ static void LST_Fast_Q1_Logic(){
 		      lst_fast_line_pattern_insensitivity = 0;
 		    }
 		  }else{
-		    if(LST_Sharp_GetFrontDistance_mm() > LST_FAST_Q1_FOLLOW_END_DIST){ // 1500mm
+		    if(LST_Sharp_GetRawFrontDistance() < LST_FAST_Q1_FOLLOW_END_DIST){
 		      if(flag_q1_follow_triple_search == 1){
             if (lst_control_line_no < 2) cntr_q1_follow_triple = 0;
             if (lst_control_line_no >= 2) cntr_q1_follow_triple++;
