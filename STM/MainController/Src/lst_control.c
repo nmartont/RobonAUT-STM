@@ -53,7 +53,7 @@ int32_t lst_control_errorSignalSum_speed =  0;
 
 /* Motor and steering variables */
 // MOVED TO LST_MOVEMENT, LST_STEERING
-int16_t lst_control_steering_offset = -115; // negative: left
+int16_t lst_control_steering_offset = -50; //-115; // negative: left
 
 /* Declare variables for steering controller interpolation */
 // ToDo calibrate interpolation for steering controller parameters
@@ -279,15 +279,15 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
  * @brief P controller for the Sharps
  */
 int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist){
-  uint16_t error_signal = 0;
+  int16_t error_signal = 0;
   int32_t str_cntrl_result = 0;
 
   // ToDo test
 
   if(sharp_dir == 0){ // left
-    error_signal = -(dist - LST_Sharp_GetRawLeftDistance()); // Raw: inverted
+    error_signal = dist - LST_Sharp_GetRawLeftDistance(); // Raw: inverted
   }else{              // right
-    error_signal = dist - LST_Sharp_GetRightDistance_mm();
+    error_signal = -(dist - LST_Sharp_GetRawRightDistance());
   }
 
   /* System input */

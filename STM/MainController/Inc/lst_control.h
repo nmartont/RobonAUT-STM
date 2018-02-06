@@ -88,7 +88,7 @@ uint8_t lst_control_speed_reverseLock;
 /* Interpolation */
 #define LST_CONTROL_PD_INTERPOL_POINTS  5
 
-#define LST_CONTROL_SHARP_P   1.0f
+#define LST_CONTROL_SHARP_P   80.0f
 
 // LST_SETTINGS Servo invert
 

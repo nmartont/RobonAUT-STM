@@ -16,7 +16,7 @@
 
 uint16_t LST_Sharp_GetLeftDistance_mm()
 {
-
+/*
 	if (LST_Sharp_LeftSensorType)
 	{
 		// Long range type
@@ -24,9 +24,12 @@ uint16_t LST_Sharp_GetLeftDistance_mm()
 	}
 	else
 	{
+	*/
 		// Short range type
 		return LST_Sharp_ConvertShortValueToDistance(lst_adc_sharp_result[0]);
+	/*
 	}
+	*/
 
 }
 
@@ -48,7 +51,7 @@ uint16_t LST_Sharp_GetFrontDistance_mm()
 
 uint16_t LST_Sharp_GetRightDistance_mm()
 {
-
+/*
 	if (LST_Sharp_RightSensorType)
 		{
 			// Long range type
@@ -56,9 +59,12 @@ uint16_t LST_Sharp_GetRightDistance_mm()
 		}
 		else
 		{
+		*/
 			// Short range type
 			return LST_Sharp_ConvertShortValueToDistance(lst_adc_sharp_result[2]);
+			/*
 		}
+		*/
 
 }
 
@@ -94,7 +100,7 @@ uint16_t LST_Sharp_GetValueFromLongDistance(uint16_t distance)
 uint16_t LST_Sharp_ConvertLongValueToDistance(uint16_t value)
 {
 
-	for (uint8_t i=LST_Sharp_LongRangeTable_Length; i>=0; i--)
+	for (uint8_t i=LST_Sharp_LongRangeTable_Length - 1; i>=0; i--)
 	{
 
 		// Underestimate distance
@@ -111,7 +117,7 @@ uint16_t LST_Sharp_ConvertLongValueToDistance(uint16_t value)
 uint16_t LST_Sharp_ConvertShortValueToDistance(uint16_t value)
 {
 
-	for (uint8_t i=LST_Sharp_ShortRangeTable_Length; i>=0; i--)
+	for (uint8_t i=LST_Sharp_ShortRangeTable_Length - 1; i>=0; i--)
 		{
 
 			// Underestimate distance
