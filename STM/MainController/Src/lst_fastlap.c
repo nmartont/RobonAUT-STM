@@ -20,7 +20,9 @@ int16_t iiii = 250;
 float lst_fast_q1_accel_plus_p       = 0.0f;
 float lst_fast_q1_accel_plus_d       = 0.0f;
 float lst_fast_q1_accel_plus_motor   = 0.0f;
+
 float lst_fast_motor_float           = 0.0f;
+
 uint8_t cntr_q1_accel                = 0;
 uint8_t cntr_q1_start                = 0;
 uint8_t cntr_q1_brake                = 0;

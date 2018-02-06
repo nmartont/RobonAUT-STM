@@ -37,6 +37,8 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN 0 */
+#include "lst_inertial.h"
+
 extern uint8_t lst_inertial_data_ready;
 /* USER CODE END 0 */
 
