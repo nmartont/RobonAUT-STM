@@ -29,8 +29,6 @@
 #define LST_MOVEMENT_FAST									600
 #define LST_MOVEMENT_BRAKING							-800
 
-#define LST_MOVEMENT_FB_BACKING_SLOWEST		-60
-
 // Variables
 
 // Reverse switch
