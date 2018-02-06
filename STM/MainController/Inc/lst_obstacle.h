@@ -26,6 +26,8 @@
 #include "stdlib.h" // abs function
 
 /* Defines -------------------------------------------------------------------*/
+// #define LST_OBS_MODE_STEERING_INTERPOLATED
+
 #define LST_OBS_STEERING_P 17000
 #define LST_OBS_STEERING_D 4000
 

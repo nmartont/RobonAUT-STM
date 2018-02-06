@@ -22,6 +22,12 @@ uint8_t lst_obs_search_line_no =    0;
 uint8_t lst_obs_roundabout_direction = LST_INFRA_DIR_LEFT;
 uint8_t lst_obs_roundabout_exit =      LST_INFRA_EXIT_ONE;
 
+#ifdef LST_OBS_MODE_STEERING_INTERPOLATED
+uint8_t lst_obs_steering_interpol = 1;
+#else
+uint8_t lst_obs_steering_interpol = 0;
+#endif
+
 /* External variables --------------------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
@@ -95,11 +101,11 @@ static void LST_Obs_StateMachine(){
 
     /* Q2 logic */
 
-  	// Periodic controls
-  	LST_Movement_Set();
-  	LST_Steering_Set();
+    // Periodic controls
+    LST_Movement_Set();
+    LST_Steering_Set();
 
-  	// Obstacle logic
+    // Obstacle logic
     LST_Obs_Lap();
 
     break;
@@ -123,8 +129,8 @@ static void LST_Obs_Lap(){
     lst_obs_lap_mode = LST_OBS_LAP_MODE_STARTER;
     break;
   case LST_OBS_LAP_MODE_STARTER:
-  	LST_Obs_Starter();
-  	break;
+    LST_Obs_Starter();
+    break;
   case LST_OBS_LAP_MODE_SEARCH:
     LST_Obs_Search();
     break;
@@ -156,30 +162,30 @@ static void LST_Obs_Lap(){
 
 static void LST_Obs_Starter(){
 
-	switch (lst_obs_starter_stage)
-	{
+  switch (lst_obs_starter_stage)
+  {
 
-	case LST_OBS_STA_STAGE_PREPARE:
-		lst_obs_starter_forwardTimer = LST_OBS_STA_FORWARDTIMER_PERIOD;
-		lst_obs_starter_stage = LST_OBS_STA_STAGE_FORWARD;
-		break;
-	case LST_OBS_STA_STAGE_FORWARD:
-		LST_Steering_Follow();
-		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
-		if (lst_obs_starter_forwardTimer <= 0)
-		{
-			lst_obs_starter_stage = LST_OBS_STA_STAGE_EXIT;
-		}
-		else
-		{
-			lst_obs_starter_forwardTimer--;
-		}
-		break;
-	case LST_OBS_STA_STAGE_EXIT:
-		// Search mode
-		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
-		break;
-	}
+  case LST_OBS_STA_STAGE_PREPARE:
+    lst_obs_starter_forwardTimer = LST_OBS_STA_FORWARDTIMER_PERIOD;
+    lst_obs_starter_stage = LST_OBS_STA_STAGE_FORWARD;
+    break;
+  case LST_OBS_STA_STAGE_FORWARD:
+    LST_Steering_Follow(lst_obs_steering_interpol);
+    LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+    if (lst_obs_starter_forwardTimer <= 0)
+    {
+      lst_obs_starter_stage = LST_OBS_STA_STAGE_EXIT;
+    }
+    else
+    {
+      lst_obs_starter_forwardTimer--;
+    }
+    break;
+  case LST_OBS_STA_STAGE_EXIT:
+    // Search mode
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    break;
+  }
 
 }
 
@@ -188,7 +194,7 @@ static void LST_Obs_Starter(){
  */
 static void LST_Obs_Search(){
   // Follow the line
-  LST_Steering_Follow();
+  LST_Steering_Follow(lst_obs_steering_interpol);
 
   // Go slowly
   LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
@@ -436,15 +442,15 @@ static void LST_Obs_Search_Reset(){
 static uint8_t LST_Obs_Search_Sharp_Detection(uint8_t sharp_number){
   if(sharp_number == 1){
 
-  	// Convoy direction control set
-  	if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD)
-  	{
-  		lst_obs_convoy_wallDirection = LST_OBS_CON_WALLDIRECTION_LEFT;
-  	}
-  	if (LST_Sharp_GetRightDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD)
-  	{
-  		lst_obs_convoy_wallDirection = LST_OBS_CON_WALLDIRECTION_RIGHT;
-  	}
+    // Convoy direction control set
+    if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD)
+    {
+      lst_obs_convoy_wallDirection = LST_OBS_CON_WALLDIRECTION_LEFT;
+    }
+    if (LST_Sharp_GetRightDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD)
+    {
+      lst_obs_convoy_wallDirection = LST_OBS_CON_WALLDIRECTION_RIGHT;
+    }
 
     return
        (LST_Sharp_GetLeftDistance_mm() < LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD   &&
@@ -480,71 +486,71 @@ static uint8_t LST_Obs_Search_Long_Line_Detected(){
 
 static void LST_Obs_Drone(){
 
-	switch (lst_obs_drone_stage)
-	{
+  switch (lst_obs_drone_stage)
+  {
 
-	case LST_OBS_DRO_STAGE_APPROACH:
+  case LST_OBS_DRO_STAGE_APPROACH:
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_DRO_SHARP_DIST_DRONE_IN)
-		{
+    if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_DRO_SHARP_DIST_DRONE_IN)
+    {
 
-			lst_obs_drone_stage = LST_OBS_DRO_STAGE_WATCH;
+      lst_obs_drone_stage = LST_OBS_DRO_STAGE_WATCH;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_DRO_STAGE_WATCH:
+  case LST_OBS_DRO_STAGE_WATCH:
 
-		LST_Movement_Stop();
+    LST_Movement_Stop();
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		if (LST_Sharp_GetFrontDistance_mm() > LST_OBS_DRO_SHARP_DIST_DRONE_OUT)
-		{
+    if (LST_Sharp_GetFrontDistance_mm() > LST_OBS_DRO_SHARP_DIST_DRONE_OUT)
+    {
 
-			// Init timer
-			lst_obs_drone_takeoffTimer = LST_OBS_DRO_TAKEOFFTIMER_PERIOD;
+      // Init timer
+      lst_obs_drone_takeoffTimer = LST_OBS_DRO_TAKEOFFTIMER_PERIOD;
 
-			lst_obs_drone_stage = LST_OBS_DRO_STAGE_WAIT;
+      lst_obs_drone_stage = LST_OBS_DRO_STAGE_WAIT;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_DRO_STAGE_WAIT:
+  case LST_OBS_DRO_STAGE_WAIT:
 
-		LST_Movement_Stop();
+    LST_Movement_Stop();
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		if (lst_obs_drone_takeoffTimer <= 0)
-		{
+    if (lst_obs_drone_takeoffTimer <= 0)
+    {
 
-			lst_obs_drone_stage = LST_OBS_DRO_STAGE_EXIT;
+      lst_obs_drone_stage = LST_OBS_DRO_STAGE_EXIT;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_drone_takeoffTimer--;
+      lst_obs_drone_takeoffTimer--;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_DRO_STAGE_EXIT:
+  case LST_OBS_DRO_STAGE_EXIT:
 
-		// Search mode
-		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    // Search mode
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
-		break;
+    break;
 
-	}
+  }
 
 }
 
@@ -554,305 +560,305 @@ static void LST_Obs_Drone(){
 
 static void LST_Obs_Corner(){
 
-	switch (lst_obs_corner_stage)
-	{
+  switch (lst_obs_corner_stage)
+  {
 
-	case LST_OBS_COR_STAGE_APPROACH:
+  case LST_OBS_COR_STAGE_APPROACH:
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		// Slow speed
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    // Slow speed
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		// Jump to next stage if the Line disappears (in the center of the junction)
-		if (lst_control_line_no < 1) lst_obs_corner_stage =
-				LST_OBS_COR_STAGE_PASSEDJUNCTION;
+    // Jump to next stage if the Line disappears (in the center of the junction)
+    if (lst_control_line_no < 1) lst_obs_corner_stage =
+        LST_OBS_COR_STAGE_PASSEDJUNCTION;
 
-		break;
+    break;
 
-	case LST_OBS_COR_STAGE_PASSEDJUNCTION:
+  case LST_OBS_COR_STAGE_PASSEDJUNCTION:
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		// Slow down
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+    // Slow down
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-		// Jump
-		if (lst_control_line_no > 1)
-			{
+    // Jump
+    if (lst_control_line_no > 1)
+      {
 
-			// Next stage
-			lst_obs_corner_stage =
-					LST_OBS_COR_STAGE_GETNEARWALL;
+      // Next stage
+      lst_obs_corner_stage =
+          LST_OBS_COR_STAGE_GETNEARWALL;
 
-			LST_Steering_Lock(0); // Curved line would pull the steering
+      LST_Steering_Lock(0); // Curved line would pull the steering
 
-			// Init variable
-			lst_obs_corner_junctionTimer = LST_OBS_COR_JUNCTIONTIMER_PERIOD;
+      // Init variable
+      lst_obs_corner_junctionTimer = LST_OBS_COR_JUNCTIONTIMER_PERIOD;
 
-			}
+      }
 
-		break;
+    break;
 
-	case LST_OBS_COR_STAGE_GETNEARWALL:
+  case LST_OBS_COR_STAGE_GETNEARWALL:
 
-		// Move forward more so the center of the junction is not identified
-		// as the point to start backing up. Multiple tests showed if the
-		// Wall is even 0.5cm closer to the junction center, then the car
-		// starts backing up there.
+    // Move forward more so the center of the junction is not identified
+    // as the point to start backing up. Multiple tests showed if the
+    // Wall is even 0.5cm closer to the junction center, then the car
+    // starts backing up there.
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-		if (lst_obs_corner_junctionTimer <= 0)
-		{
+    if (lst_obs_corner_junctionTimer <= 0)
+    {
 
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_CURVEDLINEFOUND;
+      lst_obs_corner_stage = LST_OBS_COR_STAGE_CURVEDLINEFOUND;
 
-			// Save direction control
-			if (LST_Sharp_GetRightDistance_mm() < LST_Sharp_GetLeftDistance_mm())
-			{
+      // Save direction control
+      if (LST_Sharp_GetRightDistance_mm() < LST_Sharp_GetLeftDistance_mm())
+      {
 
-				lst_obs_corner_directionControl = LST_OBS_COR_DIR_LEFT;
+        lst_obs_corner_directionControl = LST_OBS_COR_DIR_LEFT;
 
-			}
-			else
-			{
+      }
+      else
+      {
 
-				lst_obs_corner_directionControl = LST_OBS_COR_DIR_RIGHT;
+        lst_obs_corner_directionControl = LST_OBS_COR_DIR_RIGHT;
 
-			}
+      }
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_corner_junctionTimer--;
+      lst_obs_corner_junctionTimer--;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_COR_STAGE_CURVEDLINEFOUND:
+  case LST_OBS_COR_STAGE_CURVEDLINEFOUND:
 
-		// Lock because curved line interferes
-		LST_Steering_Lock(0);
+    // Lock because curved line interferes
+    LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-		// Direction control (AND)
-		if ((LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL)
-				&& (LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL))
-		{
+    // Direction control (AND)
+    if ((LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL)
+        && (LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL))
+    {
 
-			LST_Movement_Stop(); // Not really needed
+      LST_Movement_Stop(); // Not really needed
 
-			// Next stage
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
+      // Next stage
+      lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_FIRST;
 
-		}
+    }
 
-		break;
+    break;
 
 
-	// STAGE: back up until the wall to the right/left is lost
-	case LST_OBS_COR_STAGE_BACKING_FIRST:
+  // STAGE: back up until the wall to the right/left is lost
+  case LST_OBS_COR_STAGE_BACKING_FIRST:
 
 
-		// Direction control
-		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
-			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_LEFT);
-		else
-			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_RIGHT);
+    // Direction control
+    if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+      LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_LEFT);
+    else
+      LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_RIGHT);
 
-		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
+    LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
-		// Back up a bit to lose the wall to the right
-		if (LST_Distance_Measure_mm(LST_OBS_COR_BACKING_DISTANCE))
-		{
+    // Back up a bit to lose the wall to the right
+    if (LST_Distance_Measure_mm(LST_OBS_COR_BACKING_DISTANCE))
+    {
 
-			// Next stage
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_SECOND;
+      // Next stage
+      lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_SECOND;
 
-			// Init var for next
-			lst_obs_cor_backingSharp_previous = 50000;
+      // Init var for next
+      lst_obs_cor_backingSharp_previous = 50000;
 
-		}
+    }
 
-		break;
+    break;
 
-	// STAGE: Back up until the right Sharp distance is increasing again
-	case LST_OBS_COR_STAGE_BACKING_SECOND:
+  // STAGE: Back up until the right Sharp distance is increasing again
+  case LST_OBS_COR_STAGE_BACKING_SECOND:
 
-		// Direction control
-		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
-			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_LEFT);
-		else
-			LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_RIGHT);
+    // Direction control
+    if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+      LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_LEFT);
+    else
+      LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_RIGHT);
 
-		LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
+    LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
-		// Direction control
+    // Direction control
 
-		// Rising Sharp values AND close enough to wall
-		// Otherwise it detects the far corner
-		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
-			if ((LST_Sharp_GetRawRightDistance() > lst_obs_cor_backingSharp_previous)
-					&& (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
-			{
+    // Rising Sharp values AND close enough to wall
+    // Otherwise it detects the far corner
+    if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+      if ((LST_Sharp_GetRawRightDistance() > lst_obs_cor_backingSharp_previous)
+          && (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
+      {
 
-				lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
+        lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
 
-				LST_Steering_Lock(0);
+        LST_Steering_Lock(0);
 
-				//LST_Distance_Measure_mm(-150);
+        //LST_Distance_Measure_mm(-150);
 
-			}
-			else
-			{
+      }
+      else
+      {
 
-				lst_obs_cor_backingSharp_previous = LST_Sharp_GetRawRightDistance();
+        lst_obs_cor_backingSharp_previous = LST_Sharp_GetRawRightDistance();
 
-			}
-		else
-			if ((LST_Sharp_GetRawLeftDistance() > lst_obs_cor_backingSharp_previous)
-					&& (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
-			{
+      }
+    else
+      if ((LST_Sharp_GetRawLeftDistance() > lst_obs_cor_backingSharp_previous)
+          && (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_BACKING_WALL))
+      {
 
-				lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
+        lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
 
-				LST_Steering_Lock(0);
+        LST_Steering_Lock(0);
 
-			}
-			else
-			{
+      }
+      else
+      {
 
-				lst_obs_cor_backingSharp_previous = LST_Sharp_GetRawLeftDistance();
+        lst_obs_cor_backingSharp_previous = LST_Sharp_GetRawLeftDistance();
 
-			}
+      }
 
-		break;
+    break;
 
-	case LST_OBS_COR_STAGE_OUTGOING:
+  case LST_OBS_COR_STAGE_OUTGOING:
 /*
-		if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
-			if (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
-			{
+    if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+      if (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
+      {
 
-					LST_Steering_Sharp(1, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
+          LST_Steering_Sharp(1, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
 
-			}
-			else
-			{
+      }
+      else
+      {
 
-				LST_Steering_Lock(0);
+        LST_Steering_Lock(0);
 
-			}
-		else
-			if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
-			{
+      }
+    else
+      if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
+      {
 
-					LST_Steering_Sharp(0, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
+          LST_Steering_Sharp(0, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
 
-			}
-			else
-			{
+      }
+      else
+      {
 
-				LST_Steering_Lock(0);
+        LST_Steering_Lock(0);
 
-			}
-			*/ // NOT REALLY WORKING
+      }
+      */ // NOT REALLY WORKING
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		// Slow speed
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    // Slow speed
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		if ((LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL) &&
-				(LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL))
-		{
+    if ((LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL) &&
+        (LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_DIST_WALL))
+    {
 
-			// In the center of the intersection
-			lst_obs_corner_stage =
-								LST_OBS_COR_STAGE_CENTER;
+      // In the center of the intersection
+      lst_obs_corner_stage =
+                LST_OBS_COR_STAGE_CENTER;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_COR_STAGE_CENTER:
+  case LST_OBS_COR_STAGE_CENTER:
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		// If between two walls (only check one! other can be far)
-		if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL) ||
-				((LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)))
-		{
+    // If between two walls (only check one! other can be far)
+    if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL) ||
+        ((LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)))
+    {
 
-			lst_obs_corner_stage = LST_OBS_COR_STAGE_ALIGNMENT;
+      lst_obs_corner_stage = LST_OBS_COR_STAGE_ALIGNMENT;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_COR_STAGE_ALIGNMENT:
+  case LST_OBS_COR_STAGE_ALIGNMENT:
 
 
-		// Align with steering
-		if (LST_Sharp_GetLeftDistance_mm() > LST_Sharp_GetRightDistance_mm())
-		{
+    // Align with steering
+    if (LST_Sharp_GetLeftDistance_mm() > LST_Sharp_GetRightDistance_mm())
+    {
 
-			LST_Steering_Lock(LST_OBS_COR_LEFT_LOCK);
+      LST_Steering_Lock(LST_OBS_COR_LEFT_LOCK);
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			LST_Steering_Lock(LST_OBS_COR_RIGHT_LOCK);
+      LST_Steering_Lock(LST_OBS_COR_RIGHT_LOCK);
 
-		}
+    }
 
-		// Override previous if one sharp is too far from the wall
-		// Because of the sensor characteristics, if a side is to close
-		if (LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_FAR_WALL)
-		{
+    // Override previous if one sharp is too far from the wall
+    // Because of the sensor characteristics, if a side is to close
+    if (LST_Sharp_GetLeftDistance_mm() > LST_OBS_COR_SHARP_FAR_WALL)
+    {
 
-			LST_Steering_Lock(LST_OBS_COR_LEFT_LOCK);
+      LST_Steering_Lock(LST_OBS_COR_LEFT_LOCK);
 
-		}
+    }
 
-		if (LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_FAR_WALL)
-		{
+    if (LST_Sharp_GetRightDistance_mm() > LST_OBS_COR_SHARP_FAR_WALL)
+    {
 
-			LST_Steering_Lock(LST_OBS_COR_RIGHT_LOCK);
+      LST_Steering_Lock(LST_OBS_COR_RIGHT_LOCK);
 
-		}
+    }
 
-		// Slow speed
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    // Slow speed
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		// No need for alignment
-		if (lst_control_line_no > 0)
-		{
+    // No need for alignment
+    if (lst_control_line_no > 0)
+    {
 
-			lst_obs_corner_stage =
-					LST_OBS_COR_STAGE_EXIT;
+      lst_obs_corner_stage =
+          LST_OBS_COR_STAGE_EXIT;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_COR_STAGE_EXIT:
+  case LST_OBS_COR_STAGE_EXIT:
 
-		// Search mode
-		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    // Search mode
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
-		break;
+    break;
 
-	}
+  }
 
 }
 
@@ -865,412 +871,412 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
   // ToDo TEST 2018. 02. 01.
 
 
-	switch (lst_obs_convoy_stage)
-	{
+  switch (lst_obs_convoy_stage)
+  {
 
-	case LST_OBS_CON_STAGE_APPROACH:
+  case LST_OBS_CON_STAGE_APPROACH:
 
-		lst_obs_convoy_stage = LST_OBS_CON_STAGE_CLOSEINONE;
+    lst_obs_convoy_stage = LST_OBS_CON_STAGE_CLOSEINONE;
 
-		// Init variable
-		lst_obs_convoy_closeInTimer = LST_OBS_CON_CLOSEINTIMER_PERIOD;
+    // Init variable
+    lst_obs_convoy_closeInTimer = LST_OBS_CON_CLOSEINTIMER_PERIOD;
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_CLOSEINONE:
+  case LST_OBS_CON_STAGE_CLOSEINONE:
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		// Direction control
-		// Close in #1
-		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
-		{
-			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
-		}
-		else
-		{
-			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
-		}
+    // Direction control
+    // Close in #1
+    if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+    {
+      LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
+    }
+    else
+    {
+      LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
+    }
 
-		if (lst_obs_convoy_closeInTimer <= 0)
-		{
+    if (lst_obs_convoy_closeInTimer <= 0)
+    {
 
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_CLOSEINTWO;
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_CLOSEINTWO;
 
-			// Init for next
-			lst_obs_convoy_closeInTimer = LST_OBS_CON_CLOSEINTIMER_PERIOD +
-					LST_OBS_CON_CLOSEINTIMER_ADD;
+      // Init for next
+      lst_obs_convoy_closeInTimer = LST_OBS_CON_CLOSEINTIMER_PERIOD +
+          LST_OBS_CON_CLOSEINTIMER_ADD;
 
-		}
-		else
-		{
-			lst_obs_convoy_closeInTimer--;
-		}
+    }
+    else
+    {
+      lst_obs_convoy_closeInTimer--;
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_CLOSEINTWO:
+  case LST_OBS_CON_STAGE_CLOSEINTWO:
 
-		// Direction control
-		// Close in #2
-		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
-		{
-			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
-		}
-		else
-		{
-			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
-		}
+    // Direction control
+    // Close in #2
+    if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+    {
+      LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
+    }
+    else
+    {
+      LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
+    }
 
-		if (lst_obs_convoy_closeInTimer <= 0)
-		{
+    if (lst_obs_convoy_closeInTimer <= 0)
+    {
 
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_WATCH;
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_WATCH;
 
-		}
-		else
-		{
-			lst_obs_convoy_closeInTimer--;
-		}
+    }
+    else
+    {
+      lst_obs_convoy_closeInTimer--;
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_WATCH:
+  case LST_OBS_CON_STAGE_WATCH:
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		LST_Movement_Stop();
+    LST_Movement_Stop();
 
-		// Direction control
-		// Wait for one car
-		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
-		{
-			if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
-			{
+    // Direction control
+    // Wait for one car
+    if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+    {
+      if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+      {
 
-				// Jump to next
-				lst_obs_convoy_stage = LST_OBS_CON_STAGE_COUNT;
+        // Jump to next
+        lst_obs_convoy_stage = LST_OBS_CON_STAGE_COUNT;
 
-				// Init variable
-				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+        // Init variable
+        lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
 
-			}
-		}
-		else
-		{
-			if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
-			{
+      }
+    }
+    else
+    {
+      if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+      {
 
-				// Jump to next
-				lst_obs_convoy_stage = LST_OBS_CON_STAGE_COUNT;
+        // Jump to next
+        lst_obs_convoy_stage = LST_OBS_CON_STAGE_COUNT;
 
-				// Init variable
-				lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+        // Init variable
+        lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
 
-			}
-		}
+      }
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_COUNT:
+  case LST_OBS_CON_STAGE_COUNT:
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		LST_Movement_Stop();
+    LST_Movement_Stop();
 
-		// If sufficient time has elapsed without a car seen, then
-		// it is safe to proceed, else wait more
-		if (lst_obs_convoy_lastCarTimer <= 0)
-		{
+    // If sufficient time has elapsed without a car seen, then
+    // it is safe to proceed, else wait more
+    if (lst_obs_convoy_lastCarTimer <= 0)
+    {
 
-			// Jump to next
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_TURNIN;
+      // Jump to next
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_TURNIN;
 
-			// Init variable
-			lst_obs_convoy_turnTimer = LST_OBS_CON_TURNTIMER_PERIOD;
+      // Init variable
+      lst_obs_convoy_turnTimer = LST_OBS_CON_TURNTIMER_PERIOD;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			// Direction control
-			// Reset counter if another car appears
-			if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
-				if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
-				{
+      // Direction control
+      // Reset counter if another car appears
+      if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+        if (LST_Sharp_GetRightDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+        {
 
-					lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+          lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
 
-				}
-				else
-				{
+        }
+        else
+        {
 
-					lst_obs_convoy_lastCarTimer--;
+          lst_obs_convoy_lastCarTimer--;
 
-				}
-			else
-				if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
-				{
+        }
+      else
+        if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_CON_SHARP_DIST_CAR)
+        {
 
-					lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
+          lst_obs_convoy_lastCarTimer = LST_OBS_CON_LASTCARTIMER_PERIOD;
 
-				}
-				else
-				{
+        }
+        else
+        {
 
-					lst_obs_convoy_lastCarTimer--;
+          lst_obs_convoy_lastCarTimer--;
 
-				}
+        }
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_TURNIN:
+  case LST_OBS_CON_STAGE_TURNIN:
 
-		// Direction control
-		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
-			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
-		else
-			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
+    // Direction control
+    if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+      LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
+    else
+      LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+    LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
-		if (lst_obs_convoy_turnTimer <= 0)
-		{
+    if (lst_obs_convoy_turnTimer <= 0)
+    {
 
-			// Jump to next
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_FINDIN;
+      // Jump to next
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_FINDIN;
 
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_convoy_turnTimer--;
+      lst_obs_convoy_turnTimer--;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_FINDIN:
+  case LST_OBS_CON_STAGE_FINDIN:
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		if (lst_control_line_no > 0)
-		{
+    if (lst_control_line_no > 0)
+    {
 
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_ATTACH;
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_ATTACH;
 
-			// Init variable
-			lst_obs_convoy_attachTimer = LST_OBS_CON_ATTACHTIMER_PERIOD;
+      // Init variable
+      lst_obs_convoy_attachTimer = LST_OBS_CON_ATTACHTIMER_PERIOD;
 
-		}
+    }
 
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_ATTACH:
+  case LST_OBS_CON_STAGE_ATTACH:
 
-		// Move a bit forward to stabilise so car can start steering watch
+    // Move a bit forward to stabilise so car can start steering watch
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+    LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
-		if (lst_obs_convoy_attachTimer <= 0)
-		{
+    if (lst_obs_convoy_attachTimer <= 0)
+    {
 
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_FOLLOW;
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_FOLLOW;
 
-			// Init variables
-			lst_obs_con_steeringCount = 0;
-			lst_obs_con_steeringState = 0;
-			lst_obs_con_steeringHigh = 0;
-			lst_obs_con_steeringLow = 0;
+      // Init variables
+      lst_obs_con_steeringCount = 0;
+      lst_obs_con_steeringState = 0;
+      lst_obs_con_steeringHigh = 0;
+      lst_obs_con_steeringLow = 0;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_convoy_attachTimer--;
+      lst_obs_convoy_attachTimer--;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_FOLLOW:
+  case LST_OBS_CON_STAGE_FOLLOW:
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		// Hysteresis speed control
+    // Hysteresis speed control
 
-		if (lst_obs_convoy_follow_state)
-			LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
-		else LST_Movement_Stop();
+    if (lst_obs_convoy_follow_state)
+      LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+    else LST_Movement_Stop();
 
-		// Moving forward
-		if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_CON_SHARP_FOLLOW_LOW)
-		{
+    // Moving forward
+    if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_CON_SHARP_FOLLOW_LOW)
+    {
 
-			lst_obs_convoy_follow_state = 0;
+      lst_obs_convoy_follow_state = 0;
 
-		}
+    }
 
-		if (LST_Sharp_GetFrontDistance_mm() > LST_OBS_CON_SHARP_FOLLOW_HIGH)
-		{
+    if (LST_Sharp_GetFrontDistance_mm() > LST_OBS_CON_SHARP_FOLLOW_HIGH)
+    {
 
-			lst_obs_convoy_follow_state = 1;
+      lst_obs_convoy_follow_state = 1;
 
-		}
+    }
 
 
-		// Find exit point, watch turns
+    // Find exit point, watch turns
 
-		// Use other control variables for proper steering watch operation
-		lst_control_steeringP = LST_OBS_CON_STEERING_P;
-		lst_control_steeringD = LST_OBS_CON_STEERING_D;
+    // Use other control variables for proper steering watch operation
+    lst_control_steeringP = LST_OBS_CON_STEERING_P;
+    lst_control_steeringD = LST_OBS_CON_STEERING_D;
 
-		// Watch straight
-		if (abs(lst_control_steering) < LST_OBS_CON_STEERINGWATCH_LOW)
-		{
+    // Watch straight
+    if (abs(lst_control_steering) < LST_OBS_CON_STEERINGWATCH_LOW)
+    {
 
-			lst_obs_con_steeringLow++;
+      lst_obs_con_steeringLow++;
 
-			// Detected straight
-			if (lst_obs_con_steeringLow > LST_OBS_CON_STEERING_THRESHOLD)
-			{
+      // Detected straight
+      if (lst_obs_con_steeringLow > LST_OBS_CON_STEERING_THRESHOLD)
+      {
 
-				// If previous state was turn, then increase
-				if (lst_obs_con_steeringState)
-				{
+        // If previous state was turn, then increase
+        if (lst_obs_con_steeringState)
+        {
 
-					lst_obs_con_steeringCount++;
-					lst_obs_con_steeringState = 0;
+          lst_obs_con_steeringCount++;
+          lst_obs_con_steeringState = 0;
 
-				}
+        }
 
-			}
+      }
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_con_steeringLow = 0;
+      lst_obs_con_steeringLow = 0;
 
-		}
+    }
 
-		// Watch turn
-		if (abs(lst_control_steering) > LST_OBS_CON_STEERINGWATCH_HIGH)
-		{
+    // Watch turn
+    if (abs(lst_control_steering) > LST_OBS_CON_STEERINGWATCH_HIGH)
+    {
 
-			lst_obs_con_steeringHigh++;
+      lst_obs_con_steeringHigh++;
 
-			// Detected turn
-			if (lst_obs_con_steeringHigh > LST_OBS_CON_STEERING_THRESHOLD)
-			{
+      // Detected turn
+      if (lst_obs_con_steeringHigh > LST_OBS_CON_STEERING_THRESHOLD)
+      {
 
-				// If previous state was straight, then increase
-				if (!lst_obs_con_steeringState)
-				{
+        // If previous state was straight, then increase
+        if (!lst_obs_con_steeringState)
+        {
 
-					lst_obs_con_steeringCount++;
-					lst_obs_con_steeringState = 1;
+          lst_obs_con_steeringCount++;
+          lst_obs_con_steeringState = 1;
 
-				}
+        }
 
-			}
+      }
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_con_steeringHigh = 0;
+      lst_obs_con_steeringHigh = 0;
 
-		}
+    }
 
-		// If enough turns have elapsed, exit
-		if (lst_obs_con_steeringCount >= LST_OBS_CON_STEERING_COUNT)
-		{
+    // If enough turns have elapsed, exit
+    if (lst_obs_con_steeringCount >= LST_OBS_CON_STEERING_COUNT)
+    {
 
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_TURNOUT;
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_TURNOUT;
 
-			// Init variable
-			lst_obs_convoy_turnTimer = LST_OBS_CON_TURNTIMER_PERIOD;
+      // Init variable
+      lst_obs_convoy_turnTimer = LST_OBS_CON_TURNTIMER_PERIOD;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_TURNOUT:
+  case LST_OBS_CON_STAGE_TURNOUT:
 
-		lst_control_steeringP = LST_OBS_STEERING_P;
-		lst_control_steeringD = LST_OBS_STEERING_D;
+    lst_control_steeringP = LST_OBS_STEERING_P;
+    lst_control_steeringD = LST_OBS_STEERING_D;
 
-		// Direction control
-		if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
-			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
-		else
-			LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
+    // Direction control
+    if (lst_obs_convoy_wallDirection == LST_OBS_CON_WALLDIRECTION_LEFT)
+      LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_LEFT);
+    else
+      LST_Steering_Lock(LST_OBS_CON_STEERINGLOCK_RIGHT);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+    LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
-		if (lst_obs_convoy_turnTimer <= 0)
-		{
+    if (lst_obs_convoy_turnTimer <= 0)
+    {
 
-			// Jump to next
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_FINDOUT;
+      // Jump to next
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_FINDOUT;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_convoy_turnTimer--;
+      lst_obs_convoy_turnTimer--;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_FINDOUT:
+  case LST_OBS_CON_STAGE_FINDOUT:
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		if (lst_control_line_no > 0)
-		{
+    if (lst_control_line_no > 0)
+    {
 
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_LEAVELINE;
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_LEAVELINE;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_LEAVELINE:
+  case LST_OBS_CON_STAGE_LEAVELINE:
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		if (LST_Distance_Measure_mm(LST_OBS_CON_DISTANCE_LEAVELINE))
-		{
+    if (LST_Distance_Measure_mm(LST_OBS_CON_DISTANCE_LEAVELINE))
+    {
 
-			lst_obs_convoy_stage = LST_OBS_CON_STAGE_EXIT;
+      lst_obs_convoy_stage = LST_OBS_CON_STAGE_EXIT;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_CON_STAGE_EXIT:
+  case LST_OBS_CON_STAGE_EXIT:
 
-		// Search mode
-		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    // Search mode
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
-		break;
+    break;
 
-	}
+  }
 
 }
 
@@ -1279,180 +1285,180 @@ static void LST_Obs_Convoy(){ // TODO CONTINUE HERE
  */
 static void LST_Obs_Barrel(){
 
-	// Barrel code
+  // Barrel code
 
-	switch (lst_obs_barrel_stage)
-	{
+  switch (lst_obs_barrel_stage)
+  {
 
-	case LST_OBS_BRL_STAGE_APPROACH:
+  case LST_OBS_BRL_STAGE_APPROACH:
 
-		// TODO SAFETY REMOVE!
-		//lst_obs_lap_mode = LST_OBS_LAP_MODE_END;
+    // TODO SAFETY REMOVE!
+    //lst_obs_lap_mode = LST_OBS_LAP_MODE_END;
 
-		// Init variable
-		lst_obs_barrel_approachTimer = LST_OBS_BRL_APPROACHTIMER_PERIOD;
+    // Init variable
+    lst_obs_barrel_approachTimer = LST_OBS_BRL_APPROACHTIMER_PERIOD;
 
-		// Next stage
-		lst_obs_barrel_stage = LST_OBS_BRL_STAGE_APPROACHRAMP;
+    // Next stage
+    lst_obs_barrel_stage = LST_OBS_BRL_STAGE_APPROACHRAMP;
 
-		break;
+    break;
 
-	case LST_OBS_BRL_STAGE_APPROACHRAMP:
+  case LST_OBS_BRL_STAGE_APPROACHRAMP:
 
-		// Approach slowly until front is stuck
+    // Approach slowly until front is stuck
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		if (lst_obs_barrel_approachTimer <= 0)
-		{
+    if (lst_obs_barrel_approachTimer <= 0)
+    {
 
-			// Jump to next stage
-			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_ONTHERAMP;
+      // Jump to next stage
+      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_ONTHERAMP;
 
-			// Init variable
-			lst_obs_barrel_rampSafetyTimer = LST_OBS_BRL_RAMPSAFETYTIMER_PERIOD;
+      // Init variable
+      lst_obs_barrel_rampSafetyTimer = LST_OBS_BRL_RAMPSAFETYTIMER_PERIOD;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_barrel_approachTimer--;
+      lst_obs_barrel_approachTimer--;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_BRL_STAGE_ONTHERAMP:
+  case LST_OBS_BRL_STAGE_ONTHERAMP:
 
-		// Power through the ramp
+    // Power through the ramp
 
-		LST_Movement_Move_Encoderless(LST_MOVEMENT_FAST);
+    LST_Movement_Move_Encoderless(LST_MOVEMENT_FAST);
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		if (lst_obs_barrel_rampSafetyTimer <= 0)
-		{
+    if (lst_obs_barrel_rampSafetyTimer <= 0)
+    {
 
-			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_INTHETUBE;
+      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_INTHETUBE;
 
-			// Init variable
-			lst_obs_barrel_tubeSafetyTimer = LST_OBS_BRL_TUBESAFETYTIMER_PERIOD;
+      // Init variable
+      lst_obs_barrel_tubeSafetyTimer = LST_OBS_BRL_TUBESAFETYTIMER_PERIOD;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_barrel_rampSafetyTimer--;
+      lst_obs_barrel_rampSafetyTimer--;
 
-			if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_BRL_SHARP_INTHETUBE)
-					&& (LST_Sharp_GetRightDistance_mm() < LST_OBS_BRL_SHARP_INTHETUBE))
-			{
+      if ((LST_Sharp_GetLeftDistance_mm() < LST_OBS_BRL_SHARP_INTHETUBE)
+          && (LST_Sharp_GetRightDistance_mm() < LST_OBS_BRL_SHARP_INTHETUBE))
+      {
 
-				lst_obs_barrel_stage = LST_OBS_BRL_STAGE_INTHETUBE;
+        lst_obs_barrel_stage = LST_OBS_BRL_STAGE_INTHETUBE;
 
-				// Init variable
-				lst_obs_barrel_tubeSafetyTimer = LST_OBS_BRL_TUBESAFETYTIMER_PERIOD;
+        // Init variable
+        lst_obs_barrel_tubeSafetyTimer = LST_OBS_BRL_TUBESAFETYTIMER_PERIOD;
 
-			}
+      }
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_BRL_STAGE_INTHETUBE:
+  case LST_OBS_BRL_STAGE_INTHETUBE:
 
-		// Quickly through the tube
+    // Quickly through the tube
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		//LST_Movement_Move(LST_MOVEMENT_FB_UFAST);
+    //LST_Movement_Move(LST_MOVEMENT_FB_UFAST);
 
-		LST_Movement_Move_Encoderless(LST_MOVEMENT_FAST);
+    LST_Movement_Move_Encoderless(LST_MOVEMENT_FAST);
 
-		if (lst_obs_barrel_tubeSafetyTimer <= 0)
-		{
+    if (lst_obs_barrel_tubeSafetyTimer <= 0)
+    {
 
-			//lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
-			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE; // TODO SAFETY STOP
+      //lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
+      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE; // TODO SAFETY STOP
 
-			lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
+      lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_barrel_tubeSafetyTimer--;
+      lst_obs_barrel_tubeSafetyTimer--;
 
-			// TODO softer detection?
-			if ((LST_Sharp_GetLeftDistance_mm() > LST_OBS_BRL_SHARP_INTHETUBE)
-					|| (LST_Sharp_GetRightDistance_mm() > LST_OBS_BRL_SHARP_INTHETUBE))
-			{
+      // TODO softer detection?
+      if ((LST_Sharp_GetLeftDistance_mm() > LST_OBS_BRL_SHARP_INTHETUBE)
+          || (LST_Sharp_GetRightDistance_mm() > LST_OBS_BRL_SHARP_INTHETUBE))
+      {
 
-				//lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
-				lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE;// TODO SAFETY STOP
+        //lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
+        lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE;// TODO SAFETY STOP
 
-				lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
+        lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
 
-			}
+      }
 
-		}
+    }
 
-		break;
+    break;
 
-		// TODO SKIPPED FOR NOW
-	case LST_OBS_BRL_STAGE_OUTGOING:
+    // TODO SKIPPED FOR NOW
+  case LST_OBS_BRL_STAGE_OUTGOING:
 
-		// On the exit ramp
+    // On the exit ramp
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
+    LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
 
-		if (lst_control_line_no == 1)
-		{
+    if (lst_control_line_no == 1)
+    {
 
-			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_EXIT;
+      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_EXIT;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_BRL_STAGE_BRAKE:
+  case LST_OBS_BRL_STAGE_BRAKE:
 
-		LST_Steering_Lock(0);
-		LST_Movement_Move_Encoderless(LST_MOVEMENT_BRAKING);
+    LST_Steering_Lock(0);
+    LST_Movement_Move_Encoderless(LST_MOVEMENT_BRAKING);
 
-		if (lst_obs_barrel_brakeTimer <= 0)
-		{
+    if (lst_obs_barrel_brakeTimer <= 0)
+    {
 
-			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_EXIT;
+      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_EXIT;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_barrel_brakeTimer--;
+      lst_obs_barrel_brakeTimer--;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_BRL_STAGE_EXIT:
+  case LST_OBS_BRL_STAGE_EXIT:
 
-		// Search mode
-		//lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    // Search mode
+    //lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
-		// Stop
-		LST_Movement_Stop();
-		LST_Steering_Lock(0);
+    // Stop
+    LST_Movement_Stop();
+    LST_Steering_Lock(0);
 
-		lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
+    lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
 
-		break;
+    break;
 
-	}
+  }
 
 }
 
@@ -1460,9 +1466,9 @@ static void LST_Obs_Barrel(){
  * @brief Mode for the roundabout
  */
 static void LST_Obs_Roundabout(){
-	// ToDo TEST
+  // ToDo TEST
 
-  LST_Steering_Follow();
+  LST_Steering_Follow(lst_obs_steering_interpol);
   LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
   switch (lst_obs_roundabout_stage){
@@ -1516,13 +1522,13 @@ static void LST_Obs_Roundabout(){
     // Try with time measurement
     if (lst_obs_roundabout_turnInTimer <= 0)
     {
-    	lst_obs_roundabout_stage = LST_OBS_RND_STAGE_TRAVEL;
-    	// Init variable for the stage after the next
-    	lst_obs_roundabout_turnOutTimer = LST_OBS_RND_TURNOUTTIMER_PERIOD;
+      lst_obs_roundabout_stage = LST_OBS_RND_STAGE_TRAVEL;
+      // Init variable for the stage after the next
+      lst_obs_roundabout_turnOutTimer = LST_OBS_RND_TURNOUTTIMER_PERIOD;
     }
     else
     {
-    	lst_obs_roundabout_turnInTimer--;
+      lst_obs_roundabout_turnInTimer--;
     }
 
     /*
@@ -1588,48 +1594,48 @@ static void LST_Obs_Roundabout(){
 
     }
 
-		if (lst_obs_roundabout_turnOutTimer<=0)
-		{
-			lst_obs_roundabout_stage = LST_OBS_RND_STAGE_ALIGN;
-		}
-		else
-		{
-			lst_obs_roundabout_turnOutTimer--;
-		}
+    if (lst_obs_roundabout_turnOutTimer<=0)
+    {
+      lst_obs_roundabout_stage = LST_OBS_RND_STAGE_ALIGN;
+    }
+    else
+    {
+      lst_obs_roundabout_turnOutTimer--;
+    }
 
     break;
 
   case LST_OBS_RND_STAGE_ALIGN:
 
-  	// Lock straight until line found
+    // Lock straight until line found
 
-  	LST_Steering_Lock(0);
-  	LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    LST_Steering_Lock(0);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-  	// Travel until the car hits a line
-		if(lst_control_line_no == 1){
-			lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FINISH;
-		}
+    // Travel until the car hits a line
+    if(lst_control_line_no == 1){
+      lst_obs_roundabout_stage = LST_OBS_RND_STAGE_FINISH;
+    }
 
-  	break;
+    break;
 
   case LST_OBS_RND_STAGE_FINISH:
     // Line follow, Go slowly
-    LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
     LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
     // Go forward like 400mm, then go into SEARCH mode
     if (LST_Distance_Measure_mm(LST_OBS_RND_FINISH_DISTANCE)){ // 400
-    	lst_obs_roundabout_stage = LST_OBS_RND_STAGE_EXIT;
+      lst_obs_roundabout_stage = LST_OBS_RND_STAGE_EXIT;
     }
     break;
 
   case LST_OBS_RND_STAGE_EXIT:
 
-  	 // Search mode
-	 lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+     // Search mode
+   lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
-	 break;
+   break;
   }
 }
 
@@ -1638,229 +1644,229 @@ static void LST_Obs_Roundabout(){
  */
 static void LST_Obs_Trainstop(){
 
-	// TODO TEST 2018. 02. 02.
+  // TODO TEST 2018. 02. 02.
 
-	switch (lst_obs_train_stage)
-	{
+  switch (lst_obs_train_stage)
+  {
 
-	case LST_OBS_TRA_STAGE_PREPARE:
+  case LST_OBS_TRA_STAGE_PREPARE:
 
-		// Init
-		lst_obs_train_repeatedCrossing = 0;
+    // Init
+    lst_obs_train_repeatedCrossing = 0;
 
-		// Jump to next
-		//lst_obs_train_stage = LST_OBS_TRA_STAGE_APPROACH;
-		lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
+    // Jump to next
+    //lst_obs_train_stage = LST_OBS_TRA_STAGE_APPROACH;
+    lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
 
-		break;
+    break;
 
-		// TODO !!!!!!!!!!!!!!!!!!!! SKIPPED -> TEST OK, still too close
-		// to track
-		// !!!!!!!!!!!!!!!!!!!!!!!!!
+    // TODO !!!!!!!!!!!!!!!!!!!! SKIPPED -> TEST OK, still too close
+    // to track
+    // !!!!!!!!!!!!!!!!!!!!!!!!!
 
-	case LST_OBS_TRA_STAGE_APPROACH:
+  case LST_OBS_TRA_STAGE_APPROACH:
 
-		// Follow the line
-		LST_Steering_Follow();
+    // Follow the line
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		// Slowest speed
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+    // Slowest speed
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
 
-		// Next stage if line ends
-		if (lst_control_line_no < 1)
-		{
+    // Next stage if line ends
+    if (lst_control_line_no < 1)
+    {
 
-			// also implement for corner
-			LST_Steering_Lock(0);
+      // also implement for corner
+      LST_Steering_Lock(0);
 
-			// Jump to next
-			lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
+      // Jump to next
+      lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_TRA_STAGE_WATCH:
+  case LST_OBS_TRA_STAGE_WATCH:
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		LST_Movement_Stop();
+    LST_Movement_Stop();
 
-		// Wait for one car
-		if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_TRA_SHARP_DIST_CAR)
-		{
+    // Wait for one car
+    if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_TRA_SHARP_DIST_CAR)
+    {
 
-			// Jump to next
-			lst_obs_train_stage = LST_OBS_TRA_STAGE_WAIT;
+      // Jump to next
+      lst_obs_train_stage = LST_OBS_TRA_STAGE_WAIT;
 
-		}
+    }
 
 
-		break;
+    break;
 
-	case LST_OBS_TRA_STAGE_WAIT:
+  case LST_OBS_TRA_STAGE_WAIT:
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		LST_Movement_Stop();
+    LST_Movement_Stop();
 
-		// Wait until no car is seen
-		if (LST_Sharp_GetFrontDistance_mm() > LST_OBS_TRA_SHARP_DIST_CAR)
-			{
+    // Wait until no car is seen
+    if (LST_Sharp_GetFrontDistance_mm() > LST_OBS_TRA_SHARP_DIST_CAR)
+      {
 
-				// Jump to next
-				lst_obs_train_stage = LST_OBS_TRA_STAGE_COUNT;
+        // Jump to next
+        lst_obs_train_stage = LST_OBS_TRA_STAGE_COUNT;
 
-				// Init variable
-				lst_obs_train_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
+        // Init variable
+        lst_obs_train_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
 
-			}
+      }
 
 
-		break;
+    break;
 
-	case LST_OBS_TRA_STAGE_COUNT:
+  case LST_OBS_TRA_STAGE_COUNT:
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		LST_Movement_Stop();
+    LST_Movement_Stop();
 
-		// If sufficient time has elapsed without a car seen, then
-		// it is safe to proceed, else wait more
-		if (lst_obs_train_lastCarTimer <= 0)
-		{
+    // If sufficient time has elapsed without a car seen, then
+    // it is safe to proceed, else wait more
+    if (lst_obs_train_lastCarTimer <= 0)
+    {
 
-			// Jump to next
-			lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSS;
+      // Jump to next
+      lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSS;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			// Reset counter if another car appears
-			if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_TRA_SHARP_DIST_CAR)
-			{
+      // Reset counter if another car appears
+      if (LST_Sharp_GetFrontDistance_mm() < LST_OBS_TRA_SHARP_DIST_CAR)
+      {
 
-				lst_obs_train_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
+        lst_obs_train_lastCarTimer = LST_OBS_TRA_LASTCARTIMER_PERIOD;
 
-			}
-			else
-			{
+      }
+      else
+      {
 
-				lst_obs_train_lastCarTimer--;
+        lst_obs_train_lastCarTimer--;
 
-			}
+      }
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_TRA_STAGE_CROSS:
+  case LST_OBS_TRA_STAGE_CROSS:
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		// Quickly through
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    // Quickly through
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		// Reached perpendicular line (train track)
-		if (LST_Obs_Search_Long_Line_Detected()) // TEEEEEEEEEEEEEEST
-		{
+    // Reached perpendicular line (train track)
+    if (LST_Obs_Search_Long_Line_Detected()) // TEEEEEEEEEEEEEEST
+    {
 
-			// Init variable
-			lst_obs_train_crossingTimer = LST_OBS_TRA_CROSSINGTIMER_PERIOD;
+      // Init variable
+      lst_obs_train_crossingTimer = LST_OBS_TRA_CROSSINGTIMER_PERIOD;
 
-			// Jump to next
-			lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSSING;
+      // Jump to next
+      lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSSING;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_TRA_STAGE_CROSSING:
+  case LST_OBS_TRA_STAGE_CROSSING:
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		// Delay a bit to get to the no line part
-		if (lst_obs_train_crossingTimer <= 0)
-		{
+    // Delay a bit to get to the no line part
+    if (lst_obs_train_crossingTimer <= 0)
+    {
 
-			// Jump to next
-			lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSSED;
+      // Jump to next
+      lst_obs_train_stage = LST_OBS_TRA_STAGE_CROSSED;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_train_crossingTimer--;
+      lst_obs_train_crossingTimer--;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_TRA_STAGE_CROSSED:
+  case LST_OBS_TRA_STAGE_CROSSED:
 
-		LST_Steering_Lock(0);
+    LST_Steering_Lock(0);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		// Find the line between the tracks
-		if (lst_control_line_no > 0)
-		{
+    // Find the line between the tracks
+    if (lst_control_line_no > 0)
+    {
 
-			// If this was the first crossing, repeat
-			if (!lst_obs_train_repeatedCrossing)
-			{
+      // If this was the first crossing, repeat
+      if (!lst_obs_train_repeatedCrossing)
+      {
 
-				lst_obs_train_stage = LST_OBS_TRA_STAGE_APPROACH;
+        lst_obs_train_stage = LST_OBS_TRA_STAGE_APPROACH;
 
-				lst_obs_train_repeatedCrossing = 1;
+        lst_obs_train_repeatedCrossing = 1;
 
-			}
-			else
-			{
+      }
+      else
+      {
 
-				lst_obs_train_stage = LST_OBS_TRA_STAGE_LEAVECROSSING;
+        lst_obs_train_stage = LST_OBS_TRA_STAGE_LEAVECROSSING;
 
-				// Init variable
-				lst_obs_train_leaveTimer = LST_OBS_TRA_LEAVETIMER_PERIOD;
+        // Init variable
+        lst_obs_train_leaveTimer = LST_OBS_TRA_LEAVETIMER_PERIOD;
 
-			}
+      }
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_TRA_STAGE_LEAVECROSSING:
+  case LST_OBS_TRA_STAGE_LEAVECROSSING:
 
-		LST_Steering_Follow();
+    LST_Steering_Follow(lst_obs_steering_interpol);
 
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
 
-		if (lst_obs_train_leaveTimer <= 0)
-		{
+    if (lst_obs_train_leaveTimer <= 0)
+    {
 
-			lst_obs_train_stage = LST_OBS_TRA_STAGE_EXIT;
+      lst_obs_train_stage = LST_OBS_TRA_STAGE_EXIT;
 
-		}
-		else
-		{
+    }
+    else
+    {
 
-			lst_obs_train_leaveTimer--;
+      lst_obs_train_leaveTimer--;
 
-		}
+    }
 
-		break;
+    break;
 
-	case LST_OBS_TRA_STAGE_EXIT:
+  case LST_OBS_TRA_STAGE_EXIT:
 
-		// Search mode
-		lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    // Search mode
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
-		break;
+    break;
 
-	}
+  }
 
 }
 
@@ -1879,11 +1885,11 @@ static void LST_Obs_End(){
   else
   {
 
-  	// Stop
-  	LST_Movement_Stop();
-  	LST_Steering_Lock(0);
+    // Stop
+    LST_Movement_Stop();
+    LST_Steering_Lock(0);
 
-  	lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
+    lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
 
   }
 

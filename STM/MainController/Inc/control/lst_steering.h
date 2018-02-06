@@ -32,7 +32,7 @@ int16_t		lst_steering_lockedPosition;
 // Functions
 void LST_Steering_Set();
 void LST_Steering_Lock(int16_t steeringValue);
-void LST_Steering_Follow();
+void LST_Steering_Follow(uint8_t interpol);
 void LST_Steering_BTTest();
 void LST_Steering_Sharp(uint8_t sharp_dir, uint16_t distance_mm);
 

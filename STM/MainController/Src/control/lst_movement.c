@@ -100,8 +100,7 @@ void LST_Movement_Set()
 
 	case LST_MOVEMENT_SPEEDCONTROL_SHARP:
 	  // Call speed controller
-    lst_control_motor = LST_Control_SpeedControllerSharp(
-        lst_movement_speed, lst_movement_distance);
+    lst_control_motor = LST_Control_SpeedControllerSharp(lst_movement_distance);
 	  break;
 
 	case LST_MOVEMENT_STOP:
@@ -133,10 +132,9 @@ void LST_Movement_Move(int16_t speed)
 
 }
 
-void LST_Movement_Move_Sharp(int16_t speed, uint16_t distance)
+void LST_Movement_Move_Sharp(uint16_t distance)
 {
 
-  lst_movement_speed = speed;
   lst_movement_distance = distance;
   lst_movement_type = LST_MOVEMENT_SPEEDCONTROL_SHARP;
 

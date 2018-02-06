@@ -108,10 +108,6 @@ void LST_Control_Commons(){
   /* ADC conversions */
   LST_ADC_StartSharpADC();
 
-  /* Calculate and normalize speed from encoder */
-  //lst_control_speed_encoder = LST_Control_CalculateSpeed();
-  // !! moved to separate task
-
   /* Wait for ADC */
   LST_ADC_WaitForSharpADC();
 
@@ -282,8 +278,6 @@ int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist){
   int16_t error_signal = 0;
   int32_t str_cntrl_result = 0;
 
-  // ToDo test
-
   if(sharp_dir == 0){ // left
     error_signal = dist - LST_Sharp_GetRawLeftDistance(); // Raw: inverted
   }else{              // right
@@ -423,10 +417,22 @@ int32_t LST_Control_SpeedController(int16_t reference){
 }
 
 // ToDo test
-int32_t LST_Control_SpeedControllerSharp(
-    int16_t reference, uint16_t distance){
-  return 0;
-  // ToDo
+int32_t LST_Control_SpeedControllerSharp(uint16_t distance){
+  int16_t error_signal = 0;
+  int32_t cntrl_result = 0;
+
+  error_signal = distance - LST_Sharp_GetRawFrontDistance();
+
+  /* System input */
+  int32_t system_input = LST_CONTROL_SPEED_SHARP_P*error_signal; // Todo is this good?
+
+  cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
+
+  /* Max/Min */
+  if (cntrl_result < LST_CONTROL_SHARP_SPEED_MIN) cntrl_result = LST_CONTROL_SHARP_SPEED_MIN;
+  if (cntrl_result > LST_CONTROL_SHARP_SPEED_MAX) cntrl_result = LST_CONTROL_SHARP_SPEED_MAX;
+
+  return cntrl_result;
 }
 
 /**
@@ -447,31 +453,3 @@ void LST_Control_ServoAndMotor(){
   LST_TIM_SetMotorRcPwm(lst_control_motor);
 #endif
 }
-
-/*
-// TODO PURGE
-float LST_Control_CalculateSpeed(){
-  // ToDo test
-
-  // TODO NB!!!! If control freq changes, CHANGE THE REPEAT TICKS CONSTANT TOO!
-  float sp = -LST_CONTROL_TICKS_TIMEBASE*(float)LST_TIM_CalculateSpeed()
-      /(float)LST_CONTROL_SPEED_CALC_TICKS;
-  float sum = 0.0f;
-  float temp = 0.0f;
-
-  // Speed values array
-  uint8_t cccntr = 0;
-  for(cccntr=LST_CONTROL_SPEED_FILTER_ORDER - 1; cccntr!=255; cccntr--){
-    temp = lst_control_speed_array[cccntr];
-    sum = sum + temp;
-    lst_control_speed_array[cccntr+1] = temp;
-  }
-  sum = sum + sp;
-  lst_control_speed_array[0] = sp;
-
-  return sum/(float)(LST_CONTROL_SPEED_FILTER_ORDER + 1);
-}
-*/
-
-// TODO TEMP 2018. 01. 30. functions for task migration
-

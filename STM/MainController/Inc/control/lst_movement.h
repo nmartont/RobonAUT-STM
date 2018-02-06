@@ -60,5 +60,6 @@ void LST_Movement_Set();
 void LST_Movement_Move(int16_t speed);
 void LST_Movement_Stop();
 void LST_Movement_Move_Encoderless(int16_t speed);
+void LST_Movement_Move_Sharp(uint16_t distance);
 
 #endif /* CONTROL_LST_MOVEMENT_H_ */

@@ -9,6 +9,7 @@
 
 uint8_t lst_steering_sharp_dir = 0; // 0: left; 1: right
 uint16_t lst_steering_distance = 0;
+uint8_t lst_steering_interpol  = 0;
 
 void LST_Steering_Set()
 {
@@ -31,8 +32,7 @@ void LST_Steering_Set()
 
 		case LST_STEERING_FOLLOW:
 		default:
-			lst_control_steering = LST_Control_SteeringController(0);
-
+			lst_control_steering = LST_Control_SteeringController(lst_steering_interpol);
 		}
 
 }
@@ -45,10 +45,11 @@ void LST_Steering_Lock(int16_t steeringValue)
 
 }
 
-void LST_Steering_Follow()
+void LST_Steering_Follow(uint8_t interpol)
 {
 
 	lst_steering_type = LST_STEERING_FOLLOW;
+	lst_steering_interpol = interpol;
 
 }
 
