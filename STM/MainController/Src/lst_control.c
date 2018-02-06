@@ -53,7 +53,7 @@ int32_t lst_control_errorSignalSum_speed =  0;
 
 /* Motor and steering variables */
 // MOVED TO LST_MOVEMENT, LST_STEERING
-int16_t lst_control_steering_offset = -115; // negative: left
+int16_t lst_control_steering_offset = -50; //-115; // negative: left
 
 /* Declare variables for steering controller interpolation */
 // ToDo calibrate interpolation for steering controller parameters
@@ -276,6 +276,33 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
 }
 
 /**
+ * @brief P controller for the Sharps
+ */
+int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist){
+  int16_t error_signal = 0;
+  int32_t str_cntrl_result = 0;
+
+  // ToDo test
+
+  if(sharp_dir == 0){ // left
+    error_signal = dist - LST_Sharp_GetRawLeftDistance(); // Raw: inverted
+  }else{              // right
+    error_signal = -(dist - LST_Sharp_GetRawRightDistance());
+  }
+
+  /* System input */
+  int32_t system_input = LST_CONTROL_SHARP_P*error_signal; // Todo is this good?
+
+  str_cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
+
+  /* Max/Min */
+  if (str_cntrl_result < LST_TIM_SERVO_PWM_MIN) str_cntrl_result = LST_TIM_SERVO_PWM_MIN;
+  if (str_cntrl_result > LST_TIM_SERVO_PWM_MAX) str_cntrl_result = LST_TIM_SERVO_PWM_MAX;
+
+  return str_cntrl_result;
+}
+
+/**
  * @brief PID controller for the speed
  */
 int32_t LST_Control_SpeedController(int16_t reference){
@@ -381,20 +408,15 @@ int32_t LST_Control_SpeedController(int16_t reference){
 				LST_CONTROL_SPEED_RATELIMIT;
 
 	}
-
-  // Speed limit (obstacle mode)
-  if (lst_movement_speedLimit != 0)
+/*
+  // Apply reverse lock if needed TODO TEST 2018. 02. 02.
+  if (lst_control_speed_reverseLock)
   {
 
-  	if (speed_cntrl_result > lst_movement_speedLimit)
-  	{
-
-  		speed_cntrl_result = lst_movement_speedLimit;
-
-  	}
+  	if (speed_cntrl_result > 0) speed_cntrl_result = 0;
 
   }
-
+*/
   speed_cntrl_result_previous = speed_cntrl_result;
 
   return speed_cntrl_result;

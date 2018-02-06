@@ -42,7 +42,9 @@
 #define LST_CONTROL_SPEED_D_DIVIDER   16384.0f
 #define LST_CONTROL_SPEED_I           300
 #define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
+
 #define LST_CONTROL_SPEED_RATELIMIT		10
+uint8_t lst_control_speed_reverseLock;
 
 /* Float denums for dividing steering and servo control values */
 #define LST_CONTROL_BT_STEERING_DENUM -21.487f
@@ -86,7 +88,7 @@
 /* Interpolation */
 #define LST_CONTROL_PD_INTERPOL_POINTS  5
 
-
+#define LST_CONTROL_SHARP_P   80.0f
 
 // LST_SETTINGS Servo invert
 
@@ -102,6 +104,7 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation);
 int32_t LST_Control_SpeedController(int16_t reference);
 void LST_Control_ServoAndMotor();
 //float LST_Control_CalculateSpeed(); // !! moved to another task
+int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist);
 
 /* Private variables ---------------------------------------------------------*/
 

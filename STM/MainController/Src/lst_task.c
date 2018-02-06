@@ -150,6 +150,12 @@ void LST_Task_Obstacle(void const * argument) {
   /* Send VarList to the PC */
   LST_BT_Send_VarList();
 
+  /* Check lap mode at start based on DIP switches */
+  LST_Obs_DIP_Handler_Start();
+
+  // Random delay -> if in search mode, motor controller does not start
+  vTaskDelay(2000); // 2s
+
   /* Record starting timestamp */
   TickType_t xLastWakeTime = xTaskGetTickCount();
 

@@ -12,7 +12,7 @@
 #include "tasks/lst_encoder.h"
 
 // Functions
-uint8_t LST_Distance_Measure_mm(uint16_t mm);
+uint8_t LST_Distance_Measure_mm(int16_t mm);
 void LST_Distance_Measure_mm_Reset();
 uint8_t LST_Distance_Measure_mm_GetOngoing();
 

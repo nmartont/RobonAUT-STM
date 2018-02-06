@@ -15,15 +15,20 @@
 void lst_sendData(void)
 {
 
+	// TODO TEST 2018. 01. 30.
+	// Send data regardless of SPI state
+	lst_sendData_fillTxBuffer();
+
 	// Send only if previous has completed
 	if (lst_spiCompleted)
 	{
 
-			lst_sendData_initValues();
+		// TODO TEST 2018. 01. 30. why is it needed?
+		//lst_sendData_initValues();
 
-			lst_sendData_fillTxBuffer();
+		//lst_sendData_fillTxBuffer();
 
-			lst_sendData_transmitReceive();
+		lst_sendData_transmitReceive();
 
 	}
 
