@@ -53,7 +53,6 @@ int16_t lst_control_motor;
 // Movement controls
 uint8_t 	lst_movement_type;
 int16_t	lst_movement_speed;
-uint16_t lst_movement_speedLimit;
 
 // Functions
 void LST_Movement_Set();
