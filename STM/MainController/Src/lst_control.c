@@ -14,7 +14,7 @@ uint32_t lst_control_time_cntr = 0;
 
 /* Variables for the lost line detection */
 uint8_t lst_control_line_lost_flag = 0;
-uint8_t cntr_lost_lines            = 0;
+uint16_t cntr_lost_lines            = 0;
 
 /* Variables for the line number calculation */
 uint8_t lst_control_line_no_array[8] = { 0x00 };

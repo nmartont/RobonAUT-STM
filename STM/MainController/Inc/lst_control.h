@@ -80,7 +80,7 @@ uint8_t lst_control_speed_reverseLock;
 #define LST_CONTROL_MOTOR_NOINTEGRATOR
 
 /* Defines for lost line detection */
-#define LST_CONTROL_LOST_LINES_THRESHOLD       20
+#define LST_CONTROL_LOST_LINES_THRESHOLD       1000 // 20
 #define LST_CONTROL_NEW_LINE_FILTER_THRESHOLD  3
 
 /* Interpolation */
