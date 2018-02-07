@@ -135,6 +135,8 @@ void lst_sendData_TxRxComplete()
 void lst_sendData_init()
 {
 
+	lst_spiWatchdog = 0;
+
 	// Set spiCompleted to 1 to enter data transfer function at start
 	lst_spiCompleted = 1;
 
@@ -164,6 +166,14 @@ void lst_sendData_checkWatchdog()
 
 		lst_spiCompleted = 1;
 
+		lst_spiWatchdog = 0;
+
+	}
+	else
+	{
+
+		lst_spiWatchdog++;
+
 	}
 
 }
@@ -171,6 +181,6 @@ void lst_sendData_checkWatchdog()
 void lst_sendData_resetWatchdog()
 {
 
-	lst_spiWatchdog = 0;
+	//lst_spiWatchdog = 0;
 
 }

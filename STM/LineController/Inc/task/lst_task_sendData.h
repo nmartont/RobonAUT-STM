@@ -38,9 +38,9 @@ uint8_t lst_spiData_rx[LST_SPI_SIZE];
 uint8_t lst_spiCompleted;
 
 // Watchdog and reset variables, constants TODO document and TEST
-uint8_t lst_spiWatchdog;
-#define LST_SPI_WATCHDOG_TIMEOUT	20
-#define LST_SPI_INIT_DELAY_MS			50 // TODO 5ms
+uint16_t lst_spiWatchdog;
+#define LST_SPI_WATCHDOG_TIMEOUT	50//20
+#define LST_SPI_INIT_DELAY_MS			50000
 
 // Functions
 
