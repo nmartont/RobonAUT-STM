@@ -14,7 +14,7 @@ uint32_t lst_control_time_cntr = 0;
 
 /* Variables for the lost line detection */
 uint8_t lst_control_line_lost_flag = 0;
-uint16_t cntr_lost_lines            = 0;
+uint16_t cntr_lost_lines           = 0;
 
 /* Variables for the line number calculation */
 uint8_t lst_control_line_no_array[8] = { 0x00 };
@@ -48,6 +48,9 @@ int16_t lst_control_errorSignal_speed =     0;
 int16_t lst_control_errorSignalOld_speed =  0;
 int16_t lst_control_referenceOld_speed =    0;
 int32_t lst_control_errorSignalSum_speed =  0;
+
+int16_t lst_control_sharp_speed_min = LST_CONTROL_SHARP_SPEED_FAST_MIN;
+int16_t lst_control_sharp_speed_max = LST_CONTROL_SHARP_SPEED_FAST_MAX;
 
 // LST_SETTINGS Servo offset TODO move
 
@@ -429,8 +432,8 @@ int32_t LST_Control_SpeedControllerSharp(uint16_t distance){
   cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
 
   /* Max/Min */
-  if (cntrl_result < LST_CONTROL_SHARP_SPEED_MIN) cntrl_result = LST_CONTROL_SHARP_SPEED_MIN;
-  if (cntrl_result > LST_CONTROL_SHARP_SPEED_MAX) cntrl_result = LST_CONTROL_SHARP_SPEED_MAX;
+  if (cntrl_result < lst_control_sharp_speed_min) cntrl_result = lst_control_sharp_speed_min;
+  if (cntrl_result > lst_control_sharp_speed_max) cntrl_result = lst_control_sharp_speed_max;
 
   return cntrl_result;
 }

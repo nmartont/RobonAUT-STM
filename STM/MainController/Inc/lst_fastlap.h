@@ -51,7 +51,7 @@
 
 /* Speed values */
 #ifdef LST_FAST_MODE_ENCODERLESS
-#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       380 // 200 -> does not start
+//#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       300 // 200 -> does not start
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      295
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      310
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3      330
@@ -104,7 +104,7 @@
 #define LST_FAST_Q1_WAIT_MIN          30  // 300ms
 
 /* Follow defines */
-#define LST_FAST_Q1_FOLLOW_DIST               800 // ADC value (12bits)
+#define LST_FAST_Q1_FOLLOW_DIST               600 //800 // ADC value (12bits)
 #define LST_FAST_Q1_FOLLOW_END_DIST           100 // ADC value (12bits)
 #define LST_FAST_Q1_FOLLOW_FILTER_THRESHOLD   1
 #define LST_FAST_Q1_FOLLOW_LINES_THRESHOLD    2
@@ -118,7 +118,7 @@
 
 /* Brake mode defines */
 #define LST_FAST_BRAKE_DELAY           5
-#define LST_FAST_BRAKE_TIME            40
+#define LST_FAST_BRAKE_TIME            30
 #define LST_FAST_Q1_BRAKE_MOTOR       -700
 
 /* Acceleration defines */
