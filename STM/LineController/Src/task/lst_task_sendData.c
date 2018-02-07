@@ -156,11 +156,11 @@ void lst_sendData_checkWatchdog()
 
 		HAL_SPI_DeInit(&hspi1);
 
-		lst_timer1_delay_milliSeconds(5);
+		lst_timer1_delay_milliSeconds(LST_SPI_INIT_DELAY_MS);
 
 		HAL_SPI_Init(&hspi1);
 
-		lst_timer1_delay_milliSeconds(5);
+		lst_timer1_delay_milliSeconds(LST_SPI_INIT_DELAY_MS);
 
 		lst_spiCompleted = 1;
 
