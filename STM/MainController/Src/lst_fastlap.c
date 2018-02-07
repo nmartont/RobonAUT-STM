@@ -243,8 +243,8 @@ static void LST_Fast_Q1_Logic(){
 //				cntr_q1_start++;
 //			}
 //			else{
-//			  // Approach safety car
-//				lst_fast_q1_mode = LST_FAST_MODE_Q1_APPROACH;
+			  // Approach safety car
+				lst_fast_q1_mode = LST_FAST_MODE_Q1_APPROACH;
 //
 //				/* Set motor value */
 //				LST_Movement_Move_Encoderless(LST_FAST_Q1_APPROACH_MOTOR_SPEED);
