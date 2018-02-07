@@ -42,22 +42,35 @@
 // LST_SETTINGS Interpolated steering controller parameters
 // #define LST_FAST_MODE_STEERING_INTERPOLATED
 
+// LST_SETTINGS Three laps switch for the fast lap mode
+// #define LST_FAST_THREE_LAPS
+
 #define LST_FAST_MODE_SPEED_CONTROL  20
 
 #define LST_FAST_INSNESITIVITY_DIST  1000 // 1 meter
 
 /* Speed values */
 #ifdef LST_FAST_MODE_ENCODERLESS
-#define LST_FAST_Q1_APPROACH_MOTOR_SPEED  200
-#define LST_FAST_Q1_SLOW_MOTOR_SPEED      295
-#define LST_FAST_Q1_FAST_MOTOR_SPEED      460
-#define LST_FAST_Q1_START_MOTOR_SPEED     350
+#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       200
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      295
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      310
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3      330
+#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1      460
+#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2      500
+#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3      550
+#define LST_FAST_Q1_START_MOTOR_SPEED          350
+#define LST_FAST_Q1_FINISH_MOTOR_SPEED         1000
 #else
 // ToDo calibrate these values
-#define LST_FAST_Q1_APPROACH_MOTOR_SPEED  100
-#define LST_FAST_Q1_SLOW_MOTOR_SPEED      130
-#define LST_FAST_Q1_FAST_MOTOR_SPEED      250
-#define LST_FAST_Q1_START_MOTOR_SPEED     130
+#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       100
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      130
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      140
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3      150
+#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1      250
+#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2      300
+#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3      350
+#define LST_FAST_Q1_START_MOTOR_SPEED          130
+#define LST_FAST_Q1_FINISH_MOTOR_SPEED         600
 #endif
 
 /* Steering values */
@@ -104,6 +117,9 @@
 #define LST_FAST_Q1_ACCEL_PLUS_D       13
 #define LST_FAST_Q1_ACCEL_PLUS_MOTOR   1
 #define LST_FAST_Q1_ACCEL_TIME         25
+
+/* End defines */
+#define LST_FAST_END_DIST              3000 // mm
 
 /* Function prototypes -------------------------------------------------------*/
 void LST_Fast_Init();

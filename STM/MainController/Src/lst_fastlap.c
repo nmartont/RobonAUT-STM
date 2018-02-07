@@ -13,6 +13,15 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t lst_fast_mode = LST_FAST_MODE_BT;
 
+/* Section counters */
+uint8_t lst_fast_done_laps             = 0;
+int8_t  lst_fast_started_fast_sections = -1; // -1 because the race starts with a fast section
+uint8_t lst_fast_started_slow_sections = 0;
+
+/* Motor control variables */
+int16_t lst_fast_slow_speed            = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
+int16_t lst_fast_fast_speed            = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
+
 #ifdef LST_FAST_MODE_STEERING_INTERPOLATED
 uint8_t lst_fast_steering_interpol = 1;
 #else
@@ -53,6 +62,7 @@ static void LST_Fast_Reset_State_Machine();
 static void LST_Fast_Q1_Logic();
 static void LST_Fast_Gamepad_Handler();
 static void LST_Fast_State_Machine();
+static void LST_Fast_Q1_Lap_Control();
 
 /******************************************************************************/
 /*                  Fast lap handler for RobonAUT 2018 Team LST               */
@@ -65,7 +75,7 @@ void LST_Fast_Init() {
   /* Calculate values to add to the parameters during acceleration */
   lst_fast_q1_accel_plus_p     = (float)(LST_FAST_Q1_FAST_STEERING_P  - LST_FAST_Q1_SLOW_STEERING_P) /(float)(LST_FAST_Q1_ACCEL_TIME);
   lst_fast_q1_accel_plus_d     = (float)(LST_FAST_Q1_FAST_STEERING_D  - LST_FAST_Q1_SLOW_STEERING_D) /(float)(LST_FAST_Q1_ACCEL_TIME);
-  lst_fast_q1_accel_plus_motor = (float)(LST_FAST_Q1_FAST_MOTOR_SPEED - LST_FAST_Q1_SLOW_MOTOR_SPEED)/(float)(LST_FAST_Q1_ACCEL_TIME);
+  lst_fast_q1_accel_plus_motor = (float)(LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1 - LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1)/(float)(LST_FAST_Q1_ACCEL_TIME);
 }
 
 /**
@@ -93,7 +103,7 @@ static void LST_Fast_Reset_State_Machine(){
 //  cntr_lost_lines              = 0;
   cntr_q1                      = 0;
   cntr_brake                   = 0;
-  lst_fast_motor_float         = LST_FAST_Q1_SLOW_MOTOR_SPEED;
+  lst_fast_motor_float         = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
   cntr_q1_fast_triple_line     = 0;
   cntr_q1_start                = 0;
   cntr_q1_brake                = 0;
@@ -108,6 +118,11 @@ static void LST_Fast_Reset_State_Machine(){
   cntr_q1_follow_single        = 0;
   cntr_q1_follow_dotted_lines  = 0;
   lst_fast_q1_mode             = LST_FAST_MODE_Q1_START;
+  lst_fast_done_laps             = 0;
+  lst_fast_started_fast_sections = -1; // -1 because the race starts with a fast section
+  lst_fast_started_slow_sections = 0;
+  lst_fast_slow_speed            = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
+  lst_fast_fast_speed            = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
 }
 
 /**
@@ -153,6 +168,9 @@ static void LST_Fast_State_Machine(){
     break;
 
   case LST_FAST_MODE_Q1:
+    /* Map control for speed setting and such */
+    LST_Fast_Q1_Lap_Control();
+
     /* Q1 logic */
     LST_Fast_Q1_Logic();
 
@@ -337,9 +355,9 @@ static void LST_Fast_Q1_Logic(){
 
 			/* Set motor value */
 #ifdef LST_FAST_MODE_ENCODERLESS
-      LST_Movement_Move_Encoderless(LST_FAST_Q1_SLOW_MOTOR_SPEED);
+      LST_Movement_Move_Encoderless(lst_fast_slow_speed);
 #else
-      LST_Movement_Move(LST_FAST_Q1_SLOW_MOTOR_SPEED);
+      LST_Movement_Move(lst_fast_slow_speed);
 #endif
 
 			/* Check for dotted lines */
@@ -392,14 +410,16 @@ static void LST_Fast_Q1_Logic(){
 				cntr_q1_accel++;
 			}
 			else{
-				lst_fast_motor_float = LST_FAST_Q1_SLOW_MOTOR_SPEED;
+				lst_fast_motor_float = lst_fast_slow_speed;
 				lst_fast_q1_mode = LST_FAST_MODE_Q1_FAST;
+				lst_fast_started_fast_sections++;
 				cntr_q1_accel = 0;
 			}
 
 #else // Jump to high speed immediately, motor control handles acceleration slope
 
 			lst_fast_q1_mode = LST_FAST_MODE_Q1_FAST;
+			lst_fast_started_fast_sections++;
 
 #endif
 
@@ -415,9 +435,9 @@ static void LST_Fast_Q1_Logic(){
 
 			/* Set motor value */
 #ifdef LST_FAST_MODE_ENCODERLESS
-      LST_Movement_Move_Encoderless(LST_FAST_Q1_FAST_MOTOR_SPEED);
+      LST_Movement_Move_Encoderless(lst_fast_fast_speed);
 #else
-      LST_Movement_Move(LST_FAST_Q1_FAST_MOTOR_SPEED);
+      LST_Movement_Move(lst_fast_fast_speed);
 #endif
 
       if(lst_fast_line_pattern_insensitivity){
@@ -444,7 +464,6 @@ static void LST_Fast_Q1_Logic(){
 		  }
 
 #ifdef LST_FAST_MODE_ENCODERLESS
-
 			/* Satufék */
 			if(cntr_q1_brake<LST_FAST_BRAKE_DELAY){
 				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
@@ -476,20 +495,77 @@ static void LST_Fast_Q1_Logic(){
 	        cntr_q1_brake++;
 			}else{
 				lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
-
+				lst_fast_started_slow_sections++;
 				cntr_q1_brake = 0;
 			}
-
 #else // Jump to low speed immediately, motor control handles deceleration slope
-
 			lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
-
+			lst_fast_started_slow_sections++;
 #endif
 
 			lst_fast_line_pattern_insensitivity = 1;
 			break;
 
+		case LST_FAST_MODE_Q1_END:
+		  /* Measure about 4 meters, if it's done, switch to Q1_START and SATUFÉK mode */
+		  if(LST_Distance_Measure_mm(LST_FAST_END_DIST)){ // 3 meters
+		    lst_fast_q1_mode = LST_FAST_MODE_Q1_START;
+		    lst_fast_mode = LST_FAST_MODE_STOP;
+      }
+		  else{
+		    /* Switch speed to super fast */
+#ifdef LST_FAST_MODE_ENCODERLESS
+		    LST_Movement_Move_Encoderless(LST_FAST_Q1_FINISH_MOTOR_SPEED);
+#else
+		    LST_Movement_Move(LST_FAST_Q1_FINISH_MOTOR_SPEED);
+#endif
+		  }
+
+		  break;
+
   }
+}
+
+static void LST_Fast_Q1_Lap_Control(){
+  /* Check fast lap count */
+  if(lst_fast_started_fast_sections == 4){ // full lap
+    lst_fast_started_fast_sections = 0;
+    lst_fast_done_laps++;
+  }
+
+#ifdef LST_FAST_THREE_LAPS
+  switch(lst_fast_done_laps){
+  case 0: // first lap is next
+    lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
+    lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
+    break;
+  case 1: // second lap is next
+    lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2;
+    lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2;
+    break;
+  case 2: // third lap is next
+    lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3;
+    lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3;
+    break;
+  case 3: // last lap finished, time for finish-line
+  default:
+    /* Get to End mode */
+    lst_fast_q1_mode = LST_FAST_MODE_Q1_END;
+    break;
+  }
+#else
+  switch(lst_fast_done_laps){
+  case 0: // first lap is next
+    lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
+    lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
+    break;
+  case 1: // Finish
+  default:
+    /* Get to End mode */
+    lst_fast_q1_mode = LST_FAST_MODE_Q1_END;
+    break;
+  }
+#endif
 }
 
 /**
