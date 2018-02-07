@@ -14,7 +14,7 @@ uint32_t lst_control_time_cntr = 0;
 
 /* Variables for the lost line detection */
 uint8_t lst_control_line_lost_flag = 0;
-uint8_t cntr_lost_lines            = 0;
+uint16_t cntr_lost_lines           = 0;
 
 /* Variables for the line number calculation */
 uint8_t lst_control_line_no_array[8] = { 0x00 };
@@ -49,11 +49,14 @@ int16_t lst_control_errorSignalOld_speed =  0;
 int16_t lst_control_referenceOld_speed =    0;
 int32_t lst_control_errorSignalSum_speed =  0;
 
+int16_t lst_control_sharp_speed_min = LST_CONTROL_SHARP_SPEED_FAST_MIN;
+int16_t lst_control_sharp_speed_max = LST_CONTROL_SHARP_SPEED_FAST_MAX;
+
 // LST_SETTINGS Servo offset TODO move
 
 /* Motor and steering variables */
 // MOVED TO LST_MOVEMENT, LST_STEERING
-int16_t lst_control_steering_offset = -115; // negative: left
+int16_t lst_control_steering_offset = -50; //-115; // negative: left
 
 /* Declare variables for steering controller interpolation */
 // ToDo calibrate interpolation for steering controller parameters
@@ -108,10 +111,6 @@ void LST_Control_Commons(){
   /* ADC conversions */
   LST_ADC_StartSharpADC();
 
-  /* Calculate and normalize speed from encoder */
-  //lst_control_speed_encoder = LST_Control_CalculateSpeed();
-  // !! moved to separate task
-
   /* Wait for ADC */
   LST_ADC_WaitForSharpADC();
 
@@ -156,12 +155,13 @@ static uint8_t LST_Control_Check_Lost_Line(){
  * @brief Resolves line mode
  */
 static void LST_Control_Resolve_Line(){
-  /* Check for 0xFF control byte at the first byte of the SPI Rx buffer */
-  // ToDo change control byte so that it's not FF, but say 0F
-  if(lst_spi_master1_rx[0] < 254){ // FixMe last bit is bugged
+  /* Check for 0b11110000 control byte at the first byte of the SPI Rx buffer */
+  if(!(lst_spi_master1_rx[0] == 120 || lst_spi_master1_rx[0] == 121)){ // FixMe last bit is bugged
     lst_spi_linecontroller_lost = 1;
-    // return;
+    lst_control_linePos = lst_control_linePosOld;
+    return;
   }
+
   lst_spi_linecontroller_lost = 0;
 
   // Get line data
@@ -265,6 +265,31 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation){
   int32_t system_input =
       floatP*lst_control_errorSignal_steering +
       floatD*(lst_control_errorSignal_steering - lst_control_errorSignalOld_steering);
+
+  str_cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
+
+  /* Max/Min */
+  if (str_cntrl_result < LST_TIM_SERVO_PWM_MIN) str_cntrl_result = LST_TIM_SERVO_PWM_MIN;
+  if (str_cntrl_result > LST_TIM_SERVO_PWM_MAX) str_cntrl_result = LST_TIM_SERVO_PWM_MAX;
+
+  return str_cntrl_result;
+}
+
+/**
+ * @brief P controller for the Sharps
+ */
+int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist){
+  int16_t error_signal = 0;
+  int32_t str_cntrl_result = 0;
+
+  if(sharp_dir == 0){ // left
+    error_signal = dist - LST_Sharp_GetRawLeftDistance(); // Raw: inverted
+  }else{              // right
+    error_signal = -(dist - LST_Sharp_GetRawRightDistance());
+  }
+
+  /* System input */
+  int32_t system_input = LST_CONTROL_SHARP_P*error_signal; // Todo is this good?
 
   str_cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
 
@@ -395,6 +420,25 @@ int32_t LST_Control_SpeedController(int16_t reference){
   return speed_cntrl_result;
 }
 
+// ToDo test
+int32_t LST_Control_SpeedControllerSharp(uint16_t distance){
+  int16_t error_signal = 0;
+  int32_t cntrl_result = 0;
+
+  error_signal = distance - LST_Sharp_GetRawFrontDistance();
+
+  /* System input */
+  int32_t system_input = LST_CONTROL_SPEED_SHARP_P*error_signal; // Todo is this good?
+
+  cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
+
+  /* Max/Min */
+  if (cntrl_result < lst_control_sharp_speed_min) cntrl_result = lst_control_sharp_speed_min;
+  if (cntrl_result > lst_control_sharp_speed_max) cntrl_result = lst_control_sharp_speed_max;
+
+  return cntrl_result;
+}
+
 /**
  * @brief Sets the control for the servo and the motor
  */
@@ -413,31 +457,3 @@ void LST_Control_ServoAndMotor(){
   LST_TIM_SetMotorRcPwm(lst_control_motor);
 #endif
 }
-
-/*
-// TODO PURGE
-float LST_Control_CalculateSpeed(){
-  // ToDo test
-
-  // TODO NB!!!! If control freq changes, CHANGE THE REPEAT TICKS CONSTANT TOO!
-  float sp = -LST_CONTROL_TICKS_TIMEBASE*(float)LST_TIM_CalculateSpeed()
-      /(float)LST_CONTROL_SPEED_CALC_TICKS;
-  float sum = 0.0f;
-  float temp = 0.0f;
-
-  // Speed values array
-  uint8_t cccntr = 0;
-  for(cccntr=LST_CONTROL_SPEED_FILTER_ORDER - 1; cccntr!=255; cccntr--){
-    temp = lst_control_speed_array[cccntr];
-    sum = sum + temp;
-    lst_control_speed_array[cccntr+1] = temp;
-  }
-  sum = sum + sp;
-  lst_control_speed_array[0] = sp;
-
-  return sum/(float)(LST_CONTROL_SPEED_FILTER_ORDER + 1);
-}
-*/
-
-// TODO TEMP 2018. 01. 30. functions for task migration
-

@@ -35,14 +35,6 @@
 #define LST_CONTROL_STEERING_D           18400
 #define LST_CONTROL_STEERING_D_DIVIDER   1630.0f
 
-/* Default values for the speed PID controller */
-#define LST_CONTROL_SPEED_P           12000
-#define LST_CONTROL_SPEED_P_DIVIDER   1638.40f
-#define LST_CONTROL_SPEED_D           5000
-#define LST_CONTROL_SPEED_D_DIVIDER   16384.0f
-#define LST_CONTROL_SPEED_I           300
-#define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
-
 #define LST_CONTROL_SPEED_RATELIMIT		10
 uint8_t lst_control_speed_reverseLock;
 
@@ -61,6 +53,11 @@ uint8_t lst_control_speed_reverseLock;
 #define LST_CONTROL_SPEED_D_DIVIDER   16384.0f
 #define LST_CONTROL_SPEED_I           300
 #define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
+
+#define LST_CONTROL_SHARP_SPEED_FAST_MIN   0
+#define LST_CONTROL_SHARP_SPEED_FAST_MAX   350 // ToDo Calibrate
+#define LST_CONTROL_SHARP_SPEED_SLOW_MIN   0
+#define LST_CONTROL_SHARP_SPEED_SLOW_MAX   250 // ToDo Calibrate
 #else
 #define LST_CONTROL_BT_MOTOR_DENUM    -60.0f
 #define LST_CONTROL_MOTOR_RATE_LIMIT  2000.0f // ToDo calibrate
@@ -73,6 +70,11 @@ uint8_t lst_control_speed_reverseLock;
 #define LST_CONTROL_SPEED_D_DIVIDER   16384.0f
 #define LST_CONTROL_SPEED_I           300
 #define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
+
+#define LST_CONTROL_SHARP_SPEED_FAST_MIN   0
+#define LST_CONTROL_SHARP_SPEED_FAST_MAX   300 //250
+#define LST_CONTROL_SHARP_SPEED_SLOW_MIN   0
+#define LST_CONTROL_SHARP_SPEED_SLOW_MAX   200 //250
 #endif
 
 #define LST_CONTROL_STEERING_DENUM    21.487f
@@ -82,12 +84,15 @@ uint8_t lst_control_speed_reverseLock;
 #define LST_CONTROL_MOTOR_NOINTEGRATOR
 
 /* Defines for lost line detection */
-#define LST_CONTROL_LOST_LINES_THRESHOLD       20
+#define LST_CONTROL_LOST_LINES_THRESHOLD       500
 #define LST_CONTROL_NEW_LINE_FILTER_THRESHOLD  3
 
 /* Interpolation */
 #define LST_CONTROL_PD_INTERPOL_POINTS  5
 
+#define LST_CONTROL_SHARP_P   80.0f
+
+#define LST_CONTROL_SPEED_SHARP_P 130.0f // 160.0f //80.0f
 
 
 // LST_SETTINGS Servo invert
@@ -104,6 +109,8 @@ int32_t LST_Control_SteeringController(uint8_t use_interpolation);
 int32_t LST_Control_SpeedController(int16_t reference);
 void LST_Control_ServoAndMotor();
 //float LST_Control_CalculateSpeed(); // !! moved to another task
+int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist);
+int32_t LST_Control_SpeedControllerSharp(uint16_t distance);
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -123,6 +130,8 @@ extern uint8_t  lst_control_line_no;
 extern float lst_encoder_speed;
 extern int16_t lst_control_motor;
 extern int16_t lst_control_steering;
+extern int16_t lst_control_sharp_speed_min;
+extern int16_t lst_control_sharp_speed_max;
 
 // TODO TEMP 2018. 01. 30. functions for task migration
 // None

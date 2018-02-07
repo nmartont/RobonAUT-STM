@@ -16,14 +16,19 @@
 #define LST_MOVEMENT_STOP 0
 #define LST_MOVEMENT_SPEEDCONTROL 1
 #define LST_MOVEMENT_SPEEDCONTROL_FEEDBACK 2
+#define LST_MOVEMENT_SPEEDCONTROL_SHARP 3
 
 // Speeds
 #define LST_MOVEMENT_FB_SLOWEST 					60
 #define LST_MOVEMENT_FB_SLOW							70
 #define LST_MOVEMENT_FB_MEDIUM						100
+#define LST_MOVEMENT_FB_FAST							120
+#define LST_MOVEMENT_FB_UFAST							250
 #define LST_MOVEMENT_FB_BACKING_SLOWEST   -80
 
 #define LST_MOVEMENT_BACKING_SLOW					-440
+#define LST_MOVEMENT_FAST									600
+#define LST_MOVEMENT_BRAKING							-800
 
 // Variables
 
@@ -55,5 +60,6 @@ void LST_Movement_Set();
 void LST_Movement_Move(int16_t speed);
 void LST_Movement_Stop();
 void LST_Movement_Move_Encoderless(int16_t speed);
+void LST_Movement_Move_Sharp(uint16_t distance);
 
 #endif /* CONTROL_LST_MOVEMENT_H_ */
