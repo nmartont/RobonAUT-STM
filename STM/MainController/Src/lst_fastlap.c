@@ -505,9 +505,18 @@ static void LST_Fast_Q1_Logic(){
 			*/
 		  /* Brake v2 */
 		  if (cntr_q1_brake >= 0)
+		  {
+
 		  	LST_Movement_Move_Encoderless(LST_BRAKE_Q1_SPEED);
-		  else
 		  	cntr_q1_brake--;
+
+		  }
+		  else
+		  {
+
+		  	lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
+
+		  }
 
 #else // Jump to low speed immediately, motor control handles deceleration slope
 			lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
