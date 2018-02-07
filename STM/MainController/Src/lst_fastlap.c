@@ -262,6 +262,12 @@ static void LST_Fast_Q1_Logic(){
 
     // Approach safety car, stop
 		case LST_FAST_MODE_Q1_APPROACH:
+		  if(!lst_fast_steering_interpol){
+        /* Set controller values */
+        lst_control_steeringP = LST_FAST_Q1_APPROACH_STEERING_P;
+        lst_control_steeringD = LST_FAST_Q1_APPROACH_STEERING_D;
+      }
+
 		  /* Set motor value */
 #ifdef LST_FAST_MODE_ENCODERLESS
 		  LST_Movement_Move_Encoderless(LST_FAST_Q1_APPROACH_MOTOR_SPEED);
@@ -307,6 +313,12 @@ static void LST_Fast_Q1_Logic(){
     // Follow safety car, also check if we are good to go for the laps.
     // ToDo TEST!!
 		case LST_FAST_MODE_Q1_FOLLOW:
+		  if(!lst_fast_steering_interpol){
+        /* Set controller values */
+        lst_control_steeringP = LST_FAST_Q1_FOLLOW_STEERING_P;
+        lst_control_steeringD = LST_FAST_Q1_FOLLOW_STEERING_D;
+      }
+
 		  LST_Movement_Move_Sharp(LST_FAST_Q1_FOLLOW_DIST);
 
       // Check if we need to switch to Race mode
