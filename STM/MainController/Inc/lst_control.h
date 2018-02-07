@@ -55,9 +55,9 @@ uint8_t lst_control_speed_reverseLock;
 #define LST_CONTROL_SPEED_I_DIVIDER   16384.0f
 
 #define LST_CONTROL_SHARP_SPEED_FAST_MIN   0
-#define LST_CONTROL_SHARP_SPEED_FAST_MAX   500 // ToDo Calibrate
+#define LST_CONTROL_SHARP_SPEED_FAST_MAX   350 // ToDo Calibrate
 #define LST_CONTROL_SHARP_SPEED_SLOW_MIN   0
-#define LST_CONTROL_SHARP_SPEED_SLOW_MAX   350 // ToDo Calibrate
+#define LST_CONTROL_SHARP_SPEED_SLOW_MAX   250 // ToDo Calibrate
 #else
 #define LST_CONTROL_BT_MOTOR_DENUM    -60.0f
 #define LST_CONTROL_MOTOR_RATE_LIMIT  2000.0f // ToDo calibrate
@@ -84,7 +84,7 @@ uint8_t lst_control_speed_reverseLock;
 #define LST_CONTROL_MOTOR_NOINTEGRATOR
 
 /* Defines for lost line detection */
-#define LST_CONTROL_LOST_LINES_THRESHOLD       300
+#define LST_CONTROL_LOST_LINES_THRESHOLD       500
 #define LST_CONTROL_NEW_LINE_FILTER_THRESHOLD  3
 
 /* Interpolation */
@@ -92,7 +92,7 @@ uint8_t lst_control_speed_reverseLock;
 
 #define LST_CONTROL_SHARP_P   80.0f
 
-#define LST_CONTROL_SPEED_SHARP_P 120.0f // 160.0f //80.0f
+#define LST_CONTROL_SPEED_SHARP_P 130.0f // 160.0f //80.0f
 
 
 // LST_SETTINGS Servo invert
