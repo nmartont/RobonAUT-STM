@@ -12,12 +12,17 @@
 // TODO:upgrade -> update send buffer whenever SS is high
 // (there is no ongoing communication)
 
+void lst_sendData_checkWatchdog();
+void lst_sendData_resetWatchdog();
+
 void lst_sendData(void)
 {
 
 	// TODO TEST 2018. 01. 30.
-	// Send data regardless of SPI state
+	// Fill data buffer regardless of SPI state
 	lst_sendData_fillTxBuffer();
+
+	lst_sendData_checkWatchdog();
 
 	// Send only if previous has completed
 	if (lst_spiCompleted)
@@ -123,6 +128,8 @@ void lst_sendData_TxRxComplete()
 	// the following sensor read cycle
 	lst_spiCompleted = 1;
 
+	lst_sendData_resetWatchdog();
+
 }
 
 void lst_sendData_init()
@@ -136,3 +143,34 @@ void lst_sendData_init()
 
 }
 
+void lst_sendData_checkWatchdog()
+{
+
+	if (lst_spiWatchdog > LST_SPI_WATCHDOG_TIMEOUT)
+	{
+
+		lst_spiCompleted = 0;
+
+		// Signal the mainController - busy (pull DRDY low)
+		HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
+
+		HAL_SPI_DeInit(&hspi1);
+
+		lst_timer1_delay_milliSeconds(5);
+
+		HAL_SPI_Init(&hspi1);
+
+		lst_timer1_delay_milliSeconds(5);
+
+		lst_spiCompleted = 1;
+
+	}
+
+}
+
+void lst_sendData_resetWatchdog()
+{
+
+	lst_spiWatchdog = 0;
+
+}
