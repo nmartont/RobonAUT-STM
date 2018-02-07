@@ -43,7 +43,7 @@ float lst_fast_motor_float           = 0.0f;
 uint8_t cntr_q1                      = 0;
 uint8_t cntr_q1_accel                = 0;
 uint8_t cntr_q1_start                = 0;
-uint8_t cntr_q1_brake                = 0;
+int16_t cntr_q1_brake                = 0;
 uint8_t cntr_q1_fast_triple_line     = 0;
 uint8_t flag_q1_slow_triple_search   = 1;
 uint8_t cntr_q1_slow_triple          = 0;
@@ -527,6 +527,12 @@ static void LST_Fast_Q1_Logic(){
 			break;
 
 		case LST_FAST_MODE_Q1_END:
+		  if(!lst_fast_steering_interpol){
+        /* Set controller values */
+        lst_control_steeringP = LST_FAST_Q1_END_STEERING_P;
+        lst_control_steeringD = LST_FAST_Q1_END_STEERING_D;
+      }
+
 		  /* Measure about 4 meters, if it's done, switch to Q1_START and SATUFÉK mode */
 		  if(LST_Distance_Measure_mm(LST_FAST_END_DIST)){ // 3 meters
 		    lst_fast_q1_mode = LST_FAST_MODE_Q1_START;

@@ -59,7 +59,7 @@
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2      500
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3      550
 #define LST_FAST_Q1_START_MOTOR_SPEED          350
-#define LST_FAST_Q1_FINISH_MOTOR_SPEED         1000
+#define LST_FAST_Q1_FINISH_MOTOR_SPEED         460 // ToDo increase
 #else
 // ToDo calibrate these values
 #define LST_FAST_Q1_APPROACH_MOTOR_SPEED       100
@@ -70,7 +70,7 @@
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2      300
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3      350
 #define LST_FAST_Q1_START_MOTOR_SPEED          130
-#define LST_FAST_Q1_FINISH_MOTOR_SPEED         600
+#define LST_FAST_Q1_FINISH_MOTOR_SPEED         250 // ToDo increase
 #endif
 
 #define LST_BRAKE_Q1_SPEED			-800
@@ -85,6 +85,8 @@
 #define LST_FAST_Q1_START_STEERING_D      10000
 #define LST_FAST_Q1_BRAKE_STEERING_P      20000
 #define LST_FAST_Q1_BRAKE_STEERING_D      10000
+#define LST_FAST_Q1_END_STEERING_P        1750 // ToDo change
+#define LST_FAST_Q1_END_STEERING_D        8000
 
 /* Start defines */
 #define LST_FAST_Q1_START_TIME         5
