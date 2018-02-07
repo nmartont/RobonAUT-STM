@@ -123,6 +123,7 @@ static void LST_Fast_Reset_State_Machine(){
   lst_fast_started_slow_sections = 0;
   lst_fast_slow_speed            = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
   lst_fast_fast_speed            = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
+  cntr_temp                      = 0;
 }
 
 /**
@@ -218,10 +219,10 @@ static void LST_Fast_Q1_Logic(){
 
   // ToDo TEMP!!!!
   /* If lost line, switch to SATUFÉK mode */
-  if (lst_control_line_lost_flag){
-    lst_fast_mode = LST_FAST_MODE_STOP;
-    return;
-  }
+//  if (lst_control_line_lost_flag){
+//    lst_fast_mode = LST_FAST_MODE_STOP;
+//    return;
+//  }
 
   switch(lst_fast_q1_mode){
   	// Fast lap start (from a stopped position)
@@ -235,21 +236,21 @@ static void LST_Fast_Q1_Logic(){
 
 // Linear increase of motor control signal
 #ifdef LST_FAST_MODE_ENCODERLESS
-
-			/* Accelerate to the desired starting speed */
-			if(cntr_q1_start < LST_FAST_Q1_START_TIME){
-			  LST_Movement_Move_Encoderless(LST_FAST_Q1_START_MOTOR_SPEED);
-				cntr_q1_start++;
-			}
-			else{
-			  // Approach safety car
-				lst_fast_q1_mode = LST_FAST_MODE_Q1_APPROACH;
-
-				/* Set motor value */
-				LST_Movement_Move_Encoderless(LST_FAST_Q1_APPROACH_MOTOR_SPEED);
-
-				cntr_q1_start = 0;
-			}
+		  // ToDo temp comment
+//			/* Accelerate to the desired starting speed */
+//			if(cntr_q1_start < LST_FAST_Q1_START_TIME){
+//			  LST_Movement_Move_Encoderless(LST_FAST_Q1_START_MOTOR_SPEED);
+//				cntr_q1_start++;
+//			}
+//			else{
+//			  // Approach safety car
+//				lst_fast_q1_mode = LST_FAST_MODE_Q1_APPROACH;
+//
+//				/* Set motor value */
+//				LST_Movement_Move_Encoderless(LST_FAST_Q1_APPROACH_MOTOR_SPEED);
+//
+//				cntr_q1_start = 0;
+//			}
 
 // Speed control handles motor soft start
 #else
@@ -270,7 +271,8 @@ static void LST_Fast_Q1_Logic(){
 
 		  /* Set motor value */
 #ifdef LST_FAST_MODE_ENCODERLESS
-		  LST_Movement_Move_Encoderless(LST_FAST_Q1_APPROACH_MOTOR_SPEED);
+		  // ToDo temp!!
+		  LST_Movement_Move(50);
 #else
 		  LST_Movement_Move(LST_FAST_Q1_APPROACH_MOTOR_SPEED);
 #endif
@@ -354,6 +356,27 @@ static void LST_Fast_Q1_Logic(){
             lst_fast_q1_mode = LST_FAST_MODE_Q1_ACCEL;
             cntr_q1_follow_dotted_lines = 0;
           }
+		    }else{ // If car is in range, look for patterns
+		      /* Sense slow and fast patterns, limit speed accordingly */
+          // sense 1+ lines
+		      if(lst_control_line_no > 1){
+		        cntr_temp ++;
+
+		        if(cntr_temp > 30){
+		          // if long line, decrease max speed
+		          cntr_temp = 0;
+		          lst_fast_line_pattern_insensitivity = 1;
+		          lst_control_sharp_speed_max = 200;
+		        }
+		      }else if(lst_control_line_no == 1 && cntr_temp > 2){
+		        // short lines
+		        cntr_temp = 0;
+            lst_fast_line_pattern_insensitivity = 1;
+            lst_control_sharp_speed_max = 300;
+		      }else{
+		        // counter reset
+		        cntr_temp = 0;
+		      }
 		    }
 		  }
 		  break;

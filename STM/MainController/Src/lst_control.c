@@ -49,6 +49,9 @@ int16_t lst_control_errorSignalOld_speed =  0;
 int16_t lst_control_referenceOld_speed =    0;
 int32_t lst_control_errorSignalSum_speed =  0;
 
+int16_t lst_control_sharp_speed_min = LST_CONTROL_SHARP_SPEED_FAST_MIN;
+int16_t lst_control_sharp_speed_max = LST_CONTROL_SHARP_SPEED_FAST_MAX;
+
 // LST_SETTINGS Servo offset TODO move
 
 /* Motor and steering variables */
@@ -429,8 +432,8 @@ int32_t LST_Control_SpeedControllerSharp(uint16_t distance){
   cntrl_result = system_input / LST_CONTROL_STEERING_DENUM;
 
   /* Max/Min */
-  if (cntrl_result < LST_CONTROL_SHARP_SPEED_MIN) cntrl_result = LST_CONTROL_SHARP_SPEED_MIN;
-  if (cntrl_result > LST_CONTROL_SHARP_SPEED_MAX) cntrl_result = LST_CONTROL_SHARP_SPEED_MAX;
+  if (cntrl_result < lst_control_sharp_speed_min) cntrl_result = lst_control_sharp_speed_min;
+  if (cntrl_result > lst_control_sharp_speed_max) cntrl_result = lst_control_sharp_speed_max;
 
   return cntrl_result;
 }
