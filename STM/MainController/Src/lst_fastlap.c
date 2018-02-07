@@ -32,6 +32,9 @@ uint8_t cntr_brake                   = 0;
 uint16_t cntr_temp                   = 0;
 int16_t iiii = 250;
 
+uint8_t lst_fast_follow_do_brake     = 0;
+uint8_t lst_fast_follow_cntr         = 0;
+
 uint8_t lst_fast_line_pattern_insensitivity = 0;
 
 float lst_fast_q1_accel_plus_p       = 0.0f;
@@ -124,6 +127,8 @@ static void LST_Fast_Reset_State_Machine(){
   lst_fast_slow_speed            = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
   lst_fast_fast_speed            = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
   cntr_temp                      = 0;
+  lst_fast_follow_do_brake       = 0;
+  lst_fast_follow_cntr           = 0;
 }
 
 /**
@@ -321,7 +326,31 @@ static void LST_Fast_Q1_Logic(){
         lst_control_steeringD = LST_FAST_Q1_FOLLOW_STEERING_D;
       }
 
-		  LST_Movement_Move_Sharp(LST_FAST_Q1_FOLLOW_DIST);
+		  /* Emergency braking */
+		  if(!lst_fast_follow_do_brake &&
+		      LST_Sharp_GetRawFrontDistance() > LST_FAST_Q1_FOLLOW_TOO_CLOSE_DIST)
+		  {
+		    lst_fast_follow_do_brake = 1;
+		    lst_fast_follow_cntr     = 0;
+		  }
+
+		  if(lst_fast_follow_do_brake){
+		    lst_fast_follow_cntr++;
+
+		    if(lst_fast_follow_cntr < LST_FAST_Q1_FOLLOW_BRAKE_TIME){
+		      LST_Movement_Move_Encoderless(LST_BRAKE_Q1_SPEED);
+		    }
+		    else if(lst_fast_follow_cntr <
+		        LST_FAST_Q1_FOLLOW_BRAKE_TIME+
+		        LST_FAST_Q1_FOLLOW_ACCEL_TIME){
+		      LST_Movement_Move(50);
+		    }
+		    else{
+		      lst_fast_follow_do_brake = 0;
+		    }
+		  }else{
+		    LST_Movement_Move_Sharp(LST_FAST_Q1_FOLLOW_DIST);
+		  }
 
       // Check if we need to switch to Race mode
 		  // Search for speedup lines, and also no car in front
