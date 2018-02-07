@@ -47,7 +47,7 @@
 
 #define LST_FAST_MODE_SPEED_CONTROL  20
 
-#define LST_FAST_INSNESITIVITY_DIST  3500 // 3.5 meter
+#define LST_FAST_INSNESITIVITY_DIST  1000 // 1 meter
 
 /* Speed values */
 #ifdef LST_FAST_MODE_ENCODERLESS
