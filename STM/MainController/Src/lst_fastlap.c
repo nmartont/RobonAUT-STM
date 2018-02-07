@@ -399,7 +399,7 @@ static void LST_Fast_Q1_Logic(){
 #ifdef LST_FAST_MODE_ENCODERLESS
 
 			/* Linearly increase everything from slow to fast */
-			if(cntr_q1_accel < LST_FAST_Q1_ACCEL_TIME){
+			/*if(cntr_q1_accel < LST_FAST_Q1_ACCEL_TIME){
 			  if(!lst_fast_steering_interpol){
           lst_control_steeringP  += lst_fast_q1_accel_plus_p;
           lst_control_steeringD  += lst_fast_q1_accel_plus_d;
@@ -409,12 +409,14 @@ static void LST_Fast_Q1_Logic(){
 
 				cntr_q1_accel++;
 			}
-			else{
+			else{*/
 				lst_fast_motor_float = lst_fast_slow_speed;
 				lst_fast_q1_mode = LST_FAST_MODE_Q1_FAST;
 				lst_fast_started_fast_sections++;
 				cntr_q1_accel = 0;
+			/*
 			}
+			*/
 
 #else // Jump to high speed immediately, motor control handles acceleration slope
 
