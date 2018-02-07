@@ -550,7 +550,9 @@ static void LST_Fast_Q1_Lap_Control(){
   case 3: // last lap finished, time for finish-line
   default:
     /* Get to End mode */
-    lst_fast_q1_mode = LST_FAST_MODE_Q1_END;
+    //lst_fast_q1_mode = LST_FAST_MODE_Q1_END;
+  	lst_fast_q1_mode = LST_FAST_MODE_Q1_START;
+		lst_fast_mode = LST_FAST_MODE_STOP;
     break;
   }
 #else
@@ -562,7 +564,9 @@ static void LST_Fast_Q1_Lap_Control(){
   case 1: // Finish
   default:
     /* Get to End mode */
-    lst_fast_q1_mode = LST_FAST_MODE_Q1_END;
+  	//lst_fast_q1_mode = LST_FAST_MODE_Q1_END;
+  	lst_fast_q1_mode = LST_FAST_MODE_Q1_START;
+		lst_fast_mode = LST_FAST_MODE_STOP;
     break;
   }
 #endif
