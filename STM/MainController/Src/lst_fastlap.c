@@ -453,6 +453,7 @@ static void LST_Fast_Q1_Logic(){
         if(cntr_q1_fast_triple_line>LST_FAST_Q1_FAST_TRIPLE_LINES){
           /* Switch to braking */
           lst_fast_q1_mode = LST_FAST_MODE_Q1_BRAKE;
+          cntr_q1_brake = LST_BRAKE_Q1_DELAY;
           cntr_q1_fast_triple_line = 0;
         }
       }
@@ -467,6 +468,7 @@ static void LST_Fast_Q1_Logic(){
 
 #ifdef LST_FAST_MODE_ENCODERLESS
 			/* Satufék */
+		  /*
 			if(cntr_q1_brake<LST_FAST_BRAKE_DELAY){
 				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
 				cntr_q1_brake++;
@@ -500,6 +502,13 @@ static void LST_Fast_Q1_Logic(){
 				lst_fast_started_slow_sections++;
 				cntr_q1_brake = 0;
 			}
+			*/
+		  /* Brake v2 */
+		  if (cntr_q1_brake >= 0)
+		  	LST_Movement_Move_Encoderless(LST_BRAKE_Q1_SPEED);
+		  else
+		  	cntr_q1_brake--;
+
 #else // Jump to low speed immediately, motor control handles deceleration slope
 			lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
 			lst_fast_started_slow_sections++;

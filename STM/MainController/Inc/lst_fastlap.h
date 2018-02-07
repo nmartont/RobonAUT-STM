@@ -73,6 +73,9 @@
 #define LST_FAST_Q1_FINISH_MOTOR_SPEED         600
 #endif
 
+#define LST_BRAKE_Q1_SPEED			-800
+#define LST_BRAKE_Q1_DELAY			70
+
 /* Steering values */
 #define LST_FAST_Q1_SLOW_STEERING_P       17000
 #define LST_FAST_Q1_SLOW_STEERING_D       4000
