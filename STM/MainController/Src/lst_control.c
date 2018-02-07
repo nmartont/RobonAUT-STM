@@ -155,12 +155,13 @@ static uint8_t LST_Control_Check_Lost_Line(){
  * @brief Resolves line mode
  */
 static void LST_Control_Resolve_Line(){
-  /* Check for 0xFF control byte at the first byte of the SPI Rx buffer */
-  // ToDo change control byte so that it's not FF, but say 0F
-  if(lst_spi_master1_rx[0] < 254){ // FixMe last bit is bugged
+  /* Check for 0b11110000 control byte at the first byte of the SPI Rx buffer */
+  if(!(lst_spi_master1_rx[0] == 120 || lst_spi_master1_rx[0] == 121)){ // FixMe last bit is bugged
     lst_spi_linecontroller_lost = 1;
-    // return;
+    lst_control_linePos = lst_control_linePosOld;
+    return;
   }
+
   lst_spi_linecontroller_lost = 0;
 
   // Get line data
