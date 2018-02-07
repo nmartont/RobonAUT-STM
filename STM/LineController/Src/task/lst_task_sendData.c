@@ -57,8 +57,8 @@ void lst_sendData_fillTxBuffer(void)
 {
 
 	// TODO:temporary solution
-	// Write 0xff and line count into first two bytes
-	lst_spiData_tx[0] = 255;
+	// Write 0b11110000 and line count into first two bytes
+	lst_spiData_tx[0] = 120;
 	lst_spiData_tx[1] = lst_eval_lineCount << 1;
 	// FIRST BIT SHIFT
 	// random SPI error first bit always 1
