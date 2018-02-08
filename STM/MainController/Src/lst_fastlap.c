@@ -396,12 +396,16 @@ static void LST_Fast_Q1_Logic(){
             }
           }
 
-          /* Check for total number of dotted lines */ // Dotted lines found, jump to ACCEL mode
-          if((cntr_q1_follow_dotted_lines > LST_FAST_Q1_FOLLOW_LINES_THRESHOLD)
-          		&& (lst_fast_startDetected > 3)){ // TODO TEMP
-            lst_fast_q1_mode = LST_FAST_MODE_Q1_ACCEL;
-            cntr_q1_follow_dotted_lines = 0;
-          }
+				/* Check for total number of dotted lines */ // Dotted lines found, jump to ACCEL mode
+				if(cntr_q1_follow_dotted_lines > LST_FAST_Q1_FOLLOW_LINES_THRESHOLD)
+				{
+					// TODO TEMP
+					if (lst_fast_startDetected > 3)
+					{
+						lst_fast_q1_mode = LST_FAST_MODE_Q1_ACCEL;
+						cntr_q1_follow_dotted_lines = 0;
+					}
+				}
 		    }else{ // If car is in range, look for patterns
 		      /* Sense slow and fast patterns, limit speed accordingly */
           // sense 1+ lines
