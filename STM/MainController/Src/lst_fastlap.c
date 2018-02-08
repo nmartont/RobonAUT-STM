@@ -333,6 +333,15 @@ static void LST_Fast_Q1_Logic(){
         //lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
       }
 
+		  // TODO TEMP
+		  if ((LST_Sharp_GetRawLeftDistance() > 150)
+		  		&& (LST_Sharp_GetRawRightDistance() > 150))
+		  {
+
+		  	lst_fast_startDetected++;
+
+		  }
+
 		  /* Emergency braking */
 		  if(!lst_fast_follow_do_brake &&
 		      LST_Sharp_GetRawFrontDistance() > LST_FAST_Q1_FOLLOW_TOO_CLOSE_DIST)
@@ -388,7 +397,8 @@ static void LST_Fast_Q1_Logic(){
           }
 
           /* Check for total number of dotted lines */ // Dotted lines found, jump to ACCEL mode
-          if(cntr_q1_follow_dotted_lines > LST_FAST_Q1_FOLLOW_LINES_THRESHOLD){
+          if((cntr_q1_follow_dotted_lines > LST_FAST_Q1_FOLLOW_LINES_THRESHOLD)
+          		&& (lst_fast_startDetected > 3)){ // TODO TEMP
             lst_fast_q1_mode = LST_FAST_MODE_Q1_ACCEL;
             cntr_q1_follow_dotted_lines = 0;
           }

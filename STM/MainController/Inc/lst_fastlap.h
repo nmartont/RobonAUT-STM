@@ -18,6 +18,10 @@
 #include "lst_bt.h"
 #include "lst_sharp.h"
 
+// TODO TEMP
+
+uint8_t lst_fast_startDetected;
+
 /* Defines -------------------------------------------------------------------*/
 /* Modes for the main state machine */
 #define LST_FAST_MODE_BT             0
@@ -52,7 +56,7 @@
 /* Speed values */
 #ifdef LST_FAST_MODE_ENCODERLESS
 //#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       300 // 200 -> does not start
-#define LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX			 270
+#define LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX			 260 // 290 //280
 #define LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX			 300
 
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      295
@@ -116,7 +120,7 @@
 #define LST_FAST_Q1_FOLLOW_FILTER_THRESHOLD   1
 #define LST_FAST_Q1_FOLLOW_LINES_THRESHOLD    2
 #define LST_FAST_Q1_FOLLOW_TOO_CLOSE_DIST     1000
-#define LST_FAST_Q1_FOLLOW_BRAKE_TIME         100 // 50
+#define LST_FAST_Q1_FOLLOW_BRAKE_TIME         55 // 50
 #define LST_FAST_Q1_FOLLOW_ACCEL_TIME         50
 
 /* Slow mode defines */
