@@ -337,9 +337,15 @@ static void LST_Fast_Q1_Logic(){
 		  if ((LST_Sharp_GetRawLeftDistance() > 150)
 		  		&& (LST_Sharp_GetRawRightDistance() > 150))
 		  {
-
 		  	lst_fast_startDetected++;
 
+		  	if(lst_fast_startDetected > 5){
+		  	  lst_fast_q1_mode = LST_FAST_MODE_Q1_ACCEL;
+          cntr_q1_follow_dotted_lines = 0;
+          return;
+		  	}
+		  }else{
+		    lst_fast_startDetected = 0;
 		  }
 
 		  /* Emergency braking */
@@ -368,80 +374,44 @@ static void LST_Fast_Q1_Logic(){
 		    LST_Movement_Move_Sharp(LST_FAST_Q1_FOLLOW_DIST);
 		  }
 
-      // Check if we need to switch to Race mode
-		  // Search for speedup lines, and also no car in front
 		  if(lst_fast_line_pattern_insensitivity){
 		    if(LST_Distance_Measure_mm(LST_FAST_INSNESITIVITY_DIST)){
 		      lst_fast_line_pattern_insensitivity = 0;
 		    }
-		  }else{
-		    if(LST_Sharp_GetRawFrontDistance() < LST_FAST_Q1_FOLLOW_END_DIST){
-		      if(flag_q1_follow_triple_search == 1){
-            if (lst_control_line_no < 2) cntr_q1_follow_triple = 0;
-            if (lst_control_line_no >= 2) cntr_q1_follow_triple++;
-            if(cntr_q1_follow_triple > LST_FAST_Q1_FOLLOW_FILTER_THRESHOLD){
-              flag_q1_follow_triple_search = 0;
-              cntr_q1_follow_triple = 0;
-            }
-		      }
+		  }else{ // If car is in range, look for patterns
+        /* Sense slow and fast patterns, limit speed accordingly */
+        // sense 1+ lines
+        if(lst_control_line_no > 1){
+          cntr_temp ++;
 
-          // Check for single lines
-          else{
-            if (lst_control_line_no > 1) cntr_q1_follow_single = 0;
-            if (lst_control_line_no == 1) cntr_q1_follow_single++;
-            if (cntr_q1_follow_single > LST_FAST_Q1_FOLLOW_FILTER_THRESHOLD){
-              flag_q1_follow_triple_search = 1;
-              cntr_q1_follow_single = 0;
-              cntr_q1_follow_dotted_lines++;
-            }
-          }
-
-				/* Check for total number of dotted lines */ // Dotted lines found, jump to ACCEL mode
-				if(cntr_q1_follow_dotted_lines > LST_FAST_Q1_FOLLOW_LINES_THRESHOLD)
-				{
-					// TODO TEMP
-					if (lst_fast_startDetected > 3)
-					{
-						lst_fast_q1_mode = LST_FAST_MODE_Q1_ACCEL;
-						cntr_q1_follow_dotted_lines = 0;
-					}
-				}
-		    }else{ // If car is in range, look for patterns
-		      /* Sense slow and fast patterns, limit speed accordingly */
-          // sense 1+ lines
-		      if(lst_control_line_no > 1){
-		        cntr_temp ++;
-
-		        if(cntr_temp > 30){
-		          // if long line, decrease max speed
-		          cntr_temp = 0;
-		          lst_fast_line_pattern_insensitivity = 1;
-		          lst_control_sharp_speed_max =
-		          		LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX;
-
-		          // TODO 2018.02.08. Steering controls set
-		          lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
-							lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
-
-
-		        }
-		      }else if(lst_control_line_no == 1 && cntr_temp > 2){
-		        // short lines
-		        cntr_temp = 0;
+          if(cntr_temp > 30){
+            // if long line, decrease max speed
+            cntr_temp = 0;
             lst_fast_line_pattern_insensitivity = 1;
             lst_control_sharp_speed_max =
-            		LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX;
+                LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX;
 
             // TODO 2018.02.08. Steering controls set
-            lst_control_steeringP = LST_FAST_Q1_FOLLOW_FAST_STEERING_P;
-						lst_control_steeringD = LST_FAST_Q1_FOLLOW_FAST_STEERING_D;
+            lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
+            lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
+          }
+        }else if(lst_control_line_no == 1 && cntr_temp > 2){
+          // short lines
+          cntr_temp = 0;
+          lst_fast_line_pattern_insensitivity = 1;
+          lst_control_sharp_speed_max =
+              LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX;
 
-		      }else{
-		        // counter reset
-		        cntr_temp = 0;
-		      }
-		    }
+          // TODO 2018.02.08. Steering controls set
+          lst_control_steeringP = LST_FAST_Q1_FOLLOW_FAST_STEERING_P;
+          lst_control_steeringD = LST_FAST_Q1_FOLLOW_FAST_STEERING_D;
+
+        }else{
+          // counter reset
+          cntr_temp = 0;
+        }
 		  }
+
 		  break;
 
 		case LST_FAST_MODE_Q1_SLOW:
