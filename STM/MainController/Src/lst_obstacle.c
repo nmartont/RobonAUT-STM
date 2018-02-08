@@ -41,6 +41,7 @@ static void LST_Obs_Drone();
 static void LST_Obs_Corner();
 static void LST_Obs_Convoy();
 static void LST_Obs_Barrel();
+static void LST_Obs_Barrel_checkLineFound();
 static void LST_Obs_Roundabout();
 static void LST_Obs_Trainstop();
 static void LST_Obs_End();
@@ -1407,24 +1408,6 @@ static void LST_Obs_Barrel(){
 
     break;
 
-    // TODO SKIPPED FOR NOW
-  case LST_OBS_BRL_STAGE_OUTGOING:
-
-    // On the exit ramp
-
-    LST_Steering_Lock(0);
-
-    LST_Movement_Move(LST_MOVEMENT_FB_MEDIUM);
-
-    if (lst_control_line_no == 1)
-    {
-
-      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_EXIT;
-
-    }
-
-    break;
-
   case LST_OBS_BRL_STAGE_BRAKE:
 
     LST_Steering_Lock(0);
@@ -1433,7 +1416,9 @@ static void LST_Obs_Barrel(){
     if (lst_obs_barrel_brakeTimer <= 0)
     {
 
-      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_EXIT;
+      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_FWRIGHT;
+      lst_obs_barrel_moveTimer = LST_OBS_BRL_FWRIGHTTIMER_PERIOD;
+      lst_obs_barrel_exitTimer = LST_OBS_BRL_EXITTIMER_PERIOD;
 
     }
     else
@@ -1445,20 +1430,156 @@ static void LST_Obs_Barrel(){
 
     break;
 
+  case LST_OBS_BRL_STAGE_FWRIGHT:
+
+  	LST_Steering_Lock(LST_OBS_BRL_STEERING_RIGHT);
+  	LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+  	LST_Obs_Barrel_checkLineFound();
+
+  	if (lst_obs_barrel_moveTimer <= 0)
+  	{
+
+  		lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BWRIGHT;
+  		lst_obs_barrel_moveTimer = LST_OBS_BRL_BWRIGHTTIMER_PERIOD;
+
+  	}
+  	else
+  	{
+
+  		lst_obs_barrel_moveTimer--;
+
+  	}
+
+  	break;
+
+  case LST_OBS_BRL_STAGE_BWRIGHT:
+
+  	LST_Steering_Lock(LST_OBS_BRL_STEERING_RIGHT);
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+  	LST_Obs_Barrel_checkLineFound();
+
+  	if (lst_obs_barrel_moveTimer <= 0)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_FWLEFT;
+			lst_obs_barrel_moveTimer = LST_OBS_BRL_FWLEFTTIMER_PERIOD;
+
+		}
+		else
+		{
+
+			lst_obs_barrel_moveTimer--;
+
+		}
+
+  	break;
+
+  case LST_OBS_BRL_STAGE_FWLEFT:
+
+  	LST_Steering_Lock(LST_OBS_BRL_STEERING_LEFT);
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+  	LST_Obs_Barrel_checkLineFound();
+
+  	if (lst_obs_barrel_moveTimer <= 0)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BWLEFT;
+			lst_obs_barrel_moveTimer = LST_OBS_BRL_BWLEFTTIMER_PERIOD;
+
+		}
+		else
+		{
+
+			lst_obs_barrel_moveTimer--;
+
+		}
+
+  	break;
+
+  case LST_OBS_BRL_STAGE_BWLEFT:
+
+  	LST_Steering_Lock(LST_OBS_BRL_STEERING_LEFT);
+		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+  	LST_Obs_Barrel_checkLineFound();
+
+  	if (lst_obs_barrel_moveTimer <= 0)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_GIVEUP;
+
+		}
+		else
+		{
+
+			lst_obs_barrel_moveTimer--;
+
+		}
+
+  	break;
+
+  case LST_OBS_BRL_STAGE_FOUNDLINE:
+
+  	LST_Movement_Move(LST_MOVEMENT_FB_SLOWEST);
+
+  	LST_Steering_Follow(lst_obs_steering_interpol);
+
+  	if (lst_obs_barrel_exitTimer <= 0)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_EXIT;
+			lst_obs_barrel_exitTimer = LST_OBS_BRL_EXITTIMER_PERIOD;
+
+		}
+		else
+		{
+
+			lst_obs_barrel_exitTimer--;
+
+		}
+
+  	break;
+
+  case LST_OBS_BRL_STAGE_GIVEUP:
+
+  	if (!LST_Distance_Measure_mm(500))
+  	{
+
+  		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+
+  	}
+  	else
+  	{
+
+  		LST_Movement_Stop();
+
+  	}
+
+  	break;
+
   case LST_OBS_BRL_STAGE_EXIT:
 
     // Search mode
-    //lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
-
-    // Stop
-    LST_Movement_Stop();
-    LST_Steering_Lock(0);
-
-    lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
     break;
 
   }
+
+}
+
+static void LST_Obs_Barrel_checkLineFound()
+{
+
+	if (lst_control_line_no > 0)
+	{
+
+		lst_obs_barrel_stage = LST_OBS_BRL_STAGE_FOUNDLINE;
+
+	}
 
 }
 

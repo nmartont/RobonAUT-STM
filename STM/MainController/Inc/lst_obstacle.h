@@ -238,9 +238,16 @@ uint8_t lst_obs_barrel_stage;
 #define LST_OBS_BRL_STAGE_APPROACHRAMP		1
 #define LST_OBS_BRL_STAGE_ONTHERAMP				2
 #define LST_OBS_BRL_STAGE_INTHETUBE				3
-#define LST_OBS_BRL_STAGE_OUTGOING				4
 #define LST_OBS_BRL_STAGE_BRAKE						5
-#define LST_OBS_BRL_STAGE_EXIT						6
+#define LST_OBS_BRL_STAGE_BACKUP					6
+#define LST_OBS_BRL_STAGE_FWRIGHT					7
+#define LST_OBS_BRL_STAGE_BWRIGHT					8
+#define LST_OBS_BRL_STAGE_FWLEFT					9
+#define LST_OBS_BRL_STAGE_BWLEFT					10
+#define LST_OBS_BRL_STAGE_FOUNDLINE				11
+#define LST_OBS_BRL_STAGE_GIVEUP					12
+#define LST_OBS_BRL_STAGE_EXIT						13
+
 
 // Timing
 int16_t lst_obs_barrel_approachTimer;
@@ -251,9 +258,20 @@ int16_t lst_obs_barrel_tubeSafetyTimer;
 #define LST_OBS_BRL_TUBESAFETYTIMER_PERIOD		200
 int16_t lst_obs_barrel_brakeTimer;
 #define LST_OBS_BRL_BRAKETIMER_PERIOD					80
+int16_t lst_obs_barrel_moveTimer;
+#define LST_OBS_BRL_FWRIGHTTIMER_PERIOD				100
+#define LST_OBS_BRL_BWRIGHTTIMER_PERIOD				100
+#define LST_OBS_BRL_FWLEFTTIMER_PERIOD				100
+#define LST_OBS_BRL_BWLEFTTIMER_PERIOD				100
+int16_t lst_obs_barrel_exitTimer;
+#define LST_OBS_BRL_EXITTIMER_PERIOD					100
 
 // Sharp
 #define LST_OBS_BRL_SHARP_INTHETUBE						370
+
+// Steering
+#define LST_OBS_BRL_STEERING_RIGHT						-800
+#define LST_OBS_BRL_STEERING_LEFT							800
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;
@@ -270,7 +288,7 @@ uint16_t lst_obs_roundabout_cntr;
 #define LST_OBS_RND_SHARP_DIST_APPROACH   600//900 // bad reflection? really 30cm
 #define LST_OBS_RND_INFRA_ERROR_MAX       200 // FixMe NMT
 
-#define LST_OBS_RND_FIRST_LEFT_TURN_VALUE  1000 // ToDo is the sign correct??
+#define LST_OBS_RND_FIRST_LEFT_TURN_VALUE  1000
 #define LST_OBS_RND_FIRST_RIGHT_TURN_VALUE -1000
 #define LST_OBS_RND_LAST_LEFT_TURN_VALUE   1000
 #define LST_OBS_RND_LAST_RIGHT_TURN_VALUE  -1000
