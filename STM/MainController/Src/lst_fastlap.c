@@ -309,6 +309,12 @@ static void LST_Fast_Q1_Logic(){
           cntr_q1 = 0;
           lst_fast_line_pattern_insensitivity = 1;
           lst_fast_q1_mode = LST_FAST_MODE_Q1_FOLLOW;
+
+          // TODO 2018.02.08. Init for follow
+          lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
+					lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
+
+
         }
       }
       else{
@@ -322,8 +328,9 @@ static void LST_Fast_Q1_Logic(){
 		case LST_FAST_MODE_Q1_FOLLOW:
 		  if(!lst_fast_steering_interpol){
         /* Set controller values */
-        lst_control_steeringP = LST_FAST_Q1_FOLLOW_STEERING_P;
-        lst_control_steeringD = LST_FAST_Q1_FOLLOW_STEERING_D;
+		  	// TODO 2018.02.08. Set in control no line check
+        //lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
+        //lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
       }
 
 		  /* Emergency braking */
@@ -395,13 +402,26 @@ static void LST_Fast_Q1_Logic(){
 		          // if long line, decrease max speed
 		          cntr_temp = 0;
 		          lst_fast_line_pattern_insensitivity = 1;
-		          lst_control_sharp_speed_max = 200;
+		          lst_control_sharp_speed_max =
+		          		LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX;
+
+		          // TODO 2018.02.08. Steering controls set
+		          lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
+							lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
+
+
 		        }
 		      }else if(lst_control_line_no == 1 && cntr_temp > 2){
 		        // short lines
 		        cntr_temp = 0;
             lst_fast_line_pattern_insensitivity = 1;
-            lst_control_sharp_speed_max = 300;
+            lst_control_sharp_speed_max =
+            		LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX;
+
+            // TODO 2018.02.08. Steering controls set
+            lst_control_steeringP = LST_FAST_Q1_FOLLOW_FAST_STEERING_P;
+						lst_control_steeringD = LST_FAST_Q1_FOLLOW_FAST_STEERING_D;
+
 		      }else{
 		        // counter reset
 		        cntr_temp = 0;
