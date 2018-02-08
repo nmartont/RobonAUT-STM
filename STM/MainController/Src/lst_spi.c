@@ -63,6 +63,9 @@ void LST_SPI_ReceiveLineControllerData(){
   GPIO_PinState state = HAL_GPIO_ReadPin(SPI1_DATA_READY_GPIO_Port, SPI1_DATA_READY_Pin);
   if(state==GPIO_PIN_RESET) return;
 
+  // Breakpoint here -> SPI reset works TODO
+  //vTaskDelay(1);
+
   /* Put SPI command into the first byte */
   lst_spi_master1_tx[0] = LST_SPI_MODE_DEBUG;
 

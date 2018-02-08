@@ -112,6 +112,9 @@ void lst_sendData_transmitReceive(void)
 					LST_SPI_SIZE
 					);
 
+	// TODO TEST SPI RESET 2018.02.08
+	lst_timer1_delay_microSeconds(10);
+
 	// Signal the mainController - ready to transmit/receive
 	// (pull DRDY high)
 	HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 1);
@@ -151,10 +154,13 @@ void lst_sendData_checkWatchdog()
 	if (lst_spiWatchdog > LST_SPI_WATCHDOG_TIMEOUT)
 	{
 
+
 		lst_spiCompleted = 0;
 
 		// Signal the mainController - busy (pull DRDY low)
 		HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
+
+		HAL_SPI_Abort_IT(&hspi1);
 
 		HAL_SPI_DeInit(&hspi1);
 
@@ -164,8 +170,10 @@ void lst_sendData_checkWatchdog()
 
 		lst_timer1_delay_milliSeconds(LST_SPI_INIT_DELAY_MS);
 
+		// Allow to call the TransmitReceive function
 		lst_spiCompleted = 1;
 
+		// Reset watchdog
 		lst_spiWatchdog = 0;
 
 	}
@@ -181,6 +189,6 @@ void lst_sendData_checkWatchdog()
 void lst_sendData_resetWatchdog()
 {
 
-	lst_spiWatchdog = 0;
+	//lst_spiWatchdog = 0;
 
 }
