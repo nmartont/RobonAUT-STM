@@ -13,7 +13,6 @@
 // (there is no ongoing communication)
 
 void lst_sendData_checkWatchdog();
-void lst_sendData_resetWatchdog();
 
 void lst_sendData(void)
 {
@@ -131,7 +130,7 @@ void lst_sendData_TxRxComplete()
 	// the following sensor read cycle
 	lst_spiCompleted = 1;
 
-	lst_sendData_resetWatchdog();
+	lst_spiWatchdog = 0;
 
 }
 
@@ -154,13 +153,15 @@ void lst_sendData_checkWatchdog()
 	if (lst_spiWatchdog > LST_SPI_WATCHDOG_TIMEOUT)
 	{
 
-
 		lst_spiCompleted = 0;
 
 		// Signal the mainController - busy (pull DRDY low)
 		HAL_GPIO_WritePin(SPI_STM_DRDY_GPIO_Port, SPI_STM_DRDY_Pin, 0);
 
-		HAL_SPI_Abort_IT(&hspi1);
+		//HAL_SPI_Abort_IT(&hspi1);
+		HAL_SPI_Abort(&hspi1);
+
+		lst_timer1_delay_milliSeconds(LST_SPI_INIT_DELAY_MS);
 
 		HAL_SPI_DeInit(&hspi1);
 
@@ -183,12 +184,5 @@ void lst_sendData_checkWatchdog()
 		lst_spiWatchdog++;
 
 	}
-
-}
-
-void lst_sendData_resetWatchdog()
-{
-
-	//lst_spiWatchdog = 0;
 
 }
