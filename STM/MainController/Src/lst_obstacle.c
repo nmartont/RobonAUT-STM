@@ -496,7 +496,7 @@ static void LST_Obs_Drone(){
 
     LST_Steering_Follow(lst_obs_steering_interpol);
 
-    if (LST_Sharp_GetFrontDistance() < LST_OBS_DRO_SHARP_DIST_DRONE_IN)
+    if (LST_Sharp_GetFrontDistance() > LST_OBS_DRO_SHARP_DIST_DRONE_IN)
     {
 
       lst_obs_drone_stage = LST_OBS_DRO_STAGE_WATCH;
