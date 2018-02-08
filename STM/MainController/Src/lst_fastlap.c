@@ -283,7 +283,7 @@ static void LST_Fast_Q1_Logic(){
 #endif
 
       /* Check if safety car is within like 40cm */
-      if(LST_Sharp_GetRawFrontDistance() > LST_FAST_Q1_APPROACH_DIST){ // 400mm
+      if(LST_Sharp_GetFrontDistance() > LST_FAST_Q1_APPROACH_DIST){ // 400mm
         cntr_q1++;
 
         if(cntr_q1 > LST_FAST_Q1_APPROACH_MIN){
@@ -302,7 +302,7 @@ static void LST_Fast_Q1_Logic(){
 		  LST_Movement_Stop();
 
 		  /* Check if safety car is within like 60cm */
-      if(LST_Sharp_GetRawFrontDistance() < LST_FAST_Q1_WAIT_FOLLOW_DIST){ // 600mm
+      if(LST_Sharp_GetFrontDistance() < LST_FAST_Q1_WAIT_FOLLOW_DIST){ // 600mm
         cntr_q1++;
 
         if(cntr_q1 > LST_FAST_Q1_WAIT_MIN){
@@ -328,8 +328,8 @@ static void LST_Fast_Q1_Logic(){
 		case LST_FAST_MODE_Q1_FOLLOW:
 
 		  // Sense Start gate
-		  if ((LST_Sharp_GetRawLeftDistance() > 150)
-		  		&& (LST_Sharp_GetRawRightDistance() > 150))
+		  if ((LST_Sharp_GetLeftDistance() > 150)
+		  		&& (LST_Sharp_GetRightDistance() > 150))
 		  {
 		  	lst_fast_startDetected++;
 
@@ -345,7 +345,7 @@ static void LST_Fast_Q1_Logic(){
 
 		  /* Emergency braking */
 		  if(!lst_fast_follow_do_brake &&
-		      LST_Sharp_GetRawFrontDistance() > LST_FAST_Q1_FOLLOW_TOO_CLOSE_DIST)
+		      LST_Sharp_GetFrontDistance() > LST_FAST_Q1_FOLLOW_TOO_CLOSE_DIST)
 		  {
 		    lst_fast_follow_do_brake = 1;
 		    lst_fast_follow_cntr     = 0;

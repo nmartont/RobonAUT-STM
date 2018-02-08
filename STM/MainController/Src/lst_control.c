@@ -283,9 +283,9 @@ int32_t LST_Control_SteeringControllerSharp(uint8_t sharp_dir, uint16_t dist){
   int32_t str_cntrl_result = 0;
 
   if(sharp_dir == 0){ // left
-    error_signal = dist - LST_Sharp_GetRawLeftDistance(); // Raw: inverted
+    error_signal = dist - LST_Sharp_GetLeftDistance(); // Raw: inverted
   }else{              // right
-    error_signal = -(dist - LST_Sharp_GetRawRightDistance());
+    error_signal = -(dist - LST_Sharp_GetRightDistance());
   }
 
   /* System input */
@@ -425,7 +425,7 @@ int32_t LST_Control_SpeedControllerSharp(uint16_t distance){
   int16_t error_signal = 0;
   int32_t cntrl_result = 0;
 
-  error_signal = distance - LST_Sharp_GetRawFrontDistance();
+  error_signal = distance - LST_Sharp_GetFrontDistance();
 
   /* System input */
   int32_t system_input = LST_CONTROL_SPEED_SHARP_P*error_signal; // Todo is this good?

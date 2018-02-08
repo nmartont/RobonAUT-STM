@@ -69,7 +69,7 @@ void LST_Obs_DIP_Handler_Start();
 #define LST_OBS_SEARCH_LONG_LINE_THRESHOLD              20
 #define LST_OBS_SEARCH_ONE_LINE_BETWEEN_LONGS_THRESHOLD 1
 #define LST_OBS_SEARCH_SHARP_THRESHOLD                  30 //50
-#define LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD         300
+#define LST_OBS_SEARCH_SHARP_DISTANCE_THRESHOLD         352 // 300 S!
 #define LST_OBS_SEARCH_LED_THRESHOLD                    150 //110
 #define LST_OBS_SEARCH_LONG_LINE_SIZE_THRESHOLD         7 //6
 
@@ -95,8 +95,8 @@ uint8_t lst_obs_drone_stage;
 #define LST_OBS_DRO_STAGE_EXIT								3
 
 // Sharp
-#define LST_OBS_DRO_SHARP_DIST_DRONE_IN				300
-#define LST_OBS_DRO_SHARP_DIST_DRONE_OUT			400
+#define LST_OBS_DRO_SHARP_DIST_DRONE_IN				1600
+#define LST_OBS_DRO_SHARP_DIST_DRONE_OUT			1200
 
 // Timing
 int16_t lst_obs_drone_takeoffTimer;
@@ -130,10 +130,10 @@ uint8_t lst_obs_corner_directionControl;
 
 // Sharp
 uint16_t lst_obs_cor_backingSharp_previous;
-#define LST_OBS_COR_SHARP_DIST_WALL						340 // 280 was too low
-#define LST_OBS_COR_SHARP_FAR_WALL						300
-#define LST_OBS_COR_SHARP_BACKING_WALL				340
-#define LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE		600
+#define LST_OBS_COR_SHARP_DIST_WALL						304 // S!340 // 280 was too low
+#define LST_OBS_COR_SHARP_FAR_WALL						352 // S!300
+#define LST_OBS_COR_SHARP_BACKING_WALL				304 // S!340
+//#define LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE		600
 
 // Distance
 #define LST_OBS_COR_BACKING_DISTANCE					-900 // was -800, found corner...
@@ -159,7 +159,7 @@ uint8_t lst_obs_train_stage;
 uint8_t lst_obs_train_repeatedCrossing;
 
 // Sharp
-#define LST_OBS_TRA_SHARP_DIST_CAR					900 //500
+#define LST_OBS_TRA_SHARP_DIST_CAR					600 // S!900 //500
 
 // Timing
 int16_t lst_obs_train_lastCarTimer;
@@ -195,9 +195,9 @@ uint8_t lst_obs_convoy_wallDirection; // Set in 'LST_Obs_Search_Sharp_Detection'
 #define LST_OBS_CON_WALLDIRECTION_RIGHT	1
 
 // Sharp
-#define LST_OBS_CON_SHARP_DIST_CAR			200 //300 // 350 // Small-range sensor!
-#define LST_OBS_CON_SHARP_FOLLOW_LOW		300
-#define LST_OBS_CON_SHARP_FOLLOW_HIGH		500
+#define LST_OBS_CON_SHARP_DIST_CAR			528 // S!200 //300 // 350 // Small-range sensor!
+#define LST_OBS_CON_SHARP_FOLLOW_LOW		1600
+#define LST_OBS_CON_SHARP_FOLLOW_HIGH		1000
 uint8_t lst_obs_convoy_follow_state;
 
 // Timing
@@ -269,7 +269,7 @@ int16_t lst_obs_barrel_exitTimer;
 #define LST_OBS_BRL_EXITTIMER_PERIOD					100
 
 // Sharp
-#define LST_OBS_BRL_SHARP_INTHETUBE						370
+#define LST_OBS_BRL_SHARP_INTHETUBE						290 // S!370
 
 // Steering
 #define LST_OBS_BRL_STEERING_RIGHT						-800
@@ -291,7 +291,7 @@ uint16_t lst_obs_roundabout_cntr;
 #define LST_OBS_RND_STAGE_FINISH          5
 #define LST_OBS_RND_STAGE_EXIT						6
 
-#define LST_OBS_RND_SHARP_DIST_APPROACH   600//900 // bad reflection? really 30cm
+#define LST_OBS_RND_SHARP_DIST_APPROACH   840 // S!600 //900
 #define LST_OBS_RND_INFRA_ERROR_MAX       200 // FixMe NMT
 
 #define LST_OBS_RND_FIRST_LEFT_TURN_VALUE  1000
