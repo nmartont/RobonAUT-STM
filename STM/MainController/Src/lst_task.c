@@ -160,7 +160,7 @@ void LST_Task_Obstacle(void const * argument) {
   LST_Obs_DIP_Handler_Start();
 
   // Random delay -> if in search mode, motor controller does not start
-  vTaskDelay(6000); // 3s
+  vTaskDelay(2000); // 2s
 
   /* Record starting timestamp */
   TickType_t xLastWakeTime = xTaskGetTickCount();
