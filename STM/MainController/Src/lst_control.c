@@ -74,6 +74,7 @@ static struct table_pd_interpol steering_pd_table = {
 /* Private functions ---------------------------------------------------------*/
 static void LST_Control_Resolve_Line();
 static uint8_t LST_Control_Check_Lost_Line();
+static uint8_t LST_Control_Check_Line_Data();
 
 /******************************************************************************/
 /*                Controller handling for RobonAUT 2018 Team LST              */
@@ -155,8 +156,8 @@ static uint8_t LST_Control_Check_Lost_Line(){
  * @brief Resolves line mode
  */
 static void LST_Control_Resolve_Line(){
-  /* Check for 0b11110000 control byte at the first byte of the SPI Rx buffer */
-  if(!(lst_spi_master1_rx[0] == 120 || lst_spi_master1_rx[0] == 121)){ // FixMe last bit is bugged
+  /* Check if line controller data is okay */
+  if(!LST_Control_Check_Line_Data()){
     lst_spi_linecontroller_lost = 1;
     lst_control_linePos = lst_control_linePosOld;
     return;
@@ -214,6 +215,24 @@ int16_t LST_Control_Servo_BT(){
 
   return steering;
 
+}
+
+static uint8_t LST_Control_Check_Line_Data(){
+  /* Check for 0b11110000 control byte at the first byte of the SPI Rx buffer */
+  if(!(lst_spi_master1_rx[0] == 120 || lst_spi_master1_rx[0] == 121)){ // FixMe last bit is bugged
+    return 0;
+  }
+
+  /* Check for repeated bytes in data, starting from first byte */
+  uint8_t byte = lst_spi_master1_rx[1];
+  for(uint8_t i = 2; i < LST_SPI_BUFFER1_SIZE; i++){
+    if(lst_spi_master1_rx[i] != byte) break;
+
+    if(i == LST_SPI_BUFFER1_SIZE-1) return 0;
+  }
+
+  /* Line data was okay */
+  return 1;
 }
 
 /**
