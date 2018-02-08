@@ -729,11 +729,8 @@ static void LST_Obs_Corner(){
           && (LST_Sharp_GetRightDistance() > LST_OBS_COR_SHARP_BACKING_WALL))
       {
 
-        lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
-
-        LST_Steering_Lock(0);
-
-        //LST_Distance_Measure_mm(-150);
+        lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_THIRD;
+        lst_obs_corner_backingTimer = LST_OBS_COR_BACKINGTIMER_PERIOD;
 
       }
       else
@@ -747,9 +744,8 @@ static void LST_Obs_Corner(){
           && (LST_Sharp_GetLeftDistance() > LST_OBS_COR_SHARP_BACKING_WALL))
       {
 
-        lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
-
-        LST_Steering_Lock(0);
+      	lst_obs_corner_stage = LST_OBS_COR_STAGE_BACKING_THIRD;
+				lst_obs_corner_backingTimer = LST_OBS_COR_BACKINGTIMER_PERIOD;
 
       }
       else
@@ -761,35 +757,38 @@ static void LST_Obs_Corner(){
 
     break;
 
+  case LST_OBS_COR_STAGE_BACKING_THIRD:
+
+  	// Direction control
+  	if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
+  	{
+
+  		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_LEFT);
+
+  	}
+  	else
+  	{
+
+  		LST_Steering_Lock(LST_OBS_COR_STEERINGLOCK_RIGHT);
+
+  	}
+
+  	if (lst_obs_corner_backingTimer <= 0)
+  	{
+
+  		lst_obs_corner_stage = LST_OBS_COR_STAGE_OUTGOING;
+
+  	}
+  	else
+  	{
+
+  		lst_obs_corner_backingTimer--;
+
+  	}
+
+  	break;
+
   case LST_OBS_COR_STAGE_OUTGOING:
-/*
-    if (lst_obs_corner_directionControl == LST_OBS_COR_DIR_LEFT)
-      if (LST_Sharp_GetRightDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
-      {
-
-          LST_Steering_Sharp(1, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
-
-      }
-      else
-      {
-
-        LST_Steering_Lock(0);
-
-      }
-    else
-      if (LST_Sharp_GetLeftDistance_mm() < LST_OBS_COR_SHARP_DIST_WALL)
-      {
-
-          LST_Steering_Sharp(0, LST_OBS_COR_SHARP_ALIGN_RAWDISTANCE);
-
-      }
-      else
-      {
-
-        LST_Steering_Lock(0);
-
-      }
-      */ // NOT REALLY WORKING
 
     LST_Steering_Lock(0);
 

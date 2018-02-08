@@ -112,10 +112,11 @@ uint8_t lst_obs_corner_stage;
 #define LST_OBS_COR_STAGE_CURVEDLINEFOUND 		3
 #define LST_OBS_COR_STAGE_BACKING_FIRST				4
 #define LST_OBS_COR_STAGE_BACKING_SECOND			5
-#define LST_OBS_COR_STAGE_OUTGOING						6
-#define LST_OBS_COR_STAGE_CENTER							7
-#define LST_OBS_COR_STAGE_ALIGNMENT						8
-#define LST_OBS_COR_STAGE_EXIT								9
+#define LST_OBS_COR_STAGE_BACKING_THIRD				6
+#define LST_OBS_COR_STAGE_OUTGOING						7
+#define LST_OBS_COR_STAGE_CENTER							8
+#define LST_OBS_COR_STAGE_ALIGNMENT						9
+#define LST_OBS_COR_STAGE_EXIT								10
 
 // Direction control
 uint8_t lst_obs_corner_directionControl;
@@ -141,6 +142,8 @@ uint16_t lst_obs_cor_backingSharp_previous;
 // Timing
 int16_t lst_obs_corner_junctionTimer;
 #define LST_OBS_COR_JUNCTIONTIMER_PERIOD			50
+int16_t lst_obs_corner_backingTimer;
+#define LST_OBS_COR_BACKINGTIMER_PERIOD				5
 
 /* Obs_Trainstop */
 
@@ -195,7 +198,7 @@ uint8_t lst_obs_convoy_wallDirection; // Set in 'LST_Obs_Search_Sharp_Detection'
 #define LST_OBS_CON_WALLDIRECTION_RIGHT	1
 
 // Sharp
-#define LST_OBS_CON_SHARP_DIST_CAR			528 // S!200 //300 // 350 // Small-range sensor!
+#define LST_OBS_CON_SHARP_DIST_CAR			200 //528 // S!200 //300 // 350 // Small-range sensor!
 #define LST_OBS_CON_SHARP_FOLLOW_LOW		1200 // 1600
 #define LST_OBS_CON_SHARP_FOLLOW_HIGH		700 // 1000
 uint8_t lst_obs_convoy_follow_state;
