@@ -160,6 +160,8 @@ static void LST_Control_Resolve_Line(){
   if(!LST_Control_Check_Line_Data()){
 		lst_spi_linecontroller_lost = 1;
     lst_control_linePos = lst_control_linePosOld;
+    // TODO TEST !!!!!!!!!!!!!!!!!!!!!! 2018.02.08.
+    //lst_control_line_no = 0;
     return;
   }
 
@@ -224,11 +226,11 @@ static uint8_t LST_Control_Check_Line_Data(){
   }
 
   /* Check for repeated bytes in data, starting from first byte */
-  uint8_t byte = lst_spi_master1_rx[1];
-  for(uint8_t i = 2; i < LST_SPI_BUFFER1_SIZE; i++){
+  uint8_t byte = lst_spi_master1_rx[7];
+  for(uint8_t i = 8; i < LST_SPI_BUFFER1_SIZE; i++){
     if(lst_spi_master1_rx[i] != byte) break;
 
-    if(i == LST_SPI_BUFFER1_SIZE-1) return 0;
+    if(i == (LST_SPI_BUFFER1_SIZE-1)) return 0;
   }
 
   /* Line data was okay */

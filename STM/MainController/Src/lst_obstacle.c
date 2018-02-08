@@ -260,11 +260,31 @@ static void LST_Obs_Search(){
         }
       }
 
-      // Found obstacle
+      // Switch to next 0 line search
       if(lst_obs_search_cntr > LST_OBS_SEARCH_LINE_THRESHOLD){ // 4
-        lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
-        lst_obs_lap_mode = LST_OBS_LAP_MODE_ROUNDABOUT;
+      	lst_obs_search_cntr = 0;
+      	lst_obs_search_line_no = 2;
       }
+    }
+    else if(lst_obs_search_line_no == 2){
+    	if (lst_control_line_no == 0){
+    		lst_obs_search_cntr++;
+    	}
+    	else{
+    		lst_obs_search_cntr = 0;
+    		lst_obs_search_cntr_error++;
+    		if (lst_obs_search_cntr_error > LST_OBS_SEARCH_LINE_ERROR_THRESHOLD){
+    			// ERROR
+    			LST_Obs_Search_Reset();
+    		}
+    	}
+
+    	// Found roundabout
+    	if (lst_obs_search_cntr > LST_OBS_SEARCH_LINE_THRESHOLD){
+    		lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
+    		lst_obs_lap_mode = LST_OBS_LAP_MODE_ROUNDABOUT;
+    	}
+
     }
 
   }
