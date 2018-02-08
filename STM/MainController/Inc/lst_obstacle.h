@@ -199,13 +199,13 @@ uint8_t lst_obs_convoy_wallDirection; // Set in 'LST_Obs_Search_Sharp_Detection'
 
 // Sharp
 #define LST_OBS_CON_SHARP_DIST_CAR			200 //528 // S!200 //300 // 350 // Small-range sensor!
-#define LST_OBS_CON_SHARP_FOLLOW_LOW		1200 // 1600
-#define LST_OBS_CON_SHARP_FOLLOW_HIGH		700 // 1000
+#define LST_OBS_CON_SHARP_FOLLOW_LOW		500 // 1200 // 1600
+#define LST_OBS_CON_SHARP_FOLLOW_HIGH		350 // 700 // 1000
 uint8_t lst_obs_convoy_follow_state;
 
 // Timing
 int16_t lst_obs_convoy_lastCarTimer;
-#define LST_OBS_CON_LASTCARTIMER_PERIOD	200
+#define LST_OBS_CON_LASTCARTIMER_PERIOD	160 //200
 int16_t lst_obs_convoy_turnTimer;
 #define LST_OBS_CON_TURNTIMER_PERIOD		40 //60 same // 80, was too sharp angle
 int16_t lst_obs_convoy_attachTimer;
@@ -262,11 +262,11 @@ int16_t lst_obs_barrel_tubeSafetyTimer;
 int16_t lst_obs_barrel_brakeTimer;
 #define LST_OBS_BRL_BRAKETIMER_PERIOD					80
 int16_t lst_obs_barrel_moveTimer;
-#define LST_OBS_BRL_BACKUPTIMER_PERIOD				140
+#define LST_OBS_BRL_BACKUPTIMER_PERIOD				200
 #define LST_OBS_BRL_FWRIGHTTIMER_PERIOD				170
-#define LST_OBS_BRL_BWRIGHTTIMER_PERIOD				170
+#define LST_OBS_BRL_BWRIGHTTIMER_PERIOD				180
 #define LST_OBS_BRL_FWLEFTTIMER_PERIOD				170
-#define LST_OBS_BRL_BWLEFTTIMER_PERIOD				170
+#define LST_OBS_BRL_BWLEFTTIMER_PERIOD				180
 int16_t lst_obs_barrel_exitTimer;
 #define LST_OBS_BRL_ALIGNTIMER_PERIOD					100
 #define LST_OBS_BRL_EXITTIMER_PERIOD					100
@@ -305,8 +305,8 @@ uint16_t lst_obs_roundabout_cntr;
 #define LST_OBS_RND_FIRST_TURN_DISTANCE   350
 
 #define LST_OBS_RND_TRAVEL_DISTANCE_ONE   200 // 300 ?? // 500 way too long
-#define LST_OBS_RND_TRAVEL_DISTANCE_TWO   1600 // 1800
-#define LST_OBS_RND_TRAVEL_DISTANCE_THREE 3000 //3200
+#define LST_OBS_RND_TRAVEL_DISTANCE_TWO   1550 // 1600 // 1800
+#define LST_OBS_RND_TRAVEL_DISTANCE_THREE 2900 // 3000 //3200
 
 #define LST_OBS_RND_FINISH_DISTANCE     400
 
