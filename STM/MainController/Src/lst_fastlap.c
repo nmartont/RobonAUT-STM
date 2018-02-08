@@ -326,20 +326,15 @@ static void LST_Fast_Q1_Logic(){
     // Follow safety car, also check if we are good to go for the laps.
     // ToDo TEST!!
 		case LST_FAST_MODE_Q1_FOLLOW:
-		  if(!lst_fast_steering_interpol){
-        /* Set controller values */
-		  	// TODO 2018.02.08. Set in control no line check
-        //lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
-        //lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
-      }
 
-		  // TODO TEMP
+		  // Sense Start gate
 		  if ((LST_Sharp_GetRawLeftDistance() > 150)
 		  		&& (LST_Sharp_GetRawRightDistance() > 150))
 		  {
 		  	lst_fast_startDetected++;
 
 		  	if(lst_fast_startDetected > 5){
+		  	  lst_fast_startDetected = 0;
 		  	  lst_fast_q1_mode = LST_FAST_MODE_Q1_ACCEL;
           cntr_q1_follow_dotted_lines = 0;
           return;
@@ -378,7 +373,7 @@ static void LST_Fast_Q1_Logic(){
 		    if(LST_Distance_Measure_mm(LST_FAST_INSNESITIVITY_DIST)){
 		      lst_fast_line_pattern_insensitivity = 0;
 		    }
-		  }else{ // If car is in range, look for patterns
+		  }else{
         /* Sense slow and fast patterns, limit speed accordingly */
         // sense 1+ lines
         if(lst_control_line_no > 1){
@@ -411,7 +406,6 @@ static void LST_Fast_Q1_Logic(){
           cntr_temp = 0;
         }
 		  }
-
 		  break;
 
 		case LST_FAST_MODE_Q1_SLOW:
