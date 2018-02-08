@@ -259,11 +259,13 @@ int16_t lst_obs_barrel_tubeSafetyTimer;
 int16_t lst_obs_barrel_brakeTimer;
 #define LST_OBS_BRL_BRAKETIMER_PERIOD					80
 int16_t lst_obs_barrel_moveTimer;
+#define LST_OBS_BRL_BACKUPTIMER_PERIOD				140
 #define LST_OBS_BRL_FWRIGHTTIMER_PERIOD				100
 #define LST_OBS_BRL_BWRIGHTTIMER_PERIOD				100
 #define LST_OBS_BRL_FWLEFTTIMER_PERIOD				100
 #define LST_OBS_BRL_BWLEFTTIMER_PERIOD				100
 int16_t lst_obs_barrel_exitTimer;
+#define LST_OBS_BRL_ALIGNTIMER_PERIOD					200
 #define LST_OBS_BRL_EXITTIMER_PERIOD					100
 
 // Sharp
@@ -272,6 +274,10 @@ int16_t lst_obs_barrel_exitTimer;
 // Steering
 #define LST_OBS_BRL_STEERING_RIGHT						-800
 #define LST_OBS_BRL_STEERING_LEFT							800
+
+// Line count
+uint16_t lst_obs_barrel_foundCounter;
+#define LST_OBS_BRL_FOUNDCOUNTER_PERIOD				10
 
 /* Obs_Roundabout */
 uint8_t lst_obs_roundabout_stage;

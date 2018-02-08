@@ -1416,9 +1416,10 @@ static void LST_Obs_Barrel(){
     if (lst_obs_barrel_brakeTimer <= 0)
     {
 
-      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_FWRIGHT;
-      lst_obs_barrel_moveTimer = LST_OBS_BRL_FWRIGHTTIMER_PERIOD;
+      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BACKUP;
+      lst_obs_barrel_moveTimer = LST_OBS_BRL_BACKUPTIMER_PERIOD;
       lst_obs_barrel_exitTimer = LST_OBS_BRL_EXITTIMER_PERIOD;
+      lst_obs_barrel_foundCounter = 0;
 
     }
     else
@@ -1429,6 +1430,30 @@ static void LST_Obs_Barrel(){
     }
 
     break;
+
+  case LST_OBS_BRL_STAGE_BACKUP:
+
+  	LST_Steering_Lock(0);
+  	//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+  	LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
+
+  	//LST_Obs_Barrel_checkLineFound();
+
+		if (lst_obs_barrel_moveTimer <= 0)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_FWRIGHT;
+			lst_obs_barrel_moveTimer = LST_OBS_BRL_FWRIGHTTIMER_PERIOD;
+
+		}
+		else
+		{
+
+			lst_obs_barrel_moveTimer--;
+
+		}
+
+  	break;
 
   case LST_OBS_BRL_STAGE_FWRIGHT:
 
@@ -1456,7 +1481,8 @@ static void LST_Obs_Barrel(){
   case LST_OBS_BRL_STAGE_BWRIGHT:
 
   	LST_Steering_Lock(LST_OBS_BRL_STEERING_RIGHT);
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+  	//LST_Movement_Move(LST_MOVEMENT_FB_BACKING_SLOWEST);
+  	LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
   	LST_Obs_Barrel_checkLineFound();
 
@@ -1502,7 +1528,8 @@ static void LST_Obs_Barrel(){
   case LST_OBS_BRL_STAGE_BWLEFT:
 
   	LST_Steering_Lock(LST_OBS_BRL_STEERING_LEFT);
-		LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+		//LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
+  	LST_Movement_Move_Encoderless(LST_MOVEMENT_BACKING_SLOW);
 
   	LST_Obs_Barrel_checkLineFound();
 
@@ -1555,6 +1582,7 @@ static void LST_Obs_Barrel(){
   	{
 
   		LST_Movement_Stop();
+  		lst_obs_mode = LST_OBS_MODE_NO_CONTROL;
 
   	}
 
@@ -1577,9 +1605,18 @@ static void LST_Obs_Barrel_checkLineFound()
 	if (lst_control_line_no > 0)
 	{
 
-		lst_obs_barrel_stage = LST_OBS_BRL_STAGE_FOUNDLINE;
+		lst_obs_barrel_foundCounter++;
+
+		if (lst_obs_barrel_foundCounter > LST_OBS_BRL_FOUNDCOUNTER_PERIOD)
+		{
+
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_FOUNDLINE;
+			lst_obs_barrel_exitTimer = LST_OBS_BRL_ALIGNTIMER_PERIOD;
+
+		}
 
 	}
+	else lst_obs_barrel_foundCounter = 0;
 
 }
 
