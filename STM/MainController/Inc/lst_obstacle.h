@@ -65,7 +65,7 @@ void LST_Obs_DIP_Handler_Start();
 
 
 #define LST_OBS_SEARCH_LINE_THRESHOLD                   4
-#define LST_OBS_SEARCH_LINE_ERROR_THRESHOLD             100
+#define LST_OBS_SEARCH_LINE_ERROR_THRESHOLD             20 // 100
 #define LST_OBS_SEARCH_LONG_LINE_THRESHOLD              20
 #define LST_OBS_SEARCH_ONE_LINE_BETWEEN_LONGS_THRESHOLD 1
 #define LST_OBS_SEARCH_SHARP_THRESHOLD                  30 //50
@@ -196,8 +196,8 @@ uint8_t lst_obs_convoy_wallDirection; // Set in 'LST_Obs_Search_Sharp_Detection'
 
 // Sharp
 #define LST_OBS_CON_SHARP_DIST_CAR			528 // S!200 //300 // 350 // Small-range sensor!
-#define LST_OBS_CON_SHARP_FOLLOW_LOW		1600
-#define LST_OBS_CON_SHARP_FOLLOW_HIGH		1000
+#define LST_OBS_CON_SHARP_FOLLOW_LOW		1200 // 1600
+#define LST_OBS_CON_SHARP_FOLLOW_HIGH		700 // 1000
 uint8_t lst_obs_convoy_follow_state;
 
 // Timing
