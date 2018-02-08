@@ -65,7 +65,7 @@ void LST_Obs_DIP_Handler_Start();
 
 
 #define LST_OBS_SEARCH_LINE_THRESHOLD                   4
-#define LST_OBS_SEARCH_LINE_ERROR_THRESHOLD             20 // 100
+#define LST_OBS_SEARCH_LINE_ERROR_THRESHOLD             20
 #define LST_OBS_SEARCH_LONG_LINE_THRESHOLD              20
 #define LST_OBS_SEARCH_ONE_LINE_BETWEEN_LONGS_THRESHOLD 1
 #define LST_OBS_SEARCH_SHARP_THRESHOLD                  30 //50
