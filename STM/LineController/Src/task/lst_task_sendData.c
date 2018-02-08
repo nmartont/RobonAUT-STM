@@ -181,6 +181,6 @@ void lst_sendData_checkWatchdog()
 void lst_sendData_resetWatchdog()
 {
 
-	//lst_spiWatchdog = 0;
+	lst_spiWatchdog = 0;
 
 }
