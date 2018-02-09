@@ -31,7 +31,7 @@
 #define LST_MOVEMENT_BRAKING							-800
 
 // Variables
-#define LST_MOVEMENT_SHARP_COEFF      0.015625f //0.03125f // 1.0f // ToDo calibrate
+#define LST_MOVEMENT_SHARP_COEFF      0.03125f//0.015625f //0.03125f // 1.0f // ToDo calibrate
 
 // Reverse switch
 uint8_t lst_movement_reverse_counter;
