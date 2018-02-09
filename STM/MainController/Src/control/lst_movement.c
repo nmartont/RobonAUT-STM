@@ -95,8 +95,8 @@ void LST_Movement_Set()
 	case LST_MOVEMENT_SPEEDCONTROL_FEEDBACK:
 
 		// Lock speed control to reverse values only
-		if (lst_movement_speed < 0) LST_Movement_LockReverse();
-		else LST_Movement_UnlockReverse();
+		if (lst_movement_speed < 0) LST_Movement_LockReverse(); // Useless
+		else LST_Movement_UnlockReverse();                      // Useless
 
 		// Call speed controller
 		lst_control_motor = LST_Control_SpeedController(lst_movement_speed);
@@ -118,6 +118,19 @@ void LST_Movement_Set()
 
 	}
 
+	// Reverse handling
+  if ((lst_control_motor < 0) && (!lst_movement_reverse_ongoing))
+  {
+
+    lst_movement_reverse_start = 1;
+    lst_movement_reverse_ongoing = 1;
+
+  }
+
+  // If a positive value is given, reverse has to be initiated
+  // again next time
+  if (lst_control_motor > 0) lst_movement_reverse_ongoing = 0;
+
 }
 
 void LST_Movement_Move(int16_t speed)
@@ -125,19 +138,6 @@ void LST_Movement_Move(int16_t speed)
 
 	lst_movement_speed = speed;
 	lst_movement_type = LST_MOVEMENT_SPEEDCONTROL_FEEDBACK;
-
-	// Reverse handling
-	if ((lst_movement_speed < 0) && (!lst_movement_reverse_ongoing))
-	{
-
-		lst_movement_reverse_start = 1;
-		lst_movement_reverse_ongoing = 1;
-
-	}
-
-	// If a positive value is given, reverse has to be initiated
-	// again next time
-	if (lst_movement_speed > 0) lst_movement_reverse_ongoing = 0;
 
 }
 
@@ -155,19 +155,6 @@ void LST_Movement_Move_Encoderless(int16_t speed)
 	lst_movement_speed = speed;
 	lst_movement_type = LST_MOVEMENT_SPEEDCONTROL;
 
-	// Reverse handling
-	if ((lst_movement_speed < 0) && (!lst_movement_reverse_ongoing))
-	{
-
-		lst_movement_reverse_start = 1;
-		lst_movement_reverse_ongoing = 1;
-
-	}
-
-	// If a positive value is given, reverse has to be initiated
-	// again next time
-	if (lst_movement_speed > 0) lst_movement_reverse_ongoing = 0;
-
 }
 
 void LST_Movement_Stop()
@@ -177,6 +164,7 @@ void LST_Movement_Stop()
 
 }
 
+// ToDo useless functions
 void LST_Movement_LockReverse()
 {
 

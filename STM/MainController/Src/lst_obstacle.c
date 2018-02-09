@@ -1804,7 +1804,6 @@ static void LST_Obs_Roundabout(){
     break;
 
   case LST_OBS_RND_STAGE_EXIT:
-
      // Search mode
    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
@@ -2093,25 +2092,24 @@ static void LST_Obs_Trainstop(){
  * @brief Mode for the End of the course :^)
  */
 static void LST_Obs_End(){
-
-  // Go forward like 30cm
-  if (!LST_Distance_Measure_mm(LST_OBS_END_DISTANCE_MM))
-  {
-
-    LST_Movement_Move(LST_MOVEMENT_FB_SLOW);
-
+  /* Check if there is a line */
+  if(lst_control_line_no != 0){
+    lst_obs_end_cntr++;
   }
-  else
-  {
-
-    // Stop
+  else{
+    // Stop right away on the finish line
     LST_Movement_Stop();
     LST_Steering_Lock(0);
 
     lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
-
   }
 
+  if(lst_obs_end_cntr > 3){
+    // Reset to SEARCH mode
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+    lst_obs_end_cntr = 0;
+    return;
+  }
 }
 
 /**
@@ -2129,6 +2127,8 @@ static void LST_Obs_ResetStateMachine(){
   lst_obs_starter_stage = 0;
 
   lst_obs_roundabout_cntr = 0;
+
+  lst_obs_end_cntr = 0;
 
   // ToDo reset other variables
   LST_Obs_Search_Reset();
