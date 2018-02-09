@@ -95,12 +95,12 @@ uint8_t lst_obs_drone_stage;
 #define LST_OBS_DRO_STAGE_EXIT								3
 
 // Sharp
-#define LST_OBS_DRO_SHARP_DIST_DRONE_IN				1600
-#define LST_OBS_DRO_SHARP_DIST_DRONE_OUT			1200
+#define LST_OBS_DRO_SHARP_DIST_DRONE_IN				700 //1600 // stops at 18cm
+#define LST_OBS_DRO_SHARP_DIST_DRONE_OUT			500 //1200 // Rule: 40 - 60 cm
 
 // Timing
 int16_t lst_obs_drone_takeoffTimer;
-#define LST_OBS_DRO_TAKEOFFTIMER_PERIOD				100
+#define LST_OBS_DRO_TAKEOFFTIMER_PERIOD				220
 
 /* Obs_Corner */
 
@@ -268,15 +268,15 @@ int16_t lst_obs_barrel_approachTimer;
 int16_t lst_obs_barrel_rampSafetyTimer;
 #define LST_OBS_BRL_RAMPSAFETYTIMER_PERIOD		130
 int16_t lst_obs_barrel_tubeSafetyTimer;
-#define LST_OBS_BRL_TUBESAFETYTIMER_PERIOD		200
+#define LST_OBS_BRL_TUBESAFETYTIMER_PERIOD		300 // 200
 int16_t lst_obs_barrel_brakeTimer;
 #define LST_OBS_BRL_BRAKETIMER_PERIOD					80
 int16_t lst_obs_barrel_moveTimer;
-#define LST_OBS_BRL_BACKUPTIMER_PERIOD				200
+#define LST_OBS_BRL_BACKUPTIMER_PERIOD				180
 #define LST_OBS_BRL_FWRIGHTTIMER_PERIOD				170
-#define LST_OBS_BRL_BWRIGHTTIMER_PERIOD				180
+#define LST_OBS_BRL_BWRIGHTTIMER_PERIOD				200
 #define LST_OBS_BRL_FWLEFTTIMER_PERIOD				170
-#define LST_OBS_BRL_BWLEFTTIMER_PERIOD				180
+#define LST_OBS_BRL_BWLEFTTIMER_PERIOD				200
 int16_t lst_obs_barrel_exitTimer;
 #define LST_OBS_BRL_ALIGNTIMER_PERIOD					100
 #define LST_OBS_BRL_EXITTIMER_PERIOD					100

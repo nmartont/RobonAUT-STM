@@ -582,6 +582,8 @@ static void LST_Obs_Drone(){
     // Search mode
     lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
+    lst_obs_drone_stage =  LST_OBS_DRO_STAGE_APPROACH;
+
     break;
 
   }
@@ -888,6 +890,8 @@ static void LST_Obs_Corner(){
 
     // Search mode
     lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+    lst_obs_corner_stage = LST_OBS_COR_STAGE_APPROACH;
 
     break;
 
@@ -1303,6 +1307,8 @@ static void LST_Obs_Convoy(){
     // Search mode
     lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 
+    lst_obs_convoy_stage = LST_OBS_CON_STAGE_APPROACH;
+
     break;
 
   }
@@ -1410,7 +1416,7 @@ static void LST_Obs_Barrel(){
     {
 
       //lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
-      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE; // TODO SAFETY STOP
+      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE;
 
       lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
 
@@ -1420,19 +1426,19 @@ static void LST_Obs_Barrel(){
 
       lst_obs_barrel_tubeSafetyTimer--;
 
-      // TODO softer detection?
-      if ((LST_Sharp_GetLeftDistance() < LST_OBS_BRL_SHARP_INTHETUBE)
-          || (LST_Sharp_GetRightDistance() < LST_OBS_BRL_SHARP_INTHETUBE))
-      {
-
-        //lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
-        lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE;// TODO SAFETY STOP
-
-        lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
-
-      }
-
     }
+
+    // TODO softer detection?
+		if ((LST_Sharp_GetLeftDistance() < LST_OBS_BRL_SHARP_INTHETUBE)
+				|| (LST_Sharp_GetRightDistance() < LST_OBS_BRL_SHARP_INTHETUBE))
+		{
+
+			//lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE;
+
+			lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
+
+		}
 
     break;
 
@@ -1620,6 +1626,8 @@ static void LST_Obs_Barrel(){
 
     // Search mode
     lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+    // Barrel not needed to be reset
 
     break;
 
@@ -1817,8 +1825,11 @@ static void LST_Obs_Roundabout(){
     break;
 
   case LST_OBS_RND_STAGE_EXIT:
+
      // Search mode
    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+   lst_obs_roundabout_stage = LST_OBS_RND_STAGE_APPROACH;
 
    break;
   }
@@ -2094,6 +2105,8 @@ static void LST_Obs_Trainstop(){
 
     // Search mode
     lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+
+    lst_obs_train_stage = LST_OBS_TRA_STAGE_PREPARE;
 
     break;
 
