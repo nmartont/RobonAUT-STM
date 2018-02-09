@@ -12,6 +12,10 @@ void LST_Movement_LockReverse();
 void LST_Movement_UnlockReverse();
 
 uint16_t lst_movement_distance = 0;
+int16_t lst_movement_sharp_speed_max = 95;
+int16_t lst_movement_sharp_speed_min = 0;
+
+int32_t speed_input = 0;
 
 void LST_Movement_Set()
 {
@@ -99,8 +103,13 @@ void LST_Movement_Set()
 		break;
 
 	case LST_MOVEMENT_SPEEDCONTROL_SHARP:
-	  // Call speed controller
-    lst_control_motor = LST_Control_SpeedControllerSharp(lst_movement_distance);
+	  // Call sharp controller (output is ENCODER SPEED)
+    speed_input = LST_MOVEMENT_SHARP_COEFF * LST_Control_SpeedControllerSharp(lst_movement_distance);
+    if(speed_input < lst_movement_sharp_speed_min) speed_input = lst_movement_sharp_speed_min;
+    if(speed_input > lst_movement_sharp_speed_max) speed_input = lst_movement_sharp_speed_max;
+
+    // Call encoder controller
+    lst_control_motor = LST_Control_SpeedController(speed_input);
 	  break;
 
 	case LST_MOVEMENT_STOP:

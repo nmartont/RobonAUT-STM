@@ -34,6 +34,7 @@ int16_t iiii = 250;
 
 uint8_t lst_fast_follow_do_brake     = 0;
 uint8_t lst_fast_follow_cntr         = 0;
+uint8_t lst_fast_follow_cntr2        = 0;
 
 uint8_t lst_fast_line_pattern_insensitivity = 0;
 
@@ -75,6 +76,8 @@ static void LST_Fast_Q1_Lap_Control();
  * @brief Initializes the Fast lap module
  */
 void LST_Fast_Init() {
+  lst_movement_sharp_speed_max = LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX;
+
   /* Calculate values to add to the parameters during acceleration */
   lst_fast_q1_accel_plus_p     = (float)(LST_FAST_Q1_FAST_STEERING_P  - LST_FAST_Q1_SLOW_STEERING_P) /(float)(LST_FAST_Q1_ACCEL_TIME);
   lst_fast_q1_accel_plus_d     = (float)(LST_FAST_Q1_FAST_STEERING_D  - LST_FAST_Q1_SLOW_STEERING_D) /(float)(LST_FAST_Q1_ACCEL_TIME);
@@ -129,6 +132,7 @@ static void LST_Fast_Reset_State_Machine(){
   cntr_temp                      = 0;
   lst_fast_follow_do_brake       = 0;
   lst_fast_follow_cntr           = 0;
+  lst_fast_follow_cntr2          = 0;
 }
 
 /**
@@ -311,10 +315,10 @@ static void LST_Fast_Q1_Logic(){
           lst_fast_q1_mode = LST_FAST_MODE_Q1_FOLLOW;
 
           // TODO 2018.02.08. Init for follow
-          lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
-					lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
-
-
+          if(!lst_fast_steering_interpol){
+            lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
+            lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
+          }
         }
       }
       else{
@@ -327,7 +331,7 @@ static void LST_Fast_Q1_Logic(){
     // ToDo TEST!!
 		case LST_FAST_MODE_Q1_FOLLOW:
 
-		  // Sense Start gate
+		  /* Sense Start gate */
 		  if ((LST_Sharp_GetLeftDistance() > 150)
 		  		&& (LST_Sharp_GetRightDistance() > 150))
 		  {
@@ -349,26 +353,32 @@ static void LST_Fast_Q1_Logic(){
 		  {
 		    lst_fast_follow_do_brake = 1;
 		    lst_fast_follow_cntr     = 0;
+		    lst_fast_follow_cntr2    = 0;
 		  }
 
 		  if(lst_fast_follow_do_brake){
 		    lst_fast_follow_cntr++;
 
-		    if(lst_fast_follow_cntr < LST_FAST_Q1_FOLLOW_BRAKE_TIME){
-		      LST_Movement_Move_Encoderless(LST_BRAKE_Q1_SPEED);
+		    /* Check if speed is low enough */
+		    if(lst_encoder_speed < LST_FAST_Q1_FOLLOW_BRAKE_MIN_SPEED){ // 20 encoder speed
+		      lst_fast_follow_cntr2++;
+		    }else{
+		      lst_fast_follow_cntr2 = 0;
 		    }
-		    else if(lst_fast_follow_cntr <
-		        LST_FAST_Q1_FOLLOW_BRAKE_TIME+
-		        LST_FAST_Q1_FOLLOW_ACCEL_TIME){
-		      LST_Movement_Move(50);
+
+		    if(lst_fast_follow_cntr < LST_FAST_Q1_FOLLOW_BRAKE_TIME &&
+		       lst_fast_follow_cntr2 < 4){
+		      LST_Movement_Move_Encoderless(LST_BRAKE_Q1_SPEED);
 		    }
 		    else{
 		      lst_fast_follow_do_brake = 0;
 		    }
-		  }else{
+		  }
+		  else{
 		    LST_Movement_Move_Sharp(LST_FAST_Q1_FOLLOW_DIST);
 		  }
 
+		  /* Pattern detection */
 		  if(lst_fast_line_pattern_insensitivity){
 		    if(LST_Distance_Measure_mm(LST_FAST_INSNESITIVITY_DIST)){
 		      lst_fast_line_pattern_insensitivity = 0;
@@ -383,23 +393,27 @@ static void LST_Fast_Q1_Logic(){
             // if long line, decrease max speed
             cntr_temp = 0;
             lst_fast_line_pattern_insensitivity = 1;
-            lst_control_sharp_speed_max =
-                LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX;
+            lst_movement_sharp_speed_max =
+                LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX;  // ToDo encoder speed
 
             // TODO 2018.02.08. Steering controls set
-            lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
-            lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
+            if(!lst_fast_steering_interpol){
+              lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
+              lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
+            }
           }
         }else if(lst_control_line_no == 1 && cntr_temp > 2){
           // short lines
           cntr_temp = 0;
           lst_fast_line_pattern_insensitivity = 1;
-          lst_control_sharp_speed_max =
-              LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX;
+          lst_movement_sharp_speed_max =
+              LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX;  // ToDo encoder speed
 
           // TODO 2018.02.08. Steering controls set
-          lst_control_steeringP = LST_FAST_Q1_FOLLOW_FAST_STEERING_P;
-          lst_control_steeringD = LST_FAST_Q1_FOLLOW_FAST_STEERING_D;
+          if(!lst_fast_steering_interpol){
+            lst_control_steeringP = LST_FAST_Q1_FOLLOW_FAST_STEERING_P;
+            lst_control_steeringD = LST_FAST_Q1_FOLLOW_FAST_STEERING_D;
+          }
 
         }else{
           // counter reset

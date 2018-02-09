@@ -50,7 +50,7 @@ int16_t lst_control_referenceOld_speed =    0;
 int32_t lst_control_errorSignalSum_speed =  0;
 
 int16_t lst_control_sharp_speed_min = LST_CONTROL_SHARP_SPEED_FAST_MIN;
-int16_t lst_control_sharp_speed_max = LST_CONTROL_SHARP_SPEED_FAST_MAX;
+int16_t lst_control_sharp_speed_max = LST_CONTROL_SHARP_SPEED_FAST_MAX; // ToDo recalibrate
 
 // LST_SETTINGS Servo offset TODO move
 
