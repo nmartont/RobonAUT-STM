@@ -233,6 +233,18 @@ static uint8_t LST_Control_Check_Line_Data(){
     if(i == (LST_SPI_BUFFER1_SIZE-1)) return 0;
   }
 
+  /* Check if the front of the car is in the air */
+  uint8_t temp = 0;
+  uint8_t cntr = 0;
+  for(temp = 0; temp < 32; temp++){
+    if(lst_spi_master1_rx[temp + 6] > LST_CONTROL_LED_HIGH_THRESHOLD){ // 150
+      cntr++;
+      if(cntr > LST_CONTROL_LED_HIGH_NUMBER_MIN){ // 15
+        return 0;
+      }
+    }
+  }
+
   /* Line data was okay */
   return 1;
 }

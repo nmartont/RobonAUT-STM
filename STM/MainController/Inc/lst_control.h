@@ -94,6 +94,8 @@ uint8_t lst_control_speed_reverseLock;
 
 #define LST_CONTROL_SPEED_SHARP_P 130.0f // 160.0f //80.0f
 
+#define LST_CONTROL_LED_HIGH_THRESHOLD  150
+#define LST_CONTROL_LED_HIGH_NUMBER_MIN 15
 
 // LST_SETTINGS Servo invert
 
