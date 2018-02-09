@@ -59,7 +59,6 @@ static uint8_t LST_Obs_Search_Long_Line_Detected();
  * @brief Initializes the Obstacle lap module
  */
 void LST_Obs_Init() {
-
   lst_control_steeringP = LST_OBS_STEERING_P;
   lst_control_steeringD = LST_OBS_STEERING_D;
 

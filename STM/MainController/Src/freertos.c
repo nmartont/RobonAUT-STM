@@ -92,6 +92,10 @@ void LST_Start(void const * argument) {
 }
 
 static void LST_Init() {
+  /* ToDo test */
+  LST_Fast_DIP_Handler_Start();
+  LST_Obs_DIP_Handler_Start();
+
   LST_Timer_Init();
   LST_SPI_Init();
   LST_ADC_Init();
