@@ -2139,7 +2139,6 @@ static void LST_Obs_End(){
     if(lst_obs_end_brake_cntr < LST_OBS_END_BRAKE_TIME){
       lst_obs_end_brake_cntr++;
       LST_Movement_Move_Encoderless(LST_MOVEMENT_BRAKING);
-      lst_obs_end_brake_cntr++;
     }else{
       lst_obs_end_brake_cntr = 0;
       lst_obs_end_do_brake = 0;
