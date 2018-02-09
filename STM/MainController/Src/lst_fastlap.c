@@ -18,6 +18,9 @@ uint8_t lst_fast_done_laps             = 0;
 int8_t  lst_fast_started_fast_sections = -1; // -1 because the race starts with a fast section
 uint8_t lst_fast_started_slow_sections = 0;
 
+int16_t lst_fast_brake_delay = LST_BRAKE_Q1_DELAY_LAP1;
+int16_t lst_fast_brake_speed = LST_BRAKE_Q1_SPEED_LAP1;
+
 /* Motor control variables */
 int16_t lst_fast_slow_speed            = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
 int16_t lst_fast_fast_speed            = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
@@ -533,7 +536,7 @@ static void LST_Fast_Q1_Logic(){
         if(cntr_q1_fast_triple_line>LST_FAST_Q1_FAST_TRIPLE_LINES){
           /* Switch to braking */
           lst_fast_q1_mode = LST_FAST_MODE_Q1_BRAKE;
-          cntr_q1_brake = LST_BRAKE_Q1_DELAY;
+          cntr_q1_brake = lst_fast_brake_delay;
           cntr_q1_fast_triple_line = 0;
         }
       }
@@ -548,46 +551,11 @@ static void LST_Fast_Q1_Logic(){
 
 #ifdef LST_FAST_MODE_ENCODERLESS
 			/* Satufék */
-		  /*
-			if(cntr_q1_brake<LST_FAST_BRAKE_DELAY){
-				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-				cntr_q1_brake++;
-			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY){
-				lst_control_motor = 0;
-				cntr_q1_brake++;
-			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 5*LST_FAST_BRAKE_DELAY){
-				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-				cntr_q1_brake++;
-			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 6*LST_FAST_BRAKE_DELAY){
-				lst_control_motor = 0;
-				cntr_q1_brake++;
-			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 9*LST_FAST_BRAKE_DELAY){
-				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-				cntr_q1_brake++;
-			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 10*LST_FAST_BRAKE_DELAY){
-				lst_control_motor = 0;
-				cntr_q1_brake++;
-			}else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 11*LST_FAST_BRAKE_DELAY){
-				lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-				cntr_q1_brake++;
-	    }
-	    else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 14*LST_FAST_BRAKE_DELAY){
-	      lst_control_motor = 0;
-	      cntr_q1_brake++;
-	    }else if(cntr_q1_brake < 2*LST_FAST_BRAKE_DELAY + 16*LST_FAST_BRAKE_DELAY){
-	      lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-	        cntr_q1_brake++;
-			}else{
-				lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
-				lst_fast_started_slow_sections++;
-				cntr_q1_brake = 0;
-			}
-			*/
 		  /* Brake v2 */
 		  if (cntr_q1_brake >= 0)
 		  {
 
-		  	LST_Movement_Move_Encoderless(LST_BRAKE_Q1_SPEED);
+		  	LST_Movement_Move_Encoderless(lst_fast_brake_speed);
 		  	cntr_q1_brake--;
 
 		  }
@@ -642,14 +610,20 @@ static void LST_Fast_Q1_Lap_Control(){
 #ifdef LST_FAST_THREE_LAPS
   switch(lst_fast_done_laps){
   case 0: // first lap is next
+    lst_fast_brake_speed= LST_BRAKE_Q1_SPEED_LAP1;
+    lst_fast_brake_delay = LST_BRAKE_Q1_DELAY_LAP1;
     lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
     lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
     break;
   case 1: // second lap is next
+    lst_fast_brake_speed= LST_BRAKE_Q1_SPEED_LAP2;
+    lst_fast_brake_delay = LST_BRAKE_Q1_DELAY_LAP2;
     lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2;
     lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2;
     break;
   case 2: // third lap is next
+    lst_fast_brake_speed= LST_BRAKE_Q1_SPEED_LAP3;
+    lst_fast_brake_delay = LST_BRAKE_Q1_DELAY_LAP3;
     lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3;
     lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3;
     break;

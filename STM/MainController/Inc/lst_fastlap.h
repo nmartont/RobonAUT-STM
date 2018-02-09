@@ -48,7 +48,7 @@ uint8_t lst_fast_startDetected;
 // #define LST_FAST_MODE_STEERING_INTERPOLATED
 
 // LST_SETTINGS Three laps switch for the fast lap mode
-// #define LST_FAST_THREE_LAPS
+#define LST_FAST_THREE_LAPS
 
 #define LST_FAST_MODE_SPEED_CONTROL  20
 
@@ -67,7 +67,7 @@ uint8_t lst_fast_startDetected;
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2      500
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3      550
 #define LST_FAST_Q1_START_MOTOR_SPEED          350
-#define LST_FAST_Q1_FINISH_MOTOR_SPEED         460 // ToDo increase
+#define LST_FAST_Q1_FINISH_MOTOR_SPEED         550 // ToDo increase
 #else
 // ToDo calibrate these values
 #define LST_FAST_Q1_APPROACH_MOTOR_SPEED       100
@@ -81,8 +81,15 @@ uint8_t lst_fast_startDetected;
 #define LST_FAST_Q1_FINISH_MOTOR_SPEED         250 // ToDo increase
 #endif
 
-#define LST_BRAKE_Q1_SPEED			-800
-#define LST_BRAKE_Q1_DELAY			100
+#define LST_BRAKE_Q1_SPEED          -800
+#define LST_BRAKE_Q1_SPEED_LAP1			-800
+#define LST_BRAKE_Q1_SPEED_LAP2     -800
+#define LST_BRAKE_Q1_SPEED_LAP3     -800
+
+#define LST_BRAKE_Q1_DELAY_LAP1			100
+#define LST_BRAKE_Q1_DELAY_LAP2     150
+#define LST_BRAKE_Q1_DELAY_LAP3     200
+
 
 /* Steering values */
 #define LST_FAST_Q1_SLOW_STEERING_P       17000
