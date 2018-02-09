@@ -18,6 +18,7 @@ uint8_t lst_obs_search_cntr_error = 0;
 uint8_t lst_obs_search_mode =       LST_OBS_SEARCH_MODE_BEGIN;
 uint8_t lst_obs_search_cntr =       0;
 uint8_t lst_obs_search_line_no =    0;
+uint8_t lst_obs_search_brl_cntr =   0;
 
 uint8_t lst_obs_roundabout_direction = LST_INFRA_DIR_LEFT;
 uint8_t lst_obs_roundabout_exit =      LST_INFRA_EXIT_ONE;
@@ -326,6 +327,7 @@ static void LST_Obs_Search(){
       }
 
       if(lst_obs_search_cntr > LST_OBS_SEARCH_LINE_THRESHOLD){ // 4
+        lst_obs_search_brl_cntr++;
         lst_obs_search_cntr = 0;
         lst_obs_search_line_no = 1;
       }
@@ -345,11 +347,17 @@ static void LST_Obs_Search(){
         }
       }
 
-      // Found obstacle
       if(lst_obs_search_cntr > LST_OBS_SEARCH_LINE_THRESHOLD){ // 4
-        lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
-        lst_obs_lap_mode = LST_OBS_LAP_MODE_BARREL;
+        /* ToDo test - search 2 lines again */
+        lst_obs_search_cntr = 0;
+        lst_obs_search_line_no = 2;
       }
+    }
+
+    /* Found obstacle */
+    if(lst_obs_search_brl_cntr == 2){
+      lst_obs_search_mode = LST_OBS_SEARCH_MODE_FOUND;
+      lst_obs_lap_mode = LST_OBS_LAP_MODE_BARREL;
     }
   }
 
@@ -458,6 +466,7 @@ static void LST_Obs_Search_Reset(){
   lst_obs_search_mode = LST_OBS_SEARCH_MODE_BEGIN;
   lst_obs_search_cntr = 0;
   lst_obs_search_cntr_error = 0;
+  lst_obs_search_brl_cntr = 0;
 }
 
 static uint8_t LST_Obs_Search_Sharp_Detection(uint8_t sharp_number){
