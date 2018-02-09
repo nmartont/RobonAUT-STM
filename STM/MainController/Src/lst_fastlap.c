@@ -293,6 +293,7 @@ static void LST_Fast_Q1_Logic(){
         if(cntr_q1 > LST_FAST_Q1_APPROACH_MIN){
           cntr_q1 = 0;
           lst_fast_q1_mode = LST_FAST_MODE_Q1_WAIT_FOR_FOLLOW;
+          // Start in fast mode TODO TEST 2018. 02. 09.
         }
       }
       else{
@@ -314,13 +315,14 @@ static void LST_Fast_Q1_Logic(){
           lst_fast_line_pattern_insensitivity = 1;
           lst_fast_q1_mode = LST_FAST_MODE_Q1_FOLLOW;
 
-          lst_movement_sharp_speed_max = LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX;
-
+          // Fast follow start
           // TODO 2018.02.08. Init for follow
+          lst_movement_sharp_speed_max = LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX;
           if(!lst_fast_steering_interpol){
             lst_control_steeringP = LST_FAST_Q1_FOLLOW_FAST_STEERING_P;
             lst_control_steeringD = LST_FAST_Q1_FOLLOW_FAST_STEERING_D;
           }
+
         }
       }
       else{
@@ -369,7 +371,7 @@ static void LST_Fast_Q1_Logic(){
 		    }
 
 		    if(lst_fast_follow_cntr < LST_FAST_Q1_FOLLOW_BRAKE_TIME &&
-		       lst_fast_follow_cntr2 < 4){
+		       lst_fast_follow_cntr2 < 2){ // TODO THRESHOLD OK?
 		      LST_Movement_Move_Encoderless(LST_BRAKE_Q1_SPEED);
 		    }
 		    else{

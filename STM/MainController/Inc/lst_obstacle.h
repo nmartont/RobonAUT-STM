@@ -151,14 +151,15 @@ int16_t lst_obs_corner_backingTimer;
 uint8_t lst_obs_train_stage;
 #define LST_OBS_TRA_STAGE_PREPARE						0
 #define LST_OBS_TRA_STAGE_APPROACH					1
-#define LST_OBS_TRA_STAGE_WATCH							2
-#define LST_OBS_TRA_STAGE_WAIT							3
-#define LST_OBS_TRA_STAGE_COUNT							4
-#define LST_OBS_TRA_STAGE_CROSS							5
-#define LST_OBS_TRA_STAGE_CROSSING					6
-#define LST_OBS_TRA_STAGE_CROSSED						7
-#define LST_OBS_TRA_STAGE_LEAVECROSSING			8
-#define LST_OBS_TRA_STAGE_EXIT							9
+#define LST_OBS_TRA_STAGE_BRAKE							2
+#define LST_OBS_TRA_STAGE_WATCH							3
+#define LST_OBS_TRA_STAGE_WAIT							4
+#define LST_OBS_TRA_STAGE_COUNT							5
+#define LST_OBS_TRA_STAGE_CROSS							6
+#define LST_OBS_TRA_STAGE_CROSSING					7
+#define LST_OBS_TRA_STAGE_CROSSED						8
+#define LST_OBS_TRA_STAGE_LEAVECROSSING			9
+#define LST_OBS_TRA_STAGE_EXIT							10
 uint8_t lst_obs_train_repeatedCrossing;
 
 // Sharp
@@ -172,6 +173,15 @@ int16_t lst_obs_train_leaveTimer;
 
 int16_t lst_obs_train_crossingTimer;
 #define LST_OBS_TRA_CROSSINGTIMER_PERIOD		60
+
+int16_t lst_obs_train_brakeTimer;
+#define LST_OBS_TRA_BRAKETIMER_PERIOD				100
+
+// Speed
+#define LST_OBS_TRA_ENCODER_LOWLIMIT				10
+#define LST_OBS_TRA_ENCODER_COUNT						3
+uint8_t lst_obs_train_encoder_counter;
+#define LST_OBS_TRA_BRAKE_ENCODERLESS				-600
 
 /* Obs_Convoy */
 
@@ -205,7 +215,7 @@ uint8_t lst_obs_convoy_follow_state;
 
 // Timing
 int16_t lst_obs_convoy_lastCarTimer;
-#define LST_OBS_CON_LASTCARTIMER_PERIOD	160 //200
+#define LST_OBS_CON_LASTCARTIMER_PERIOD	130 // 160 //200
 int16_t lst_obs_convoy_turnTimer;
 #define LST_OBS_CON_TURNTIMER_PERIOD		40 //60 same // 80, was too sharp angle
 int16_t lst_obs_convoy_attachTimer;
