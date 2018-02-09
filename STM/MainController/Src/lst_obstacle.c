@@ -322,8 +322,12 @@ static void LST_Obs_Search(){
         lst_obs_search_cntr++;
       }
       else{
-        // ERROR, we are expecting some 2 lines
-        LST_Obs_Search_Reset();
+        lst_obs_search_cntr = 0;
+        lst_obs_search_cntr_error++;
+        if(lst_obs_search_cntr_error > LST_OBS_SEARCH_LINE_ERROR_THRESHOLD){ // 100
+          // ERROR, we were expecting some 1 lines
+          LST_Obs_Search_Reset();
+        }
       }
 
       if(lst_obs_search_cntr > LST_OBS_SEARCH_LINE_THRESHOLD){ // 4
