@@ -31,6 +31,7 @@
 #define LST_MOVEMENT_BRAKING							-800
 
 // Variables
+#define LST_MOVEMENT_SHARP_COEFF      1.0f // ToDo calibrate
 
 // Reverse switch
 uint8_t lst_movement_reverse_counter;
@@ -54,6 +55,8 @@ int16_t lst_control_motor;
 // Movement controls
 uint8_t 	lst_movement_type;
 int16_t	lst_movement_speed;
+
+extern int16_t lst_movement_sharp_speed_max;
 
 // Functions
 void LST_Movement_Set();

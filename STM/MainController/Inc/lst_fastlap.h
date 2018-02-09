@@ -17,6 +17,7 @@
 #include "lst_control.h"
 #include "lst_bt.h"
 #include "lst_sharp.h"
+#include "tasks/lst_encoder.h"
 
 // TODO TEMP
 
@@ -56,8 +57,8 @@ uint8_t lst_fast_startDetected;
 /* Speed values */
 #ifdef LST_FAST_MODE_ENCODERLESS
 //#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       300 // 200 -> does not start
-#define LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX			 270 // 290 //280
-#define LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX			 310 // 300
+#define LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX			 95  // 270 // 290 //280 // ToDo NMT ENCODER
+#define LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX			 120 // 310 // ToDo NMT ENCODER
 
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      295
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      310
@@ -122,6 +123,7 @@ uint8_t lst_fast_startDetected;
 #define LST_FAST_Q1_FOLLOW_TOO_CLOSE_DIST     1000
 #define LST_FAST_Q1_FOLLOW_BRAKE_TIME         55 // 50
 #define LST_FAST_Q1_FOLLOW_ACCEL_TIME         50
+#define LST_FAST_Q1_FOLLOW_BRAKE_MIN_SPEED    20
 
 /* Slow mode defines */
 #define LST_FAST_Q1_SLOW_FILTER_THRESHOLD 1 // TODO TEST 2018.01.31. ONLY LST_CONTROL FILTER (was 5)
