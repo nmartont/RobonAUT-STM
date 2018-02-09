@@ -330,7 +330,10 @@ int16_t lst_obs_roundabout_turnOutTimer;
 
 /* Obs End */
 #define LST_OBS_END_DISTANCE_MM             300
+#define LST_OBS_END_BRAKE_TIME              60
 uint8_t lst_obs_end_cntr;
+uint8_t lst_obs_end_do_brake;
+uint16_t lst_obs_end_brake_cntr;
 
 /* External variables --------------------------------------------------------*/
 

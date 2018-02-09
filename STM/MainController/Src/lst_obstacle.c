@@ -2106,23 +2106,36 @@ static void LST_Obs_Trainstop(){
  */
 static void LST_Obs_End(){
   /* Check if there is a line */
-  if(lst_control_line_no != 0){
+  if(lst_control_line_no != 0 && !lst_obs_end_do_brake){
     lst_obs_end_cntr++;
+
+    if(lst_obs_end_cntr > 20){
+      // Reset to SEARCH mode
+      lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
+      lst_obs_end_cntr = 0;
+      return;
+    }
   }
   else{
-    // Stop right away on the finish line
-    LST_Movement_Stop();
-    LST_Steering_Lock(0);
-
-    lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
+    lst_obs_end_do_brake = 1;
   }
 
-  if(lst_obs_end_cntr > 20){
-    // Reset to SEARCH mode
-    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
-    lst_obs_end_cntr = 0;
-    return;
+  if(lst_obs_end_do_brake){
+    // brake for X cycles
+    if(lst_obs_end_brake_cntr < LST_OBS_END_BRAKE_TIME){
+      LST_Movement_Move_Encoderless(LST_MOVEMENT_BRAKING);
+    }else{
+      lst_obs_end_brake_cntr = 0;
+      lst_obs_end_do_brake = 0;
+
+      // Stop on the finish line
+      LST_Movement_Stop();
+      LST_Steering_Lock(0);
+
+      lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
+    }
   }
+
 }
 
 /**
@@ -2142,6 +2155,10 @@ static void LST_Obs_ResetStateMachine(){
   lst_obs_roundabout_cntr = 0;
 
   lst_obs_end_cntr = 0;
+
+  lst_obs_end_do_brake = 0;
+
+  lst_obs_end_brake_cntr = 0;
 
   // ToDo reset other variables
   LST_Obs_Search_Reset();
