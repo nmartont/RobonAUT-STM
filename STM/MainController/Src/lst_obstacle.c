@@ -2104,7 +2104,7 @@ static void LST_Obs_End(){
     lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
   }
 
-  if(lst_obs_end_cntr > 3){
+  if(lst_obs_end_cntr > 20){
     // Reset to SEARCH mode
     lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
     lst_obs_end_cntr = 0;
