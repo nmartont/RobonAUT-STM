@@ -140,7 +140,7 @@ uint8_t lst_fast_startDetected;
 #define LST_FAST_Q1_FAST_TRIPLE_LINES 5 // TODO TEST 2018. 01. 31. Test with a higher value, earlier braking first (was 15)
 
 /* Brake mode defines */
-#define LST_FAST_BRAKE_DELAY           5
+#define LST_FAST_BRAKE_DELAY           120
 #define LST_FAST_BRAKE_TIME            30
 #define LST_FAST_Q1_BRAKE_MOTOR       -700
 

@@ -152,21 +152,6 @@ static void LST_Fast_State_Machine(){
   case LST_FAST_MODE_SPEED_CONTROL:
     LST_Fast_Reset_State_Machine();
 
-    /* ToDo temp comment, accidentally doing this measurement is bad
-    if(cntr_temp<800){
-      cntr_temp++;
-      lst_control_motor = iiii;
-    }
-    else if(cntr_temp<1300){
-      cntr_temp++;
-      lst_control_motor = 0;
-    }
-    else{
-      iiii = iiii+50;
-      cntr_temp = 0;
-    }
-    */
-
     lst_control_steering = LST_Control_Servo_BT();
     break;
 
@@ -198,18 +183,15 @@ static void LST_Fast_State_Machine(){
 
     /* Satufék */
     if(cntr_brake<LST_FAST_BRAKE_DELAY){
-      lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
+      LST_Movement_Move_Encoderless(LST_FAST_Q1_BRAKE_MOTOR);
       cntr_brake++;
-    }else if(cntr_brake < 2*LST_FAST_BRAKE_DELAY){
-      lst_control_motor = 0;
-      cntr_brake++;
-    }else if(cntr_brake < 2*LST_FAST_BRAKE_DELAY + LST_FAST_BRAKE_TIME){
-      lst_control_motor = LST_FAST_Q1_BRAKE_MOTOR;
-      cntr_brake++;
+
+      LST_Movement_Set_Fast();
     }else{
       // Wait for reset...
       lst_control_motor = 0;
     }
+
     break;
   case LST_FAST_MODE_NO_CONTROL:
     /* Leave values on default */
