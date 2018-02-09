@@ -95,12 +95,12 @@ uint8_t lst_obs_drone_stage;
 #define LST_OBS_DRO_STAGE_EXIT								3
 
 // Sharp
-#define LST_OBS_DRO_SHARP_DIST_DRONE_IN				1600
-#define LST_OBS_DRO_SHARP_DIST_DRONE_OUT			1200
+#define LST_OBS_DRO_SHARP_DIST_DRONE_IN				700 //1600 // stops at 18cm
+#define LST_OBS_DRO_SHARP_DIST_DRONE_OUT			500 //1200 // Rule: 40 - 60 cm
 
 // Timing
 int16_t lst_obs_drone_takeoffTimer;
-#define LST_OBS_DRO_TAKEOFFTIMER_PERIOD				100
+#define LST_OBS_DRO_TAKEOFFTIMER_PERIOD				220
 
 /* Obs_Corner */
 
