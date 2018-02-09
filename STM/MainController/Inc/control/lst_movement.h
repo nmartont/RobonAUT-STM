@@ -59,10 +59,13 @@ int16_t	lst_movement_speed;
 extern int16_t lst_movement_sharp_speed_max;
 
 // Functions
+void LST_Movement_Set_Fast();
 void LST_Movement_Set();
 void LST_Movement_Move(int16_t speed);
 void LST_Movement_Stop();
 void LST_Movement_Move_Encoderless(int16_t speed);
 void LST_Movement_Move_Sharp(uint16_t distance);
+void LST_Movement_Move_Encoderless_Fast(int16_t speed);
+void LST_Movement_Move_Sharp_Fast(uint16_t distance);
 
 #endif /* CONTROL_LST_MOVEMENT_H_ */
