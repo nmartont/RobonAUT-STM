@@ -2133,17 +2133,19 @@ static void LST_Obs_End(){
   }
 
   if(lst_obs_end_do_brake){
+
+  	LST_Steering_Lock(0);
     // brake for X cycles
     if(lst_obs_end_brake_cntr < LST_OBS_END_BRAKE_TIME){
       lst_obs_end_brake_cntr++;
       LST_Movement_Move_Encoderless(LST_MOVEMENT_BRAKING);
+      lst_obs_end_brake_cntr++;
     }else{
       lst_obs_end_brake_cntr = 0;
       lst_obs_end_do_brake = 0;
 
       // Stop on the finish line
       LST_Movement_Stop();
-      LST_Steering_Lock(0);
 
       lst_obs_lap_mode = LST_OBS_MODE_NO_CONTROL;
     }
