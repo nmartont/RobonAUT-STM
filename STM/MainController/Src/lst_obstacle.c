@@ -2138,6 +2138,7 @@ static void LST_Obs_End(){
   	LST_Steering_Lock(0);
     // brake for X cycles
     if(lst_obs_end_brake_cntr < LST_OBS_END_BRAKE_TIME){
+      lst_obs_end_brake_cntr++;
       LST_Movement_Move_Encoderless(LST_MOVEMENT_BRAKING);
       lst_obs_end_brake_cntr++;
     }else{
@@ -2232,7 +2233,8 @@ void LST_Obs_DIP_Handler_Start(){
     lst_obs_mode = LST_OBS_MODE_LAP;
   }
 
-  if(lst_dip_settings[2] == 1){
+  /* ToDo test: button instead of DIP */
+  if(HAL_GPIO_ReadPin(ALT_START_GPIO_Port, ALT_START_Pin) == GPIO_PIN_SET){
     lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
   }
   else{
