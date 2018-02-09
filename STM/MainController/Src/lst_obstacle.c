@@ -1833,10 +1833,6 @@ static void LST_Obs_Trainstop(){
 
     break;
 
-    // TODO !!!!!!!!!!!!!!!!!!!! SKIPPED -> TEST OK, still too close
-    // to track
-    // !!!!!!!!!!!!!!!!!!!!!!!!!
-
   case LST_OBS_TRA_STAGE_APPROACH:
 
     // Follow the line
@@ -1849,15 +1845,65 @@ static void LST_Obs_Trainstop(){
     if (lst_control_line_no < 1)
     {
 
-      // also implement for corner
       LST_Steering_Lock(0);
 
       // Jump to next
-      lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
+      if (!lst_obs_train_repeatedCrossing)
+      {
+
+      	lst_obs_train_stage = LST_OBS_TRA_STAGE_BRAKE;
+
+      	lst_obs_train_encoder_counter = 0;
+      	lst_obs_train_brakeTimer = LST_OBS_TRA_BRAKETIMER_PERIOD;
+
+      }
+
+      else lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
 
     }
 
     break;
+
+  case LST_OBS_TRA_STAGE_BRAKE:
+
+  	LST_Steering_Follow(lst_obs_steering_interpol);
+
+  	LST_Movement_Move_Encoderless(LST_OBS_TRA_BRAKE_ENCODERLESS);
+
+  	// Two jump conditions: stopped or safety timer
+
+  	// First jump condition: ~stopped
+  	if (lst_encoder_speed < LST_OBS_TRA_ENCODER_LOWLIMIT)
+  	{
+  		lst_obs_train_encoder_counter++;
+
+  		if (lst_obs_train_encoder_counter >= LST_OBS_TRA_ENCODER_COUNT)
+  		{
+  			lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
+  		}
+
+  	}
+  	else
+  	{
+  		lst_obs_train_encoder_counter = 0;
+  	}
+
+  	// Second jump condition: time elapsed
+  	if (lst_obs_train_brakeTimer <= 0)
+  	{
+
+  		lst_obs_train_stage = LST_OBS_TRA_STAGE_WATCH;
+
+  	}
+  	else
+  	{
+
+  		lst_obs_train_brakeTimer--;
+
+  	}
+
+
+  	break;
 
   case LST_OBS_TRA_STAGE_WATCH:
 
