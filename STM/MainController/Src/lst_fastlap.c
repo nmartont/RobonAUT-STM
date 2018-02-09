@@ -728,7 +728,8 @@ void LST_Fast_DIP_Handler_Start(){
     lst_fast_mode = LST_FAST_MODE_Q1;
   }
 
-  if(lst_dip_settings[2] == 1){
+  /* ToDo test */
+  if(HAL_GPIO_ReadPin(ALT_START_GPIO_Port, ALT_START_Pin) == GPIO_PIN_SET){
     lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
   }
   else{

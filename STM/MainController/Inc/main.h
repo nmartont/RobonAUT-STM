@@ -57,6 +57,8 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define ALT_START_Pin GPIO_PIN_13
+#define ALT_START_GPIO_Port GPIOC
 #define SPI1_SS_Pin GPIO_PIN_4
 #define SPI1_SS_GPIO_Port GPIOA
 #define CYCLE_OUT_Pin GPIO_PIN_4
