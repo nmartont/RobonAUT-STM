@@ -185,7 +185,7 @@ static void LST_Fast_State_Machine(){
     LST_Fast_Q1_Logic();
 
     // Periodic controls
-    LST_Movement_Set();
+    LST_Movement_Set_Fast();
     LST_Steering_Set();
     break;
 
