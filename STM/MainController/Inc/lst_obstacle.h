@@ -268,15 +268,15 @@ int16_t lst_obs_barrel_approachTimer;
 int16_t lst_obs_barrel_rampSafetyTimer;
 #define LST_OBS_BRL_RAMPSAFETYTIMER_PERIOD		130
 int16_t lst_obs_barrel_tubeSafetyTimer;
-#define LST_OBS_BRL_TUBESAFETYTIMER_PERIOD		200
+#define LST_OBS_BRL_TUBESAFETYTIMER_PERIOD		300 // 200
 int16_t lst_obs_barrel_brakeTimer;
 #define LST_OBS_BRL_BRAKETIMER_PERIOD					80
 int16_t lst_obs_barrel_moveTimer;
-#define LST_OBS_BRL_BACKUPTIMER_PERIOD				200
+#define LST_OBS_BRL_BACKUPTIMER_PERIOD				180
 #define LST_OBS_BRL_FWRIGHTTIMER_PERIOD				170
-#define LST_OBS_BRL_BWRIGHTTIMER_PERIOD				180
+#define LST_OBS_BRL_BWRIGHTTIMER_PERIOD				200
 #define LST_OBS_BRL_FWLEFTTIMER_PERIOD				170
-#define LST_OBS_BRL_BWLEFTTIMER_PERIOD				180
+#define LST_OBS_BRL_BWLEFTTIMER_PERIOD				200
 int16_t lst_obs_barrel_exitTimer;
 #define LST_OBS_BRL_ALIGNTIMER_PERIOD					100
 #define LST_OBS_BRL_EXITTIMER_PERIOD					100

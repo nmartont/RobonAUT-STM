@@ -1397,7 +1397,7 @@ static void LST_Obs_Barrel(){
     {
 
       //lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
-      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE; // TODO SAFETY STOP
+      lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE;
 
       lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
 
@@ -1407,19 +1407,19 @@ static void LST_Obs_Barrel(){
 
       lst_obs_barrel_tubeSafetyTimer--;
 
-      // TODO softer detection?
-      if ((LST_Sharp_GetLeftDistance() < LST_OBS_BRL_SHARP_INTHETUBE)
-          || (LST_Sharp_GetRightDistance() < LST_OBS_BRL_SHARP_INTHETUBE))
-      {
-
-        //lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
-        lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE;// TODO SAFETY STOP
-
-        lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
-
-      }
-
     }
+
+    // TODO softer detection?
+		if ((LST_Sharp_GetLeftDistance() < LST_OBS_BRL_SHARP_INTHETUBE)
+				|| (LST_Sharp_GetRightDistance() < LST_OBS_BRL_SHARP_INTHETUBE))
+		{
+
+			//lst_obs_barrel_stage = LST_OBS_BRL_STAGE_OUTGOING;
+			lst_obs_barrel_stage = LST_OBS_BRL_STAGE_BRAKE;
+
+			lst_obs_barrel_brakeTimer = LST_OBS_BRL_BRAKETIMER_PERIOD;
+
+		}
 
     break;
 
