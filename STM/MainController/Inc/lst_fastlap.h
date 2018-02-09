@@ -57,8 +57,8 @@ uint8_t lst_fast_startDetected;
 /* Speed values */
 #ifdef LST_FAST_MODE_ENCODERLESS
 //#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       300 // 200 -> does not start
-#define LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX			 95  // 270 // 290 //280 // ToDo NMT ENCODER
-#define LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX			 120 // 310 // ToDo NMT ENCODER
+#define LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX			 105 // 95  // 270 // 290 //280 // ToDo NMT ENCODER
+#define LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX			 130 // 310 // ToDo NMT ENCODER
 
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      295
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      310
@@ -92,7 +92,7 @@ uint8_t lst_fast_startDetected;
 
 #define LST_FAST_Q1_FOLLOW_FAST_STEERING_P     	5000
 #define LST_FAST_Q1_FOLLOW_FAST_STEERING_D     	13000
-#define LST_FAST_Q1_FOLLOW_SLOW_STEERING_P			17000
+#define LST_FAST_Q1_FOLLOW_SLOW_STEERING_P			18000
 #define LST_FAST_Q1_FOLLOW_SLOW_STEERING_D			4000
 
 #define LST_FAST_Q1_FAST_STEERING_P       1750
@@ -108,19 +108,19 @@ uint8_t lst_fast_startDetected;
 #define LST_FAST_Q1_START_TIME         5
 
 /* Approach defines */
-#define LST_FAST_Q1_APPROACH_DIST   600 // ADC value (12bits)
+#define LST_FAST_Q1_APPROACH_DIST   1000 // ADC value (12bits)
 #define LST_FAST_Q1_APPROACH_MIN    5   // consecutive Sharp measurements
 
 /* Wait for follow defines */
-#define LST_FAST_Q1_WAIT_FOLLOW_DIST  400 // ADC value (12bits)
+#define LST_FAST_Q1_WAIT_FOLLOW_DIST  800 // ADC value (12bits)
 #define LST_FAST_Q1_WAIT_MIN          30  // 300ms
 
 /* Follow defines */
-#define LST_FAST_Q1_FOLLOW_DIST               600 //800 // ADC value (12bits)
+#define LST_FAST_Q1_FOLLOW_DIST               1200 //800 // ADC value (12bits)
 #define LST_FAST_Q1_FOLLOW_END_DIST           100 // ADC value (12bits)
 #define LST_FAST_Q1_FOLLOW_FILTER_THRESHOLD   1
 #define LST_FAST_Q1_FOLLOW_LINES_THRESHOLD    2
-#define LST_FAST_Q1_FOLLOW_TOO_CLOSE_DIST     1000
+#define LST_FAST_Q1_FOLLOW_TOO_CLOSE_DIST     1600
 #define LST_FAST_Q1_FOLLOW_BRAKE_TIME         55 // 50
 #define LST_FAST_Q1_FOLLOW_ACCEL_TIME         50
 #define LST_FAST_Q1_FOLLOW_BRAKE_MIN_SPEED    20
