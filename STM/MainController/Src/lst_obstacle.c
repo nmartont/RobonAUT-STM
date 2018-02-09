@@ -1804,7 +1804,6 @@ static void LST_Obs_Roundabout(){
     break;
 
   case LST_OBS_RND_STAGE_EXIT:
-
      // Search mode
    lst_obs_lap_mode = LST_OBS_LAP_MODE_SEARCH;
 

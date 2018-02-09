@@ -314,10 +314,12 @@ static void LST_Fast_Q1_Logic(){
           lst_fast_line_pattern_insensitivity = 1;
           lst_fast_q1_mode = LST_FAST_MODE_Q1_FOLLOW;
 
+          lst_movement_sharp_speed_max = LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX;
+
           // TODO 2018.02.08. Init for follow
           if(!lst_fast_steering_interpol){
-            lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
-            lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
+            lst_control_steeringP = LST_FAST_Q1_FOLLOW_FAST_STEERING_P;
+            lst_control_steeringD = LST_FAST_Q1_FOLLOW_FAST_STEERING_D;
           }
         }
       }
