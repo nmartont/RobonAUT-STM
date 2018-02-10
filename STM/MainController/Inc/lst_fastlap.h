@@ -76,8 +76,8 @@ uint8_t lst_fast_startDetected;
 // ToDo calibrate these values
 #define LST_FAST_Q1_APPROACH_MOTOR_SPEED       50
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      150
-#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      170
-#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3      190
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      150
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3      150
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1      320
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2      360
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3      400
@@ -86,15 +86,20 @@ uint8_t lst_fast_startDetected;
 #define LST_FAST_Q1_FINISH_MOTOR_SPEED         250 // ToDo increase
 #endif
 
+#ifdef LST_FAST_MODE_ENCODERLESS
+#define LST_BRAKE_Q1_DELAY_LAP1			100
+#define LST_BRAKE_Q1_DELAY_LAP2     150
+#define LST_BRAKE_Q1_DELAY_LAP3     200
+#else
+#define LST_BRAKE_Q1_DELAY_LAP1			80
+#define LST_BRAKE_Q1_DELAY_LAP2     100
+#define LST_BRAKE_Q1_DELAY_LAP3     120
+#endif
+
 #define LST_BRAKE_Q1_SPEED          -800
 #define LST_BRAKE_Q1_SPEED_LAP1			-800
 #define LST_BRAKE_Q1_SPEED_LAP2     -800
 #define LST_BRAKE_Q1_SPEED_LAP3     -800
-
-#define LST_BRAKE_Q1_DELAY_LAP1			100
-#define LST_BRAKE_Q1_DELAY_LAP2     150
-#define LST_BRAKE_Q1_DELAY_LAP3     200
-
 
 /* Steering values */
 #define LST_FAST_Q1_SLOW_STEERING_P       17000
