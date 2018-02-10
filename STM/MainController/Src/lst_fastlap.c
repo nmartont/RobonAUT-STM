@@ -229,7 +229,7 @@ static void LST_Fast_Q1_Logic(){
 		  }
 
 // Linear increase of motor control signal
-#ifdef LST_FAST_MODE_ENCODERLESS
+//#ifdef LST_FAST_MODE_ENCODERLESS // TODO 2018. 02. 10. Universal
 		  // ToDo temp comment
 //			/* Accelerate to the desired starting speed */
 //			if(cntr_q1_start < LST_FAST_Q1_START_TIME){
@@ -247,12 +247,12 @@ static void LST_Fast_Q1_Logic(){
 //			}
 
 // Speed control handles motor soft start
-#else
+//#else
 
-			lst_fast_q1_mode = LST_FAST_MODE_Q1_APPROACH;
-			cntr_q1_start = 0;
+//			lst_fast_q1_mode = LST_FAST_MODE_Q1_APPROACH;
+//			cntr_q1_start = 0;
 
-#endif
+//#endif
 			break;
 
     // Approach safety car, stop
@@ -461,34 +461,10 @@ static void LST_Fast_Q1_Logic(){
 
 		case LST_FAST_MODE_Q1_ACCEL:
 
-#ifdef LST_FAST_MODE_ENCODERLESS
-
-			/* Linearly increase everything from slow to fast */
-			/*if(cntr_q1_accel < LST_FAST_Q1_ACCEL_TIME){
-			  if(!lst_fast_steering_interpol){
-          lst_control_steeringP  += lst_fast_q1_accel_plus_p;
-          lst_control_steeringD  += lst_fast_q1_accel_plus_d;
-			  }
-				lst_fast_motor_float   += lst_fast_q1_accel_plus_motor;
-				LST_Movement_Move_Encoderless((int16_t)lst_fast_motor_float);
-
-				cntr_q1_accel++;
-			}
-			else{*/
 				lst_fast_motor_float = lst_fast_slow_speed;
 				lst_fast_q1_mode = LST_FAST_MODE_Q1_FAST;
 				lst_fast_started_fast_sections++;
 				cntr_q1_accel = 0;
-			/*
-			}
-			*/
-
-#else // Jump to high speed immediately, motor control handles acceleration slope
-
-			lst_fast_q1_mode = LST_FAST_MODE_Q1_FAST;
-			lst_fast_started_fast_sections++;
-
-#endif
 
 			lst_fast_line_pattern_insensitivity = 1;
 			break;
@@ -531,7 +507,7 @@ static void LST_Fast_Q1_Logic(){
         lst_control_steeringD = LST_FAST_Q1_BRAKE_STEERING_D;
 		  }
 
-#ifdef LST_FAST_MODE_ENCODERLESS
+//#ifdef LST_FAST_MODE_ENCODERLESS TODO 2018.02.10. ENCODER BRAKE?
 			/* Satufék */
 		  /* Brake v2 */
 		  if (cntr_q1_brake >= 0)
@@ -548,10 +524,10 @@ static void LST_Fast_Q1_Logic(){
 
 		  }
 
-#else // Jump to low speed immediately, motor control handles deceleration slope
-			lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
-			lst_fast_started_slow_sections++;
-#endif
+//#else // Jump to low speed immediately, motor control handles deceleration slope
+//			lst_fast_q1_mode = LST_FAST_MODE_Q1_SLOW;
+//			lst_fast_started_slow_sections++;
+//#endif
 
 			lst_fast_line_pattern_insensitivity = 1;
 			break;
@@ -584,7 +560,7 @@ static void LST_Fast_Q1_Logic(){
 
 static void LST_Fast_Q1_Lap_Control(){
   /* Check fast lap count */
-  if(lst_fast_started_fast_sections == 4){ // full lap
+  if(lst_fast_started_fast_sections == 1){ //4){ // full lap
     lst_fast_started_fast_sections = 0;
     lst_fast_done_laps++;
   }
@@ -594,6 +570,7 @@ static void LST_Fast_Q1_Lap_Control(){
   case 0: // first lap is next
     lst_fast_brake_speed= LST_BRAKE_Q1_SPEED_LAP1;
     lst_fast_brake_delay = LST_BRAKE_Q1_DELAY_LAP1;
+
     lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
     lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
     break;

@@ -43,7 +43,7 @@ uint8_t lst_fast_startDetected;
 #define LST_FAST_MODE_Q1_END             14
 
 // LST_SETTINGS Encoderless 'Fast lap' mode switch
-#define LST_FAST_MODE_ENCODERLESS
+//#define LST_FAST_MODE_ENCODERLESS
 // LST_SETTINGS Interpolated steering controller parameters
 // #define LST_FAST_MODE_STEERING_INTERPOLATED
 
@@ -54,11 +54,14 @@ uint8_t lst_fast_startDetected;
 
 #define LST_FAST_INSNESITIVITY_DIST  1000 // 1 meter
 
+// Both use encoder TODO 2018.02.10. TEST
+#define LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX			 125 // 95  // 270 // 290 //280 // ToDo NMT ENCODER
+#define LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX			 175
+
 /* Speed values */
 #ifdef LST_FAST_MODE_ENCODERLESS
 //#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       300 // 200 -> does not start
-#define LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX			 125 // 95  // 270 // 290 //280 // ToDo NMT ENCODER
-#define LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX			 175 // 310 // ToDo NMT ENCODER
+ // 310 // ToDo NMT ENCODER
 
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      295
 #define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      310
@@ -66,17 +69,19 @@ uint8_t lst_fast_startDetected;
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1      460
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2      500
 #define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3      550
-#define LST_FAST_Q1_START_MOTOR_SPEED          350
+
+//#define LST_FAST_Q1_START_MOTOR_SPEED          350
 #define LST_FAST_Q1_FINISH_MOTOR_SPEED         550 // ToDo increase
 #else
 // ToDo calibrate these values
-#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       100
-#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      130
-#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      140
-#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3      150
-#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1      250
-#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2      300
-#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3      350
+#define LST_FAST_Q1_APPROACH_MOTOR_SPEED       50
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1      150
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2      170
+#define LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3      190
+#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1      320
+#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2      360
+#define LST_FAST_Q1_FAST_MOTOR_SPEED_LAP3      400
+
 #define LST_FAST_Q1_START_MOTOR_SPEED          130
 #define LST_FAST_Q1_FINISH_MOTOR_SPEED         250 // ToDo increase
 #endif
