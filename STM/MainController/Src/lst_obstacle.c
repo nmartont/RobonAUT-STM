@@ -2156,7 +2156,7 @@ static void LST_Obs_End(){
  * @brief Resets the state machine
  */
 static void LST_Obs_ResetStateMachine(){
-  lst_obs_lap_mode             = LST_OBS_LAP_MODE_START;
+  // lst_obs_lap_mode             = LST_OBS_LAP_MODE_START;
 
   lst_obs_corner_stage = 0;
   lst_obs_train_stage = 0;
