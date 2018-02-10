@@ -381,6 +381,9 @@ static void LST_Fast_Q1_Logic(){
           cntr_temp ++;
 
           if(cntr_temp_2 > 0){
+            cntr_temp = 0;
+            cntr_temp_2 = 0;
+
             /*FAST pattern*/
             lst_fast_line_pattern_insensitivity = 1;
             lst_movement_sharp_speed_max =
@@ -399,6 +402,8 @@ static void LST_Fast_Q1_Logic(){
           if(cntr_temp > 30){
             // if long line, decrease max speed
             cntr_temp = 0;
+            cntr_temp_2 = 0;
+
             lst_fast_line_pattern_insensitivity = 1;
             lst_movement_sharp_speed_max =
                 LST_FAST_Q1_SLOW_FOLLOW_SPEED_MAX;  // ToDo encoder speed
@@ -408,6 +413,7 @@ static void LST_Fast_Q1_Logic(){
               lst_control_steeringP = LST_FAST_Q1_FOLLOW_SLOW_STEERING_P;
               lst_control_steeringD = LST_FAST_Q1_FOLLOW_SLOW_STEERING_D;
             }
+            return;
           }
         }else if(lst_control_line_no == 1 && cntr_temp > 2){
           // short lines
