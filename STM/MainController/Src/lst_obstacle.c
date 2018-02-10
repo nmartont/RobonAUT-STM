@@ -93,6 +93,8 @@ void LST_Obs_Logic(){
 static void LST_Obs_StateMachine(){
   switch(lst_obs_mode){
   case LST_OBS_MODE_BT:
+    // Todo temp
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_START;
     LST_Obs_ResetStateMachine();
 
     lst_control_steering = LST_Control_Servo_BT();
@@ -112,6 +114,8 @@ static void LST_Obs_StateMachine(){
     break;
   case LST_OBS_MODE_NO_CONTROL:
   default:
+    // Todo temp
+    lst_obs_lap_mode = LST_OBS_LAP_MODE_START;
     LST_Obs_ResetStateMachine();
     break;
   }
