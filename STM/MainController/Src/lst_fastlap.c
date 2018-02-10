@@ -33,6 +33,7 @@ uint8_t lst_fast_steering_interpol = 0;
 
 uint8_t cntr_brake                   = 0;
 uint16_t cntr_temp                   = 0;
+uint16_t cntr_temp_2                 = 0;
 int16_t iiii = 250;
 
 uint8_t lst_fast_follow_do_brake     = 0;
@@ -133,6 +134,7 @@ static void LST_Fast_Reset_State_Machine(){
   lst_fast_slow_speed            = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP1;
   lst_fast_fast_speed            = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
   cntr_temp                      = 0;
+  cntr_temp_2                    = 0;
   lst_fast_follow_do_brake       = 0;
   lst_fast_follow_cntr           = 0;
   lst_fast_follow_cntr2          = 0;
@@ -378,6 +380,22 @@ static void LST_Fast_Q1_Logic(){
         if(lst_control_line_no > 1){
           cntr_temp ++;
 
+          if(cntr_temp_2 > 0){
+            /*FAST pattern*/
+            lst_fast_line_pattern_insensitivity = 1;
+            lst_movement_sharp_speed_max =
+                LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX;  // ToDo encoder speed
+
+            // TODO 2018.02.08. Steering controls set
+            if(!lst_fast_steering_interpol){
+              lst_control_steeringP = LST_FAST_Q1_FOLLOW_FAST_STEERING_P;
+              lst_control_steeringD = LST_FAST_Q1_FOLLOW_FAST_STEERING_D;
+            }
+            return;
+          }
+
+          cntr_temp_2 = 0;
+
           if(cntr_temp > 30){
             // if long line, decrease max speed
             cntr_temp = 0;
@@ -393,20 +411,16 @@ static void LST_Fast_Q1_Logic(){
           }
         }else if(lst_control_line_no == 1 && cntr_temp > 2){
           // short lines
-          cntr_temp = 0;
-          lst_fast_line_pattern_insensitivity = 1;
-          lst_movement_sharp_speed_max =
-              LST_FAST_Q1_FAST_FOLLOW_SPEED_MAX;  // ToDo encoder speed
+          cntr_temp_2 ++; // number of found 1 lines
 
-          // TODO 2018.02.08. Steering controls set
-          if(!lst_fast_steering_interpol){
-            lst_control_steeringP = LST_FAST_Q1_FOLLOW_FAST_STEERING_P;
-            lst_control_steeringD = LST_FAST_Q1_FOLLOW_FAST_STEERING_D;
+          if(cntr_temp_2 > 15){
+            // faulty, we wanna see some 3 lines again
+            cntr_temp_2 = 0;
           }
-
         }else{
           // counter reset
           cntr_temp = 0;
+          cntr_temp_2 = 0;
         }
 		  }
 		  break;
