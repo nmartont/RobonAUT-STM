@@ -18,6 +18,11 @@ uint8_t lst_fast_done_laps             = 0;
 int8_t  lst_fast_started_fast_sections = -1; // -1 because the race starts with a fast section
 uint8_t lst_fast_started_slow_sections = 0;
 
+uint16_t lst_fast_slow_steeringP = LST_FAST_Q1_SLOW_STEERING_P_LAP1;
+uint16_t lst_fast_slow_steeringD = LST_FAST_Q1_SLOW_STEERING_D_LAP1;
+uint16_t lst_fast_fast_steeringP = LST_FAST_Q1_FAST_STEERING_P_LAP1;
+uint16_t lst_fast_fast_steeringD = LST_FAST_Q1_FAST_STEERING_D_LAP1;
+
 int16_t lst_fast_brake_delay = LST_BRAKE_Q1_DELAY_LAP1;
 int16_t lst_fast_brake_speed = LST_BRAKE_Q1_SPEED_LAP1;
 
@@ -434,8 +439,8 @@ static void LST_Fast_Q1_Logic(){
 		case LST_FAST_MODE_Q1_SLOW:
 		  if(!lst_fast_steering_interpol){
         /* Set controller values */
-        lst_control_steeringP = LST_FAST_Q1_SLOW_STEERING_P;
-        lst_control_steeringD = LST_FAST_Q1_SLOW_STEERING_D;
+        lst_control_steeringP = lst_fast_slow_steeringP;
+        lst_control_steeringD = lst_fast_slow_steeringD;
 		  }
 
 			/* Set motor value */
@@ -492,8 +497,8 @@ static void LST_Fast_Q1_Logic(){
 		case LST_FAST_MODE_Q1_FAST:
 		  if(!lst_fast_steering_interpol){
         /* Set controller values */
-        lst_control_steeringP = LST_FAST_Q1_FAST_STEERING_P;
-        lst_control_steeringD = LST_FAST_Q1_FAST_STEERING_D;
+        lst_control_steeringP = lst_fast_fast_steeringP;
+        lst_control_steeringD = lst_fast_fast_steeringD;
 		  }
 
 			/* Set motor value */
@@ -588,6 +593,10 @@ static void LST_Fast_Q1_Lap_Control(){
 #ifdef LST_FAST_THREE_LAPS
   switch(lst_fast_done_laps){
   case 0: // first lap is next
+    lst_fast_slow_steeringP = LST_FAST_Q1_SLOW_STEERING_P_LAP1;
+    lst_fast_slow_steeringD = LST_FAST_Q1_SLOW_STEERING_D_LAP1;
+    lst_fast_fast_steeringP = LST_FAST_Q1_FAST_STEERING_P_LAP1;
+    lst_fast_fast_steeringD = LST_FAST_Q1_FAST_STEERING_D_LAP1;
     lst_fast_brake_speed= LST_BRAKE_Q1_SPEED_LAP1;
     lst_fast_brake_delay = LST_BRAKE_Q1_DELAY_LAP1;
 
@@ -595,12 +604,20 @@ static void LST_Fast_Q1_Lap_Control(){
     lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP1;
     break;
   case 1: // second lap is next
+    lst_fast_slow_steeringP = LST_FAST_Q1_SLOW_STEERING_P_LAP2;
+    lst_fast_slow_steeringD = LST_FAST_Q1_SLOW_STEERING_D_LAP2;
+    lst_fast_fast_steeringP = LST_FAST_Q1_FAST_STEERING_P_LAP2;
+    lst_fast_fast_steeringD = LST_FAST_Q1_FAST_STEERING_D_LAP2;
     lst_fast_brake_speed= LST_BRAKE_Q1_SPEED_LAP2;
     lst_fast_brake_delay = LST_BRAKE_Q1_DELAY_LAP2;
     lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP2;
     lst_fast_fast_speed = LST_FAST_Q1_FAST_MOTOR_SPEED_LAP2;
     break;
   case 2: // third lap is next
+    lst_fast_slow_steeringP = LST_FAST_Q1_SLOW_STEERING_P_LAP3;
+    lst_fast_slow_steeringD = LST_FAST_Q1_SLOW_STEERING_D_LAP3;
+    lst_fast_fast_steeringP = LST_FAST_Q1_FAST_STEERING_P_LAP3;
+    lst_fast_fast_steeringD = LST_FAST_Q1_FAST_STEERING_D_LAP3;
     lst_fast_brake_speed= LST_BRAKE_Q1_SPEED_LAP3;
     lst_fast_brake_delay = LST_BRAKE_Q1_DELAY_LAP3;
     lst_fast_slow_speed = LST_FAST_Q1_SLOW_MOTOR_SPEED_LAP3;
